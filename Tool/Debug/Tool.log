@@ -1,1 +1,18 @@
-﻿  Tool.vcxproj -> C:\Users\BADA\Desktop\MFCTeamTool\Debug\Tool.exe
+﻿  pch.cpp
+  CDevice.cpp
+  CEquipTool.cpp
+  CMapTool.cpp
+  CMiniView.cpp
+  CMultiTexture.cpp
+  CMyForm.cpp
+  CSingleTexture.cpp
+  CTerrain.cpp
+  CTexture.cpp
+  CTextureMgr.cpp
+  CUnitTool.cpp
+  MainFrm.cpp
+  Tool.cpp
+  ToolDoc.cpp
+  ToolView.cpp
+  코드를 생성하고 있습니다...
+  Tool.vcxproj -> C:\Users\leesu\Desktop\Jusin\Team\Team4\Debug\Tool.exe
