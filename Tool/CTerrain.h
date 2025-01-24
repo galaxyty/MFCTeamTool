@@ -32,6 +32,7 @@ private:
 
 private:
 	vector<TILE*>		m_vecTile;
+	TILE*				m_imgBackground;
 	CToolView*			m_pMainView;
 };
 

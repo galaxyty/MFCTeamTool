@@ -4,7 +4,7 @@
 IMPLEMENT_SINGLETON(CDevice)
 
 CDevice::CDevice() 
-	: m_pDevice(nullptr), m_pSDK(nullptr), m_pSprite(nullptr), m_pFont(nullptr)
+	: m_pDevice(nullptr), m_pSDK(nullptr), m_pSprite(nullptr), m_pFont(nullptr), m_pBackground(nullptr)
 {
 }
 
@@ -66,6 +66,13 @@ HRESULT CDevice::Init_Device()
 		return E_FAIL;
 	}
 
+	// Background
+	if (FAILED(D3DXCreateSprite(m_pDevice, &m_pBackground)))
+	{
+		AfxMessageBox(L"D3DXCreateBackground Failed");
+		return E_FAIL;
+	}
+
 	//font
 
 	D3DXFONT_DESCW		tFontInfo;
@@ -102,13 +109,14 @@ void CDevice::Render_Begin()
 					0);		// 스텐실 버퍼 초기화 값
 
 	m_pDevice->BeginScene();
-
+	m_pBackground->Begin(D3DXSPRITE_DONOTSAVESTATE);
 	m_pSprite->Begin(D3DXSPRITE_ALPHABLEND);
 
 }
 
 void CDevice::Render_End(HWND hWnd)
 {
+	m_pBackground->End();
 	m_pSprite->End();
 
 	m_pDevice->EndScene();
@@ -122,6 +130,7 @@ void CDevice::Render_End(HWND hWnd)
 void CDevice::Release()
 {
 	Safe_Release(m_pFont);
+	Safe_Release(m_pBackground);
 	Safe_Release(m_pSprite);
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pSDK);

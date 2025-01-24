@@ -25,6 +25,18 @@ HRESULT CTerrain::Initialize()
 		return E_FAIL;
 	}
 
+	if (FAILED(CTextureMgr::Get_Instance()->Insert_Texture(
+		L"../Texture/Picked/Map/Pub.bmp",
+		TEX_SINGLE, L"Pub", nullptr, 0)))
+	{
+		AfxMessageBox(L"Background Texture Insert Failed");
+		return E_FAIL;
+	}
+
+	m_imgBackground = new TILE;
+	m_imgBackground->vPos = {0.f, 0.f, 0.f};
+	m_imgBackground->vSize = { 1344.f, 600.f};
+
 	for (int i = 0; i < TILEY; ++i)
 	{
 		for (int j = 0; j < TILEX; ++j)
@@ -53,10 +65,30 @@ void CTerrain::Update()
 
 void CTerrain::Render()
 {
-	D3DXMATRIX	matWorld, matScale, matTrans;
+	D3DXMATRIX	matWorld, matScale, matTrans;	
+
+	const TEXINFO* pBackground = CTextureMgr::Get_Instance()->Get_Texture(L"Pub", nullptr, 0);
+	CDevice::Get_Instance()->GetBackground()->Draw(pBackground->pTexture,
+		nullptr,
+		nullptr,
+		nullptr,
+		D3DCOLOR_ARGB(255, 255, 255, 255));
+
+	D3DXMatrixIdentity(&matWorld);
+	D3DXMatrixScaling(&matScale, 1.f, 1.f, 1.f);
+	D3DXMatrixTranslation(&matTrans,
+		m_imgBackground->vPos.x - m_pMainView->GetScrollPos(0),
+		m_imgBackground->vPos.y - m_pMainView->GetScrollPos(1),
+		m_imgBackground->vPos.z);
+
+	matWorld = matScale * matTrans;
+
+	Set_Ratio(&matWorld, g_Ratio, g_Ratio);
+
+	CDevice::Get_Instance()->GetBackground()->SetTransform(&matWorld);
 
 	TCHAR	szBuf[MIN_STR] = L"";
-	int		iIndex(0);
+	int		iIndex(0);	
 
 	for (auto pTile : m_vecTile)
 	{
@@ -80,7 +112,7 @@ void CTerrain::Render()
 
 		CDevice::Get_Instance()->Get_Sprite()->SetTransform(&matWorld);
 
-		const TEXINFO* pTexInfo = CTextureMgr::Get_Instance()->Get_Texture(L"Terrain", L"Tile", pTile->byDrawID);
+		const TEXINFO* pTexInfo = CTextureMgr::Get_Instance()->Get_Texture(L"Terrain", L"Tile", pTile->byDrawID);		
 
 		float	fCenterX = pTexInfo->tImgInfo.Width / 2.f;
 		float	fCenterY = pTexInfo->tImgInfo.Height / 2.f;
@@ -116,6 +148,8 @@ void CTerrain::Release()
 		});
 	m_vecTile.clear();
 	m_vecTile.shrink_to_fit();
+
+	Safe_Delete(m_imgBackground);
 }
 
 void CTerrain::Mini_Render()
