@@ -3,6 +3,8 @@
 #include "CTextureMgr.h"
 #include "CDevice.h"
 
+float g_Ratio = 0.3f;
+
 CTerrain::CTerrain()
 {
 	m_vecTile.reserve(TILEX * TILEY);
@@ -33,7 +35,7 @@ HRESULT CTerrain::Initialize()
 			float	fX = TILECX * j;
 
 			pTile->vPos = { fX, fY, 0.f };
-			pTile->vSize = { (float)TILECX, (float)TILECY };
+			pTile->vSize = { (float)TILECX, (float)TILECY};
 			pTile->byOption = 0;
 			pTile->byDrawID = 3;
 
@@ -74,7 +76,7 @@ void CTerrain::Render()
 		float	fX = WINCX / float(rc.right - rc.left);
 		float	fY = WINCY / float(rc.bottom - rc.top);
 
-		Set_Ratio(&matWorld, fX, fY);
+		Set_Ratio(&matWorld, g_Ratio, g_Ratio);
 
 		CDevice::Get_Instance()->Get_Sprite()->SetTransform(&matWorld);
 
@@ -131,7 +133,7 @@ void CTerrain::Mini_Render()
 
 		matWorld = matScale * matTrans;
 				
-		Set_Ratio(&matWorld, 0.3f, 0.3f);
+		Set_Ratio(&matWorld, g_Ratio, g_Ratio);
 
 		CDevice::Get_Instance()->Get_Sprite()->SetTransform(&matWorld);
 
@@ -191,7 +193,17 @@ int CTerrain::Get_TileIdx(const D3DXVECTOR3& vPos)
 
 bool CTerrain::Picking_Rect(const D3DXVECTOR3& vPos, const int& iIndex)
 {
-	return (vPos.x >= m_vecTile[iIndex]->vPos.x - (TILECX * 0.5f) && vPos.x < m_vecTile[iIndex]->vPos.x + (TILECX * 0.5f)) && (vPos.y >= m_vecTile[iIndex]->vPos.y - (TILECY * 0.5f) && vPos.y < m_vecTile[iIndex]->vPos.y + (TILECY * 0.5f));
+	D3DXMATRIX matWorld;
+	D3DXMATRIX matScale;
+	D3DXVECTOR3 vectorPos = m_vecTile[iIndex]->vPos;
+	D3DXMatrixIdentity(&matWorld);
+	D3DXMatrixIdentity(&matScale);
+
+	matWorld = matScale;
+	Set_Ratio(&matWorld, g_Ratio, g_Ratio);
+
+	D3DXVec3TransformCoord(&vectorPos, &m_vecTile[iIndex]->vPos, &matWorld);
+	return (vPos.x >= vectorPos.x - (TILECX * (0.5f * g_Ratio)) && vPos.x < vectorPos.x + (TILECX * (0.5f * g_Ratio))) && (vPos.y >= vectorPos.y - (TILECY * (0.5f * g_Ratio)) && vPos.y < vectorPos.y + (TILECY * (0.5f * g_Ratio)));
 }
 
 bool CTerrain::Picking(const D3DXVECTOR3& vPos, const int& iIndex)

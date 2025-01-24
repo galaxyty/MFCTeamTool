@@ -3,6 +3,8 @@
 #include "Include.h"
 #include "ToolView.h"
 
+extern float g_Ratio;
+
 class CTerrain
 {
 public:
