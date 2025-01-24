@@ -123,8 +123,8 @@ void CToolView::OnLButtonDown(UINT nFlags, CPoint point)
 
 	CScrollView::OnLButtonDown(nFlags, point);
 
-	m_pTerrain->Tile_Change(D3DXVECTOR3(float(point.x) + GetScrollPos(0),
-										float(point.y) + GetScrollPos(1),
+	m_pTerrain->Tile_Change(D3DXVECTOR3(float(point.x) + GetScrollPos(0) * g_Ratio,
+										float(point.y) + GetScrollPos(1) * g_Ratio,
 										0.f), 0);
 
 	// Invalidate : 호출 시 윈도우에 WM_PAINT와 WM_ERASEBKGND 메세지를 발생시킴
@@ -157,8 +157,8 @@ void CToolView::OnMouseMove(UINT nFlags, CPoint point)
 
 	if (GetAsyncKeyState(VK_LBUTTON) & 0x8000)
 	{
-		m_pTerrain->Tile_Change(D3DXVECTOR3(float(point.x) + GetScrollPos(0), 
-											float(point.y) + GetScrollPos(1), 
+		m_pTerrain->Tile_Change(D3DXVECTOR3(float(point.x) + GetScrollPos(0) * g_Ratio,
+											float(point.y) + GetScrollPos(1) * g_Ratio,
 											0.f), 0);
 		Invalidate(FALSE);
 

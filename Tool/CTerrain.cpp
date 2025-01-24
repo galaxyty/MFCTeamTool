@@ -229,7 +229,7 @@ bool CTerrain::Picking_Rect(const D3DXVECTOR3& vPos, const int& iIndex)
 {
 	D3DXMATRIX matWorld;
 	D3DXMATRIX matScale;
-	D3DXVECTOR3 vectorPos;
+	D3DXVECTOR3 vectorPos;	
 
 	D3DXMatrixIdentity(&matWorld);
 	D3DXMatrixIdentity(&matScale);
@@ -239,9 +239,9 @@ bool CTerrain::Picking_Rect(const D3DXVECTOR3& vPos, const int& iIndex)
 
 	D3DXVec3TransformCoord(&vectorPos, &m_vecTile[iIndex]->vPos, &matWorld);
 
-	return (vPos.x >= vectorPos.x - (TILECX * (0.5f * g_Ratio)) && 
-		vPos.x < vectorPos.x + (TILECX * (0.5f * g_Ratio))) && 
-		(vPos.y >= vectorPos.y - (TILECY * (0.5f * g_Ratio)) && 
+	return (vPos.x >= vectorPos.x - (TILECX * (0.5f * g_Ratio)) &&
+		vPos.x < vectorPos.x + (TILECX * (0.5f * g_Ratio))) &&
+		(vPos.y >= vectorPos.y - (TILECY * (0.5f * g_Ratio)) &&
 			vPos.y < vectorPos.y + (TILECY * (0.5f * g_Ratio)));
 }
 
