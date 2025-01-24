@@ -202,6 +202,14 @@
     <ClInclude Include="CTexture.h" />
     <ClInclude Include="CTextureMgr.h" />
     <ClInclude Include="CUnitTool.h" />
+    <ClInclude Include="DH_BtnUI.h" />
+    <ClInclude Include="DH_CObject.h" />
+    <ClInclude Include="DH_Define.h" />
+    <ClInclude Include="DH_KeyMgr.h" />
+    <ClInclude Include="DH_OBJMgr.h" />
+    <ClInclude Include="DH_PanelUI.h" />
+    <ClInclude Include="DH_UI.h" />
+    <ClInclude Include="DH_UIMgr.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="pch.h" />
@@ -223,6 +231,14 @@
     <ClCompile Include="CTexture.cpp" />
     <ClCompile Include="CTextureMgr.cpp" />
     <ClCompile Include="CUnitTool.cpp" />
+    <ClCompile Include="DH_BtnUI.cpp" />
+    <ClCompile Include="DH_CObject.cpp" />
+    <ClCompile Include="DH_Define.cpp" />
+    <ClCompile Include="DH_KeyMgr.cpp" />
+    <ClCompile Include="DH_OBJMgr.cpp" />
+    <ClCompile Include="DH_PanelUI.cpp" />
+    <ClCompile Include="DH_UI.cpp" />
+    <ClCompile Include="DH_UIMgr.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

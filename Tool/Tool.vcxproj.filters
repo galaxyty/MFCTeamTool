@@ -64,6 +64,21 @@
     <Filter Include="04. Etc\03. Dialog\04. EquipTool">
       <UniqueIdentifier>{f34f189e-8190-48b6-9058-6b025fd23f3f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="04. Etc\03. Dialog\04. EquipTool\00.UI">
+      <UniqueIdentifier>{020381cf-d56a-49b7-b21b-2fb4f5ba8d09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Etc\03. Dialog\04. EquipTool\08.Obj">
+      <UniqueIdentifier>{bfa2335d-2721-4e71-bf71-b542332f97f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Etc\03. Dialog\04. EquipTool\01.ObjMgr">
+      <UniqueIdentifier>{361aacec-dd15-429e-af5d-ad07877bc608}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Etc\03. Dialog\04. EquipTool\09.DH_Define">
+      <UniqueIdentifier>{bc673263-6870-44cc-848a-b11eb126f724}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Etc\03. Dialog\04. EquipTool\07.KeyMgr">
+      <UniqueIdentifier>{0bde6bd5-9b73-4398-8958-037351dde863}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Tool.h">
@@ -123,6 +138,30 @@
     <ClInclude Include="CEquipTool.h">
       <Filter>04. Etc\03. Dialog\04. EquipTool</Filter>
     </ClInclude>
+    <ClInclude Include="DH_CObject.h">
+      <Filter>04. Etc\03. Dialog\04. EquipTool\08.Obj</Filter>
+    </ClInclude>
+    <ClInclude Include="DH_UI.h">
+      <Filter>04. Etc\03. Dialog\04. EquipTool\00.UI</Filter>
+    </ClInclude>
+    <ClInclude Include="DH_OBJMgr.h">
+      <Filter>04. Etc\03. Dialog\04. EquipTool\01.ObjMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="DH_Define.h">
+      <Filter>04. Etc\03. Dialog\04. EquipTool\09.DH_Define</Filter>
+    </ClInclude>
+    <ClInclude Include="DH_UIMgr.h">
+      <Filter>04. Etc\03. Dialog\04. EquipTool\00.UI</Filter>
+    </ClInclude>
+    <ClInclude Include="DH_KeyMgr.h">
+      <Filter>04. Etc\03. Dialog\04. EquipTool\07.KeyMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="DH_BtnUI.h">
+      <Filter>04. Etc\03. Dialog\04. EquipTool\00.UI</Filter>
+    </ClInclude>
+    <ClInclude Include="DH_PanelUI.h">
+      <Filter>04. Etc\03. Dialog\04. EquipTool\00.UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Tool.cpp">
@@ -172,6 +211,30 @@
     </ClCompile>
     <ClCompile Include="CEquipTool.cpp">
       <Filter>04. Etc\03. Dialog\04. EquipTool</Filter>
+    </ClCompile>
+    <ClCompile Include="DH_CObject.cpp">
+      <Filter>04. Etc\03. Dialog\04. EquipTool\08.Obj</Filter>
+    </ClCompile>
+    <ClCompile Include="DH_UI.cpp">
+      <Filter>04. Etc\03. Dialog\04. EquipTool\00.UI</Filter>
+    </ClCompile>
+    <ClCompile Include="DH_OBJMgr.cpp">
+      <Filter>04. Etc\03. Dialog\04. EquipTool\01.ObjMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="DH_Define.cpp">
+      <Filter>04. Etc\03. Dialog\04. EquipTool\09.DH_Define</Filter>
+    </ClCompile>
+    <ClCompile Include="DH_UIMgr.cpp">
+      <Filter>04. Etc\03. Dialog\04. EquipTool\00.UI</Filter>
+    </ClCompile>
+    <ClCompile Include="DH_KeyMgr.cpp">
+      <Filter>04. Etc\03. Dialog\04. EquipTool\07.KeyMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="DH_BtnUI.cpp">
+      <Filter>04. Etc\03. Dialog\04. EquipTool\00.UI</Filter>
+    </ClCompile>
+    <ClCompile Include="DH_PanelUI.cpp">
+      <Filter>04. Etc\03. Dialog\04. EquipTool\00.UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -19,6 +19,7 @@ CEquipTool::CEquipTool(CWnd* pParent /*=nullptr*/)
 
 CEquipTool::~CEquipTool()
 {
+
 }
 
 void CEquipTool::DoDataExchange(CDataExchange* pDX)
