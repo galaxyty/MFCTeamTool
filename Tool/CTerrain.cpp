@@ -3,7 +3,7 @@
 #include "CTextureMgr.h"
 #include "CDevice.h"
 
-float g_Ratio = 0.3f;
+float g_Ratio = 1.f;
 
 CTerrain::CTerrain()
 {

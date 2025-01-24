@@ -21,4 +21,13 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
 
 	DECLARE_MESSAGE_MAP()
+public:
+	virtual BOOL OnInitDialog();
+	CSliderCtrl m_RatioSlider;
+	afx_msg void OnSlider(NMHDR* pNMHDR, LRESULT* pResult);
+
+private:
+	void UpdateRender();
+public:
+	CStatic m_RatioText;
 };
