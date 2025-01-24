@@ -22,6 +22,7 @@ public:
 	void	Set_Ratio(D3DXMATRIX* pOut, float _fX, float _fY);
 
 private:
+	bool	Picking_Rect(const D3DXVECTOR3& vPos, const int& iIndex);
 	bool	Picking(const D3DXVECTOR3& vPos, const int& iIndex);
 	bool	Picking_Dot(const D3DXVECTOR3& vPos, const int& iIndex);
 	int		Get_TileIdx(const D3DXVECTOR3& vPos);

@@ -29,8 +29,8 @@ HRESULT CTerrain::Initialize()
 		{
 			TILE* pTile = new TILE;
 
-			float	fY = (TILECY / 2.f) * i;
-			float	fX = (TILECX * j) + (i % 2) * (TILECX / 2.f);
+			float	fY = TILECY * i;
+			float	fX = TILECX * j;
 
 			pTile->vPos = { fX, fY, 0.f };
 			pTile->vSize = { (float)TILECX, (float)TILECY };
@@ -180,13 +180,18 @@ int CTerrain::Get_TileIdx(const D3DXVECTOR3& vPos)
 {
 	for (size_t index = 0; index < m_vecTile.size(); ++index)
 	{
-		if (Picking_Dot(vPos, index))
+		if (Picking_Rect(vPos, index))
 		{
 			return index;
 		}
 	}
 
 	return -1;
+}
+
+bool CTerrain::Picking_Rect(const D3DXVECTOR3& vPos, const int& iIndex)
+{
+	return (vPos.x >= m_vecTile[iIndex]->vPos.x - (TILECX * 0.5f) && vPos.x < m_vecTile[iIndex]->vPos.x + (TILECX * 0.5f)) && (vPos.y >= m_vecTile[iIndex]->vPos.y - (TILECY * 0.5f) && vPos.y < m_vecTile[iIndex]->vPos.y + (TILECY * 0.5f));
 }
 
 bool CTerrain::Picking(const D3DXVECTOR3& vPos, const int& iIndex)
