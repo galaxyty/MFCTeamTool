@@ -16,9 +16,8 @@
 IMPLEMENT_DYNAMIC(CMapTool, CDialog)
 
 CMapTool::CMapTool(CWnd* pParent /*=nullptr*/)
-	: CDialog(IDD_CMapTool, pParent)
-{
-
+	: CDialog(IDD_CMapTool, pParent), m_mapKey(nullptr)
+{	
 }
 
 CMapTool::~CMapTool()
@@ -123,6 +122,11 @@ END_MESSAGE_MAP()
 BOOL CMapTool::OnInitDialog()
 {
 	CDialog::OnInitDialog();
+
+	if (m_mapKey == nullptr)
+	{
+		m_mapKey = new TCHAR[MAX_PATH];
+	}
 
 	// TODO:  여기에 추가 초기화 작업을 추가합니다.	
 	m_RatioSlider.SetRange(20, 100);	
