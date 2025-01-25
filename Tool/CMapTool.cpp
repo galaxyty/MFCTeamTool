@@ -58,13 +58,26 @@ void CMapTool::OnDropFiles(HDROP hDropInfo)
 		lstrcpy(szFileName, PathFindFileName(strRelative));
 
 		// 확장자 명 제거.
-		PathRemoveExtension(szFileName);
+		PathRemoveExtension(szFileName);		
+
+		// 중복 확인.
+		auto iter = find_if(m_mapBackground.begin(), m_mapBackground.end(), [szFileName](auto& pair)
+			{
+				// find_if에서 true를 반환하면 해당 iterator 요소를 반환.
+				return pair.first == szFileName;
+			});
+
+		if (iter != m_mapBackground.end())
+		{
+			// 중복 키.
+			continue;
+		}
 
 		// 파일 이름을 콤보 박스에 추가
 		m_ListBoxMap.AddString(szFileName);
 
 		CImage* bg = new CImage();
-		bg->Load(strRelative);
+		bg->Load(strRelative);		
 
 		m_mapBackground.insert({ szFileName , bg });
 
@@ -226,10 +239,10 @@ void CMapTool::OnListBGClick()
 	UpdateData(FALSE);
 }
 
-
+// 적용 버튼.
 void CMapTool::OnApplyClick()
 {
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.	
 	CString strItem;
 	m_ListBoxMap.GetText(m_ListBoxMap.GetCurSel(), strItem);
 
@@ -241,9 +254,15 @@ void CMapTool::OnApplyClick()
 	UpdateRender();
 }
 
-
+// 삭제 버튼.
 void CMapTool::OnDeleteClick()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	
+	CString strItem;
+	m_ListBoxMap.DeleteString(m_ListBoxMap.GetCurSel());
+	m_ListBoxMap.GetText(m_ListBoxMap.GetCurSel(), strItem);
+
+	m_mapBackground.erase(strItem);
+
+	UpdateRender();
 }
