@@ -35,4 +35,7 @@ private:
 public:
 	CStatic m_RatioText;
 	CListBox m_ListBoxMap;
+	map<CString, CImage*> m_mapBackground;
+
+	afx_msg void OnDestroy();
 };

@@ -53,16 +53,19 @@ void CMapTool::OnDropFiles(HDROP hDropInfo)
 		// 파일 절대 경로를 상대 경로로 변환.
 		CString strRelative = ConvertRelativePath(szFilePath);
 
-		// 경로 중 파일 이름만 추출.
-		strRelative = PathFindFileName(strRelative);
-
-		lstrcpy(szFileName, strRelative.GetString());
+		// PathFindFileName : 경로 중 파일 이름만 추출.
+		lstrcpy(szFileName, PathFindFileName(strRelative));
 
 		// 확장자 명 제거.
 		PathRemoveExtension(szFileName);
 
 		// 파일 이름을 콤보 박스에 추가
-		m_ListBoxMap.AddString(szFileName);		
+		m_ListBoxMap.AddString(szFileName);
+
+		CImage* bg = new CImage();
+		bg->Load(strRelative);
+
+		m_mapBackground.insert({ szFileName , bg });
 	}
 
 	CDC* pDC = m_ListBoxMap.GetDC();
@@ -92,6 +95,7 @@ void CMapTool::OnDropFiles(HDROP hDropInfo)
 BEGIN_MESSAGE_MAP(CMapTool, CDialog)
 	ON_NOTIFY(NM_CUSTOMDRAW, IDC_RATIO_SLIDER, &CMapTool::OnSlider)
 	ON_WM_DROPFILES()		// 드래그 이벤트 추가.
+	ON_WM_DESTROY()			// 파괴 함수 추가.
 END_MESSAGE_MAP()
 
 
@@ -157,4 +161,17 @@ CString CMapTool::ConvertRelativePath(CString _path)
 		FILE_ATTRIBUTE_DIRECTORY);
 
 	return CString(szRelativePath);
+}
+
+void CMapTool::OnDestroy()
+{
+	CDialog::OnDestroy();
+
+	for_each(m_mapBackground.begin(), m_mapBackground.end(), [](auto& pair)
+		{
+			pair.second->Destroy();
+			Safe_Delete(pair.second);
+		});
+
+	m_mapBackground.clear();
 }
