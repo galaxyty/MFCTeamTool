@@ -25,9 +25,12 @@ HRESULT CTerrain::Initialize()
 		return E_FAIL;
 	}
 
+	TCHAR* c = L"Pub";
+	CTextureMgr::Get_Instance()->SetBGKey(c);
+
 	if (FAILED(CTextureMgr::Get_Instance()->Insert_Texture(
 		L"../Texture/Picked/Map/Pub.bmp",
-		TEX_SINGLE, L"Pub", nullptr, 0)))
+		TEX_SINGLE, c, nullptr, 0)))
 	{
 		AfxMessageBox(L"Background Texture Insert Failed");
 		return E_FAIL;
@@ -65,9 +68,11 @@ void CTerrain::Update()
 
 void CTerrain::Render()
 {
-	D3DXMATRIX	matWorld, matScale, matTrans;	
+	const TCHAR* bgKey = CTextureMgr::Get_Instance()->GetBGKey();
+	
+	D3DXMATRIX	matWorld, matScale, matTrans;
 
-	const TEXINFO* pBackground = CTextureMgr::Get_Instance()->Get_Texture(L"Pub", nullptr, 0);
+	const TEXINFO* pBackground = CTextureMgr::Get_Instance()->Get_Texture(bgKey, nullptr, 0);
 	CDevice::Get_Instance()->GetBackground()->Draw(pBackground->pTexture,
 		nullptr,
 		nullptr,

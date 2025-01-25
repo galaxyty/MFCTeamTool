@@ -36,6 +36,7 @@ public:
 	CStatic m_RatioText;
 	CListBox m_ListBoxMap;
 	map<CString, CImage*> m_mapBackground;
+	TCHAR* m_mapKey = new TCHAR[MAX_PATH];
 
 	afx_msg void OnDestroy();
 	CStatic m_BGPicture;

@@ -23,11 +23,15 @@ public:
 								const TCHAR* pStateKey = L"",
 								const int& iCnt = 0);
 
+	void SetBGKey(const TCHAR* _key);
+	const TCHAR* GetBGKey() const;
+
+
 	 void		Release();
 
 
 private:
 	map<wstring, CTexture*>		m_mapTex;
-
+	const TCHAR* m_bgKey;
 };
 

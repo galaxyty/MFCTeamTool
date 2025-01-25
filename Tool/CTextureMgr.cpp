@@ -71,6 +71,16 @@ HRESULT CTextureMgr::Insert_Texture(const TCHAR* pFilePath, TEXTYPE eTexture, co
 	return S_OK;
 }
 
+void CTextureMgr::SetBGKey(const TCHAR* _key)
+{
+	m_bgKey = _key;
+}
+
+const TCHAR* CTextureMgr::GetBGKey() const
+{
+	return m_bgKey;
+}
+
 void CTextureMgr::Release()
 {
 	for_each(m_mapTex.begin(), m_mapTex.end(), [](auto& MyPair)
@@ -78,6 +88,5 @@ void CTextureMgr::Release()
 			Safe_Delete<CTexture*>(MyPair.second);
 		});
 
-	m_mapTex.clear();
-
+	m_mapTex.clear();	
 }

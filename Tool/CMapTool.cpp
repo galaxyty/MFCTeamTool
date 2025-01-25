@@ -8,6 +8,7 @@
 #include "CDevice.h"
 #include "CTerrain.h"
 #include "MainFrm.h"
+#include "CTextureMgr.h"
 
 
 // CMapTool 대화 상자
@@ -41,10 +42,10 @@ void CMapTool::OnDropFiles(HDROP hDropInfo)
 	UINT dragCount = ::DragQueryFile(hDropInfo, 0xFFFFFFFF, NULL, 0);
 
 	// 파일 경로.
-	TCHAR szFilePath[MAX_PATH];
+	TCHAR* szFilePath = new TCHAR[MAX_PATH];
 
 	// 파일 이름.
-	TCHAR szFileName[MAX_PATH];
+	TCHAR* szFileName = new TCHAR[MAX_PATH];
 
 	for (int i = 0; i < dragCount; i++)
 	{		
@@ -67,7 +68,18 @@ void CMapTool::OnDropFiles(HDROP hDropInfo)
 		bg->Load(strRelative);
 
 		m_mapBackground.insert({ szFileName , bg });
+
+		if (FAILED(CTextureMgr::Get_Instance()->Insert_Texture(
+			strRelative,
+			TEX_SINGLE, szFileName, nullptr, 0)))
+		{
+			AfxMessageBox(L"Background Texture Insert Failed");
+			return;
+		}		
 	}
+
+	Safe_Delete(szFilePath);
+	Safe_Delete(szFileName);
 
 	CDC* pDC = m_ListBoxMap.GetDC();
 	CString		strName;
@@ -87,9 +99,11 @@ void CMapTool::OnDropFiles(HDROP hDropInfo)
 	// 가로 스크롤 크기 조정.
 	m_ListBoxMap.SetHorizontalExtent(iWidth);
 
+	UpdateRender();
+
 	m_ListBoxMap.ReleaseDC(pDC);
 
-	UpdateData(FALSE);
+	UpdateData(FALSE);	
 }
 
 
@@ -178,6 +192,7 @@ void CMapTool::OnDestroy()
 		});
 
 	m_mapBackground.clear();
+	Safe_Delete(m_mapKey);
 }
 
 
@@ -211,7 +226,15 @@ void CMapTool::OnListBGClick()
 void CMapTool::OnApplyClick()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	
+	CString strItem;
+	m_ListBoxMap.GetText(m_ListBoxMap.GetCurSel(), strItem);
+
+	// CString에서 TCHAR 배열로 복사
+	_tcscpy_s(m_mapKey, MAX_PATH, strItem);
+
+	CTextureMgr::Get_Instance()->SetBGKey(m_mapKey);	
+
+	UpdateRender();
 }
 
 
