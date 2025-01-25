@@ -19,6 +19,7 @@ public:
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
+	virtual void OnDropFiles(HDROP hDropInfo);
 
 	DECLARE_MESSAGE_MAP()
 public:
@@ -28,6 +29,10 @@ public:
 
 private:
 	void UpdateRender();
+
+	// 절대 경로를 상대 경로로 변환.
+	CString ConvertRelativePath(CString _path);
 public:
 	CStatic m_RatioText;
+	CListBox m_ListBoxMap;
 };
