@@ -259,9 +259,10 @@ void CMapTool::OnDeleteClick()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	CString strItem;
-	m_ListBoxMap.DeleteString(m_ListBoxMap.GetCurSel());
 	m_ListBoxMap.GetText(m_ListBoxMap.GetCurSel(), strItem);
+	m_ListBoxMap.DeleteString(m_ListBoxMap.GetCurSel());	
 
+	Safe_Delete(m_mapBackground[strItem]);
 	m_mapBackground.erase(strItem);
 
 	UpdateRender();
