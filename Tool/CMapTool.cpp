@@ -39,14 +39,14 @@ void CMapTool::OnDropFiles(HDROP hDropInfo)
 	// 드래그해서 가져온 파일 갯수.
 	UINT dragCount = ::DragQueryFile(hDropInfo, 0xFFFFFFFF, NULL, 0);
 
+	// 파일 경로.
+	TCHAR szFilePath[MAX_PATH];
+
+	// 파일 이름.
+	TCHAR szFileName[MAX_PATH];
+
 	for (int i = 0; i < dragCount; i++)
-	{
-		// 파일 경로.
-		TCHAR szFilePath[MAX_PATH];
-
-		// 파일 이름.
-		TCHAR szFileName[MAX_PATH];
-
+	{		
 		// 드래그 정보에서 파일 절대 경로 추출.
 		DragQueryFile(hDropInfo, i, szFilePath, MAX_PATH);
 
@@ -62,11 +62,28 @@ void CMapTool::OnDropFiles(HDROP hDropInfo)
 		PathRemoveExtension(szFileName);
 
 		// 파일 이름을 콤보 박스에 추가
-		m_ListBoxMap.AddString(szFileName);
+		m_ListBoxMap.AddString(szFileName);		
+	}
+
+	CDC* pDC = m_ListBoxMap.GetDC();
+	CString		strName;
+	int iWidth = 0;
+
+	for (int i = 0; i < m_ListBoxMap.GetCount(); ++i)
+	{
+		m_ListBoxMap.GetText(i, strName);
+
+		// GetTextExtent : 매개 변수에 해당하는 문자열의 길이를 픽셀 단위로 변환.
+		if (pDC->GetTextExtent(strName).cx > iWidth)
+		{
+			iWidth = pDC->GetTextExtent(strName).cx;
+		}
 	}
 
 	// 가로 스크롤 크기 조정.
-	m_ListBoxMap.SetHorizontalExtent(500);
+	m_ListBoxMap.SetHorizontalExtent(iWidth);
+
+	m_ListBoxMap.ReleaseDC(pDC);
 
 	UpdateData(FALSE);
 }
