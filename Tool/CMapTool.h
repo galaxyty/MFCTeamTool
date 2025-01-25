@@ -38,4 +38,8 @@ public:
 	map<CString, CImage*> m_mapBackground;
 
 	afx_msg void OnDestroy();
+	CStatic m_BGPicture;
+	afx_msg void OnListBGClick();
+	afx_msg void OnApplyClick();
+	afx_msg void OnDeleteClick();
 };

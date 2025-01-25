@@ -30,6 +30,7 @@ void CMapTool::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_RATIO_SLIDER, m_RatioSlider);
 	DDX_Control(pDX, IDC_RATIO_TEXT, m_RatioText);
 	DDX_Control(pDX, IDC_LIST_BOX_MAP, m_ListBoxMap);
+	DDX_Control(pDX, IDC_BACKGROUND_PICTURE, m_BGPicture);
 }
 
 void CMapTool::OnDropFiles(HDROP hDropInfo)
@@ -96,6 +97,9 @@ BEGIN_MESSAGE_MAP(CMapTool, CDialog)
 	ON_NOTIFY(NM_CUSTOMDRAW, IDC_RATIO_SLIDER, &CMapTool::OnSlider)
 	ON_WM_DROPFILES()		// 드래그 이벤트 추가.
 	ON_WM_DESTROY()			// 파괴 함수 추가.
+	ON_LBN_SELCHANGE(IDC_LIST_BOX_MAP, &CMapTool::OnListBGClick)
+	ON_BN_CLICKED(IDC_MAP_APPLY_BUTTON, &CMapTool::OnApplyClick)
+	ON_BN_CLICKED(IDC_MAP_DELETE_BUTTON, &CMapTool::OnDeleteClick)
 END_MESSAGE_MAP()
 
 
@@ -174,4 +178,45 @@ void CMapTool::OnDestroy()
 		});
 
 	m_mapBackground.clear();
+}
+
+
+void CMapTool::OnListBGClick()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	UpdateData(TRUE);
+
+	CString	strFindName;
+
+	// GetCurSel : 커서가 선택한 셀의 인덱스 값을 반환
+	int	iIndex = m_ListBoxMap.GetCurSel();
+
+	m_ListBoxMap.GetText(iIndex, strFindName);
+
+	auto	iter = m_mapBackground.find(strFindName);
+
+	if (iter == m_mapBackground.end())
+		return;
+
+	CDC* dc = m_BGPicture.GetDC();		
+	//m_BGPicture.SetBitmap(*(iter->second));
+	iter->second->StretchBlt(*dc, 0, 0, 150, 100, SRCCOPY);
+
+	m_BGPicture.ReleaseDC(dc);
+
+	UpdateData(FALSE);
+}
+
+
+void CMapTool::OnApplyClick()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	
+}
+
+
+void CMapTool::OnDeleteClick()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	
 }
