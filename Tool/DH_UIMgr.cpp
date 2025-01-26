@@ -16,17 +16,6 @@ DH_UIMgr::DH_UIMgr() : m_FocusedUI(nullptr), m_UION(true)
 
 DH_UIMgr::~DH_UIMgr()
 {
-	//UI 소멸하기
-	auto& UI = DH_OBJMgr::Get_Instance()->Get_UI();
-	if (!UI.empty())
-	{
-		for (auto it = UI.begin(); it != UI.end(); ++it)
-		{
-			delete (*it);
-			*it = nullptr;
-		}
-		UI.clear();
-	}
 }
 
 void DH_UIMgr::Update()
@@ -38,8 +27,8 @@ void DH_UIMgr::Update()
 		if (!m_FocusedUI)
 			return;
 
-		bool bLTap = DH_KeyMgr::Get_Instance()->Key_Down(VK_LBUTTON);
-		bool bLAway = DH_KeyMgr::Get_Instance()->Key_Up(VK_LBUTTON);
+		bool bLTap = KEY_TAP(KEY::LBUTTEN);
+		bool bLAway = KEY_AWAY(KEY::LBUTTEN);
 
 		DH_UI* pTarget = GetTargetedUI(m_FocusedUI);
 
@@ -100,7 +89,7 @@ void DH_UIMgr::SetFocusedUI(DH_UI* _pUI)
 
 DH_UI* DH_UIMgr::GetTargetedUI(DH_UI* _pParentUI)
 {
-	bool bLAway = DH_KeyMgr::Get_Instance()->Key_Up(VK_LBUTTON);
+	bool bLAway = KEY_AWAY(KEY::LBUTTEN);
 	DH_UI* pTargetUI = nullptr;
 
 	//1. 부모 포함 , 모든 자식들을 검사한다.
@@ -159,7 +148,7 @@ DH_UI* DH_UIMgr::GetFocusUI()
 {
 	list<DH_CObject*>& vecUI = DH_OBJMgr::Get_Instance()->Get_UI();
 
-	bool bLTap = DH_KeyMgr::Get_Instance()->Key_Down(VK_LBUTTON);
+	bool bLTap = KEY_TAP(KEY::LBUTTEN);
 
 	DH_UI* pFocusedUI = m_FocusedUI;
 

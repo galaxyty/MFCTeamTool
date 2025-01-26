@@ -10,7 +10,7 @@ public:
 
 public:
 
-	virtual int  Update();
+	virtual void Update();
 	virtual void Render();
 	virtual void Initialize();
 	virtual void LateUpdate();

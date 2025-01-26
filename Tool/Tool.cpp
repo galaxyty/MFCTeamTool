@@ -8,6 +8,7 @@
 #include "afxdialogex.h"
 #include "Tool.h"
 #include "MainFrm.h"
+#include "DH_LoopMgr.h"
 
 #include "ToolDoc.h"
 #include "ToolView.h"
@@ -34,7 +35,7 @@ END_MESSAGE_MAP()
 
 CToolApp::CToolApp() noexcept
 {
-
+	
 	// 다시 시작 관리자 지원
 	m_dwRestartManagerSupportFlags = AFX_RESTART_MANAGER_SUPPORT_ALL_ASPECTS;
 #ifdef _MANAGED
@@ -48,6 +49,8 @@ CToolApp::CToolApp() noexcept
 	// 문자열에 대한 서식: CompanyName.ProductName.SubProduct.VersionInformation
 	SetAppID(_T("Tool.AppID.NoVersion"));
 
+	m_ullDwTime = GetTickCount64();
+	DH_LoopMgr::Get_Instance()->Initialize();
 	// TODO: 여기에 생성 코드를 추가합니다.
 	// InitInstance에 모든 중요한 초기화 작업을 배치합니다.
 }
@@ -125,10 +128,7 @@ BOOL CToolApp::InitInstance()
 
 	// 창 하나만 초기화되었으므로 이를 표시하고 업데이트합니다
 
-	// 창 제목 변경.
-	m_pMainWnd->SetWindowText(_T("던전 앤 파이터 툴"));
-	m_pMainWnd->ShowWindow(SW_SHOW);
-	m_pMainWnd->UpdateWindow();
+	
 	return TRUE;
 }
 
@@ -137,6 +137,8 @@ int CToolApp::ExitInstance()
 	//TODO: 추가한 추가 리소스를 처리합니다.
 	AfxOleTerm(FALSE);
 
+	DH_LoopMgr::Get_Instance()->Release();
+	DH_LoopMgr::Get_Instance()->Destroy_Instance();
 	return CWinApp::ExitInstance();
 }
 
@@ -185,6 +187,10 @@ void CToolApp::OnAppAbout()
 BOOL CToolApp::OnIdle(LONG lCount)
 {
 	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
-
-	return CWinApp::OnIdle(lCount);
+	if (m_ullDwTime + 20 < GetTickCount64())
+	{
+		DH_LoopMgr::Get_Instance()->Progress();
+		m_ullDwTime = GetTickCount64();
+	}
+	return true;
 }

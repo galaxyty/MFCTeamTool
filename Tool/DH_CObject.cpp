@@ -16,7 +16,7 @@ DH_CObject::~DH_CObject()
 }
 
 //오브젝트 그리기
-void DH_CObject::Render(HDC hDC)
+void DH_CObject::Render(CToolView* pMainView)
 {
 }
 
@@ -30,9 +30,21 @@ void DH_CObject::LateUpdate()
 {
 }
 
-// 아직 미사용 함수들
-int DH_CObject::Update() 
+void DH_CObject::Set_Ratio(D3DXMATRIX* pOut, float _fX, float _fY)
 {
-	return 0;
+	pOut->_11 *= _fX;
+	pOut->_21 *= _fX;
+	pOut->_31 *= _fX;
+	pOut->_41 *= _fX;
+
+	pOut->_12 *= _fY;
+	pOut->_22 *= _fY;
+	pOut->_32 *= _fY;
+	pOut->_42 *= _fY;
+
 }
+
+
+// 아직 미사용 함수들
+void DH_CObject::Update() {}
 void DH_CObject::Initialize() {}

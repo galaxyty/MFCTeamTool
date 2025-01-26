@@ -2,6 +2,8 @@
 #include "Include.h"
 #include "DH_Define.h"
 
+class CToolView;
+
 class DH_CObject
 {
 public:
@@ -9,10 +11,10 @@ public:
 	virtual  ~DH_CObject();
 
 public:
-	virtual int			Update();
+	virtual void		Update();
 	virtual void		LateUpdate();
 	virtual void		Initialize();
-	virtual void		Render(HDC hDC);
+	virtual void		Render(CToolView* pMainView);
 	virtual void		Release();
 
 public:
@@ -64,6 +66,9 @@ public:
 	void		AddiHP(float _iHP) { m_iHP += _iHP; }
 	void		AddfSpeed(float _fSpeed) { m_fSpeed += _fSpeed; }
 
+public:
+	void		Set_Ratio(D3DXMATRIX* pOut, float _fX, float _fY);
+
 
 private:
 	wstring			m_strName;
@@ -87,6 +92,7 @@ private:
 	STATE				m_eCurState;
 	STATE				m_ePreState;
 	FRAME				m_tFrame;
+
 
 };
 

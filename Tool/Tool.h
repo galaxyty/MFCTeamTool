@@ -20,6 +20,7 @@ public:
 	CToolApp() noexcept;
 
 
+
 // 재정의입니다.
 public:
 	virtual BOOL InitInstance();
@@ -29,6 +30,10 @@ public:
 	afx_msg void OnAppAbout();
 	DECLARE_MESSAGE_MAP()
 	virtual BOOL OnIdle(LONG lCount);
+
+
+private:
+	ULONGLONG m_ullDwTime;
 };
 
 extern CToolApp theApp;

@@ -26,18 +26,9 @@ int DH_OBJMgr::Update()
 {
 	for (size_t i = 0; i < OBJ_END; ++i)
 	{
-		for (auto iter = m_ObjList[i].begin();
-			iter != m_ObjList[i].end(); )
+		for (auto iter = m_ObjList[i].begin();	iter != m_ObjList[i].end(); ++iter)
 		{
-			int iResult = (*iter)->Update();
-
-			if (OBJ_DEAD == iResult)
-			{
-				Safe_Delete(*iter);
-				iter = m_ObjList[i].erase(iter);
-			}
-			else
-				++iter;
+			(*iter)->Update();
 		}
 	}
 
@@ -48,12 +39,12 @@ void DH_OBJMgr::Late_Update()
 {
 }
 
-void DH_OBJMgr::Render(HDC hDC)
+void DH_OBJMgr::Render()
 {
 	for (size_t i = 0; i < OBJID::OBJ_END; ++i)
 	{
 		for (auto& pObj : m_ObjList[i])
-			pObj->Render(hDC);
+			pObj->Render(m_pMainView);
 	}
 }
 
@@ -62,7 +53,12 @@ void DH_OBJMgr::Release()
 {
 	for (size_t i = 0; i < OBJ_END; ++i)
 	{
-		for_each(m_ObjList[i].begin(), m_ObjList[i].end(), Safe_Delete<DH_CObject*>);
+		for(auto& pObj : m_ObjList[i])
+		{
+			delete pObj;
+			pObj = nullptr;
+		}
+
 		m_ObjList[i].clear();
 	}
 }
