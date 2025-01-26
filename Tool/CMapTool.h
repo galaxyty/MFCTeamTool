@@ -36,6 +36,7 @@ public:
 	CStatic m_RatioText;
 	CListBox m_ListBoxMap;
 	map<CString, CImage*> m_mapBackground;
+	map<CString, CImage*> m_objectBackground;
 	TCHAR* m_mapKey;
 
 	afx_msg void OnDestroy();
@@ -43,4 +44,7 @@ public:
 	afx_msg void OnListBGClick();
 	afx_msg void OnApplyClick();
 	afx_msg void OnDeleteClick();
+
+	CListBox m_ListBoxObject;
+	afx_msg void OnListObjectClick();
 };

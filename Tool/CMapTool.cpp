@@ -31,11 +31,12 @@ void CMapTool::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_RATIO_TEXT, m_RatioText);
 	DDX_Control(pDX, IDC_LIST_BOX_MAP, m_ListBoxMap);
 	DDX_Control(pDX, IDC_BACKGROUND_PICTURE, m_BGPicture);
+	DDX_Control(pDX, IDC_LIST_BOX_OBJECT, m_ListBoxObject);
 }
 
 void CMapTool::OnDropFiles(HDROP hDropInfo)
 {
-	UpdateData(TRUE);
+	UpdateData(TRUE);	
 
 	// 드래그해서 가져온 파일 갯수.
 	UINT dragCount = ::DragQueryFile(hDropInfo, 0xFFFFFFFF, NULL, 0);
@@ -45,6 +46,29 @@ void CMapTool::OnDropFiles(HDROP hDropInfo)
 
 	// 파일 이름.
 	TCHAR* szFileName = new TCHAR[MAX_PATH];
+
+	// 마우스 좌표.
+	POINT mousePosition;
+
+	// 마우스 스크린 좌표를 가져옴
+	GetCursorPos(&mousePosition);
+
+	// 마우스 스크린 좌표를 클라이언트 좌표로 변환.
+	ScreenToClient(&mousePosition);
+
+	// 맵 리스트 박스 렉트.
+	CRect mapRect;
+
+	// m_ListBoxMap 윈도우 창 기준 렉트 좌표 반환.
+	m_ListBoxMap.GetWindowRect(mapRect);
+
+	// 클라이언트 좌표로 변환.
+	ScreenToClient(mapRect);
+
+	// 오브젝트 리스트 박스 크기.
+	CRect objectRect;
+	m_ListBoxObject.GetWindowRect(objectRect);
+	ScreenToClient(objectRect);
 
 	for (int i = 0; i < dragCount; i++)
 	{		
@@ -60,26 +84,53 @@ void CMapTool::OnDropFiles(HDROP hDropInfo)
 		// 확장자 명 제거.
 		PathRemoveExtension(szFileName);		
 
-		// 중복 확인.
-		auto iter = find_if(m_mapBackground.begin(), m_mapBackground.end(), [szFileName](auto& pair)
-			{
-				// find_if에서 true를 반환하면 해당 iterator 요소를 반환.
-				return pair.first == szFileName;
-			});
-
-		if (iter != m_mapBackground.end())
-		{
-			// 중복 키.
-			continue;
-		}
-
 		// 파일 이름을 콤보 박스에 추가
-		m_ListBoxMap.AddString(szFileName);
+		if (mapRect.PtInRect(mousePosition))
+		{
+			// 맵 중복 확인.
+			auto iter = find_if(m_mapBackground.begin(), m_mapBackground.end(), [szFileName](auto& pair)
+				{
+					// find_if에서 true를 반환하면 해당 iterator 요소를 반환.
+					return pair.first == szFileName;
+				});
 
-		CImage* bg = new CImage();
-		bg->Load(strRelative);		
+			if (iter != m_mapBackground.end())
+			{
+				// 중복 키.
+				continue;
+			}
 
-		m_mapBackground.insert({ szFileName , bg });
+			// 맵 리스트 드래그.
+			m_ListBoxMap.AddString(szFileName);
+
+			CImage* bg = new CImage();
+			bg->Load(strRelative);
+
+			m_mapBackground.insert({ szFileName , bg });
+		}
+		else if (objectRect.PtInRect(mousePosition))
+		{
+			// 맵 중복 확인.
+			auto iter = find_if(m_objectBackground.begin(), m_objectBackground.end(), [szFileName](auto& pair)
+				{
+					// find_if에서 true를 반환하면 해당 iterator 요소를 반환.
+					return pair.first == szFileName;
+				});
+
+			if (iter != m_objectBackground.end())
+			{
+				// 중복 키.
+				continue;
+			}
+
+			// 오브젝트 리스트 드래그.
+			m_ListBoxObject.AddString(szFileName);
+
+			CImage* bg = new CImage();
+			bg->Load(strRelative);
+
+			m_objectBackground.insert({ szFileName , bg });
+		}
 
 		if (FAILED(CTextureMgr::Get_Instance()->Insert_Texture(
 			strRelative,
@@ -126,6 +177,7 @@ BEGIN_MESSAGE_MAP(CMapTool, CDialog)
 	ON_LBN_SELCHANGE(IDC_LIST_BOX_MAP, &CMapTool::OnListBGClick)
 	ON_BN_CLICKED(IDC_MAP_APPLY_BUTTON, &CMapTool::OnApplyClick)
 	ON_BN_CLICKED(IDC_MAP_DELETE_BUTTON, &CMapTool::OnDeleteClick)
+	ON_LBN_SELCHANGE(IDC_LIST_BOX_OBJECT, &CMapTool::OnListObjectClick)
 END_MESSAGE_MAP()
 
 
@@ -209,10 +261,19 @@ void CMapTool::OnDestroy()
 		});
 
 	m_mapBackground.clear();
+
+	for_each(m_objectBackground.begin(), m_objectBackground.end(), [](auto& pair)
+		{
+			pair.second->Destroy();
+			Safe_Delete(pair.second);
+		});
+
+	m_objectBackground.clear();
+
 	Safe_Delete(m_mapKey);
 }
 
-
+// 배경 리스트 박스 클릭.
 void CMapTool::OnListBGClick()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
@@ -266,4 +327,11 @@ void CMapTool::OnDeleteClick()
 	m_mapBackground.erase(strItem);
 
 	UpdateRender();
+}
+
+// 오브젝트 리스트 박스 클릭.
+void CMapTool::OnListObjectClick()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.	
+	int a = 10;
 }
