@@ -47,4 +47,6 @@ public:
 
 	CListBox m_ListBoxObject;
 	afx_msg void OnListObjectClick();
+	afx_msg void OnObjectApplyClick();
+	afx_msg void OnObjectDeleteClick();
 };

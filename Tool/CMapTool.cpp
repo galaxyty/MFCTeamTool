@@ -178,6 +178,8 @@ BEGIN_MESSAGE_MAP(CMapTool, CDialog)
 	ON_BN_CLICKED(IDC_MAP_APPLY_BUTTON, &CMapTool::OnApplyClick)
 	ON_BN_CLICKED(IDC_MAP_DELETE_BUTTON, &CMapTool::OnDeleteClick)
 	ON_LBN_SELCHANGE(IDC_LIST_BOX_OBJECT, &CMapTool::OnListObjectClick)
+	ON_BN_CLICKED(IDC_OBJECT_APPLY_BUTTON, &CMapTool::OnObjectApplyClick)
+	ON_BN_CLICKED(IDC_OBJECT_DELETE_BUTTON, &CMapTool::OnObjectDeleteClick)
 END_MESSAGE_MAP()
 
 
@@ -334,4 +336,24 @@ void CMapTool::OnListObjectClick()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.	
 	int a = 10;
+}
+
+// 오브젝트 배치 버튼.
+void CMapTool::OnObjectApplyClick()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+}
+
+// 오브젝트 삭제 버튼.
+void CMapTool::OnObjectDeleteClick()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	CString strItem;
+	m_ListBoxObject.GetText(m_ListBoxObject.GetCurSel(), strItem);
+	m_ListBoxObject.DeleteString(m_ListBoxObject.GetCurSel());
+
+	Safe_Delete(m_objectBackground[strItem]);
+	m_objectBackground.erase(strItem);
+
+	UpdateRender();
 }
