@@ -1,39 +1,50 @@
 #pragma once
 #include "Include.h"
 
+enum class KEY_STATE
+{
+	NONE,
+	TAP,
+	HOLD,
+	AWAY
+};
+enum class KEY
+{
+	LEFT,
+	RIGHT,
+	UP,
+	DOWN,
+	Q, W, E, R, T, Y, U, I, O, P,
+	A, S, D, F, G, Z, X, C, V, B,
+
+	ALT, CTRL, LSHIFT, SPACE, ENTER, TAP, F1, ESC,
+	LBUTTEN, RBUTTEN,
+
+	LAST
+};
+struct tKey_Info
+{
+	KEY_STATE	eState;
+	bool		bPrev;
+};
+
 class DH_KeyMgr
 {
+	DECLARE_SINGLETON(DH_KeyMgr)
+
 private:
 	DH_KeyMgr();
 	~DH_KeyMgr();
 
 public:
-	bool		Key_Pressing(int _iKey);
-	bool		Key_Down(int _iKey);		// µü ÇÑ ¹ø ´­·¶À» ¶§
-	bool		Key_Up(int _iKey);			// ´­·¶´Ù°¡ ¶ÃÀ» ¶§
-	void		Update();
-
-public:
-	static DH_KeyMgr* Get_Instance()
-	{
-		if (nullptr == m_pInstance)
-			m_pInstance = new DH_KeyMgr;
-
-		return m_pInstance;
-	}
-
-	static void	Destroy_Instance()
-	{
-		if (m_pInstance)
-		{
-			delete m_pInstance;
-			m_pInstance = nullptr;
-		}
-	}
+	void	Initialize();
+	void	Update();
 
 private:
-	static DH_KeyMgr* m_pInstance;
-	bool	m_bKeyState[VK_MAX];
+	vector<tKey_Info> m_veckey;
+
+public:
+	KEY_STATE GetKEY_STATE(KEY WhatKey) { return m_veckey[int(WhatKey)].eState; }
 
 };
 

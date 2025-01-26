@@ -7,25 +7,16 @@ DH_UI::DH_UI() : m_vFinalPos(D3DXVECTOR3{}), m_pParnetUI(nullptr), m_bMouseOn(fa
 
 DH_UI::~DH_UI()
 {
-	if (0 < m_vecChildUI.size())
-	{
-		for (auto& Child : m_vecChildUI)
-		{
-			delete Child;
-			Child = nullptr;
-		}
-	}
 }
 
-int DH_UI::Update()
+void DH_UI::Update()
 {
 	if (!m_bVisible)
-		return 0; // UI가 비활성화 상태라면 업데이트하지 않음
+		return; // UI가 비활성화 상태라면 업데이트하지 않음
 
 	MouseOnCheck();
 	UpdateChild();
 
-	return 0;
 }
 
 void DH_UI::Render()

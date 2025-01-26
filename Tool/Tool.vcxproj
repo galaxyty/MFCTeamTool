@@ -205,7 +205,9 @@
     <ClInclude Include="DH_BtnUI.h" />
     <ClInclude Include="DH_CObject.h" />
     <ClInclude Include="DH_Define.h" />
+    <ClInclude Include="DH_Interface.h" />
     <ClInclude Include="DH_KeyMgr.h" />
+    <ClInclude Include="DH_LoopMgr.h" />
     <ClInclude Include="DH_OBJMgr.h" />
     <ClInclude Include="DH_PanelUI.h" />
     <ClInclude Include="DH_UI.h" />
@@ -234,7 +236,9 @@
     <ClCompile Include="DH_BtnUI.cpp" />
     <ClCompile Include="DH_CObject.cpp" />
     <ClCompile Include="DH_Define.cpp" />
+    <ClCompile Include="DH_Interface.cpp" />
     <ClCompile Include="DH_KeyMgr.cpp" />
+    <ClCompile Include="DH_LoopMgr.cpp" />
     <ClCompile Include="DH_OBJMgr.cpp" />
     <ClCompile Include="DH_PanelUI.cpp" />
     <ClCompile Include="DH_UI.cpp" />

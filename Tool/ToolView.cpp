@@ -16,6 +16,8 @@
 #include "CTextureMgr.h"
 #include "MainFrm.h"
 #include "CTerrain.h"
+#include "DH_OBJMgr.h"
+#include "DH_LoopMgr.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -98,6 +100,9 @@ void CToolView::OnInitialUpdate()
 	}
 
 	m_pTerrain->Set_MainView(this);
+	DH_OBJMgr::Get_Instance()->Set_MainView(this);
+	DH_LoopMgr::Get_Instance()->SetToolView(this);
+	//UI 추가
 
 }
 
@@ -135,6 +140,7 @@ void CToolView::OnDraw(CDC* /*pDC*/)
 	m_pDevice->Render_Begin();
 
 	m_pTerrain->Render();
+	DH_OBJMgr::Get_Instance()->Render();
 
 	m_pDevice->Render_End();
 

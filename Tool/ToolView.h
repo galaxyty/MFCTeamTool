@@ -5,6 +5,7 @@
 #pragma once
 
 #include "CDevice.h"
+#include "DH_LoopMgr.h"
 
 class CTerrain;
 class CToolDoc;

@@ -2,6 +2,9 @@
 #include "DH_Define.h"
 
 class DH_CObject;
+class CToolView;
+
+
 class DH_OBJMgr
 {
 private:
@@ -19,10 +22,11 @@ public:
 	void		Add_Object(OBJID eID, DH_CObject* pObj);
 	int			Update();
 	void		Late_Update();
-	void		Render(HDC hDC);
+	void		Render();
 	void		Release();
 
 	void		Delete_ID(OBJID eID);
+	void		Set_MainView(CToolView* pMainView) { m_pMainView = pMainView; }
 
 public:
 	static DH_OBJMgr* Get_Instance()
@@ -46,6 +50,7 @@ private:
 	list<DH_CObject*>		m_ObjList[OBJ_END];
 
 	static DH_OBJMgr* m_pInstance;
+	CToolView* m_pMainView;
 
 
 };
