@@ -50,4 +50,5 @@ public:
 	afx_msg void OnListObjectClick();
 	afx_msg void OnObjectApplyClick();
 	afx_msg void OnObjectDeleteClick();
+	CStatic m_ObjectPicture;
 };

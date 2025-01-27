@@ -32,6 +32,7 @@ void CMapTool::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_LIST_BOX_MAP, m_ListBoxMap);
 	DDX_Control(pDX, IDC_BACKGROUND_PICTURE, m_BGPicture);
 	DDX_Control(pDX, IDC_LIST_BOX_OBJECT, m_ListBoxObject);
+	DDX_Control(pDX, IDC_OBJECT_PICTURE, m_ObjectPicture);
 }
 
 void CMapTool::OnDropFiles(HDROP hDropInfo)
@@ -341,7 +342,27 @@ void CMapTool::OnDeleteClick()
 void CMapTool::OnListObjectClick()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.	
-	int a = 10;
+	UpdateData(TRUE);
+
+	CString	strFindName;
+
+	// GetCurSel : 커서가 선택한 셀의 인덱스 값을 반환
+	int	iIndex = m_ListBoxObject.GetCurSel();
+
+	m_ListBoxObject.GetText(iIndex, strFindName);
+
+	auto	iter = m_objectBackground.find(strFindName);
+
+	if (iter == m_objectBackground.end())
+		return;
+
+	CDC* dc = m_ObjectPicture.GetDC();
+	//m_BGPicture.SetBitmap(*(iter->second));
+	iter->second->StretchBlt(*dc, 0, 0, 100, 100, SRCCOPY);
+
+	m_ObjectPicture.ReleaseDC(dc);
+
+	UpdateData(FALSE);
 }
 
 // 오브젝트 배치 버튼.

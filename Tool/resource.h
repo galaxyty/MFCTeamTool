@@ -22,13 +22,15 @@
 #define IDC_BACKGROUND_PICTURE          1008
 #define IDC_MAP_APPLY_BUTTON            1009
 #define IDC_MAP_DELETE_BUTTON           1010
+#define IDC_LIST1                       1010
 #define IDC_LIST_BOX_OBJECT             1011
 #define IDC_MAP_APPLY_BUTTON2           1012
 #define IDC_OBJECT_APPLY_BUTTON         1012
-#define IDC_OBJECT_DELETE_BUTTON        1013
-#define IDC_LIST1                       1010
 #define IDC_RADIO1                      1012
+#define IDC_OBJECT_DELETE_BUTTON        1013
 #define IDC_RADIO2                      1013
+#define IDC_BACKGROUND_PICTURE2         1014
+#define IDC_OBJECT_PICTURE              1014
 
 // Next default values for new objects
 // 
