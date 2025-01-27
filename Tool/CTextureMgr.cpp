@@ -81,6 +81,16 @@ const TCHAR* CTextureMgr::GetBGKey() const
 	return m_bgKey;
 }
 
+void CTextureMgr::SetObjectKey(const TCHAR* _object)
+{
+	m_objectKey = _object;
+}
+
+const TCHAR* CTextureMgr::GetObjectKey() const
+{
+	return m_objectKey;
+}
+
 void CTextureMgr::Release()
 {
 	for_each(m_mapTex.begin(), m_mapTex.end(), [](auto& MyPair)

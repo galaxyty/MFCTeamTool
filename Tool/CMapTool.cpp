@@ -16,7 +16,7 @@
 IMPLEMENT_DYNAMIC(CMapTool, CDialog)
 
 CMapTool::CMapTool(CWnd* pParent /*=nullptr*/)
-	: CDialog(IDD_CMapTool, pParent), m_mapKey(nullptr)
+	: CDialog(IDD_CMapTool, pParent), m_mapKey(nullptr), m_objectKey(nullptr)
 {	
 }
 
@@ -195,6 +195,11 @@ BOOL CMapTool::OnInitDialog()
 		m_mapKey = new TCHAR[MAX_PATH];
 	}
 
+	if (m_objectKey == nullptr)
+	{
+		m_objectKey = new TCHAR[MAX_PATH];
+	}
+
 	// TODO:  여기에 추가 초기화 작업을 추가합니다.	
 	m_RatioSlider.SetRange(20, 100);	
 	m_RatioSlider.SetPos(100);
@@ -273,6 +278,7 @@ void CMapTool::OnDestroy()
 	m_objectBackground.clear();
 
 	Safe_Delete(m_mapKey);
+	Safe_Delete(m_objectKey);
 }
 
 // 배경 리스트 박스 클릭.
@@ -342,6 +348,13 @@ void CMapTool::OnListObjectClick()
 void CMapTool::OnObjectApplyClick()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	CString strItem;
+	m_ListBoxObject.GetText(m_ListBoxObject.GetCurSel(), strItem);
+
+	// CString에서 TCHAR 배열로 복사
+	_tcscpy_s(m_objectKey, MAX_PATH, strItem);
+
+	CTextureMgr::Get_Instance()->SetObjectKey(m_objectKey);
 }
 
 // 오브젝트 삭제 버튼.

@@ -38,6 +38,7 @@ public:
 	map<CString, CImage*> m_mapBackground;
 	map<CString, CImage*> m_objectBackground;
 	TCHAR* m_mapKey;
+	TCHAR* m_objectKey;
 
 	afx_msg void OnDestroy();
 	CStatic m_BGPicture;

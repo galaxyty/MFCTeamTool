@@ -68,6 +68,14 @@ void CTerrain::Update()
 
 void CTerrain::Render()
 {
+	// 화면 좌표 가져오기
+	CPoint screenPoint;
+	GetCursorPos(&screenPoint);
+
+	// 스크린 좌표를 클라이언트 좌표로 변환.
+	ScreenToClient(g_hWnd, &screenPoint);
+
+	// 백그라운드.
 	const TCHAR* bgKey = CTextureMgr::Get_Instance()->GetBGKey();
 	
 	D3DXMATRIX	matWorld, matScale, matTrans;
@@ -92,6 +100,43 @@ void CTerrain::Render()
 
 	CDevice::Get_Instance()->GetBackground()->SetTransform(&matWorld);
 
+	// 오브젝트.
+	const TCHAR* objectKey = CTextureMgr::Get_Instance()->GetObjectKey();
+
+	if (objectKey != nullptr)
+	{
+		D3DXMatrixIdentity(&matWorld);
+		D3DXMatrixIdentity(&matScale);
+		D3DXMatrixIdentity(&matTrans);
+
+		const TEXINFO* pObject = CTextureMgr::Get_Instance()->Get_Texture(objectKey, nullptr, 0);
+
+		float	fCenterX = pObject->tImgInfo.Width / 2.f;
+		float	fCenterY = pObject->tImgInfo.Height / 2.f;
+
+		D3DXVECTOR3	vTemp{ fCenterX, fCenterY, 0.f };
+
+		CDevice::Get_Instance()->GetpObject()->Draw(pObject->pTexture,
+			nullptr,
+			&vTemp,
+			nullptr,
+			D3DCOLOR_ARGB(255, 255, 255, 255));
+
+		D3DXMatrixIdentity(&matWorld);
+		D3DXMatrixScaling(&matScale, 1.f, 1.f, 1.f);
+		D3DXMatrixTranslation(&matTrans,
+			screenPoint.x,
+			screenPoint.y,
+			0);
+
+		matWorld = matScale * matTrans;
+
+		Set_Ratio(&matWorld, g_Ratio, g_Ratio);
+
+		CDevice::Get_Instance()->GetpObject()->SetTransform(&matWorld);
+	}	
+
+	// 타일.
 	TCHAR	szBuf[MIN_STR] = L"";
 	int		iIndex(0);	
 

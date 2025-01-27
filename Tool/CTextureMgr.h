@@ -26,6 +26,9 @@ public:
 	void SetBGKey(const TCHAR* _key);
 	const TCHAR* GetBGKey() const;
 
+	void SetObjectKey(const TCHAR* _object);
+	const TCHAR* GetObjectKey() const;
+
 
 	 void		Release();
 
@@ -33,5 +36,6 @@ public:
 private:
 	map<wstring, CTexture*>		m_mapTex;
 	const TCHAR* m_bgKey;
+	const TCHAR* m_objectKey;
 };
 
