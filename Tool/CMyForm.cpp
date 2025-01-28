@@ -58,7 +58,7 @@ void CMyForm::OnInitialUpdate()
 
 	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
 
-	m_Font.CreatePointFont(180, L"맑은 고딕");
+	m_Font.CreatePointFont(100, L"맑은 고딕");
 
 	GetDlgItem(IDC_MAP_BUTTON)->SetFont(&m_Font);
 	GetDlgItem(IDC_EQUIP_BUTTON)->SetFont(&m_Font);

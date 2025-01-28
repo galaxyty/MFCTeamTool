@@ -91,6 +91,15 @@
     <Filter Include="04. Etc\03. Dialog\04. EquipTool\_.EqiupWnd">
       <UniqueIdentifier>{a332f9b5-ce44-4ff4-9162-403f82c063ef}</UniqueIdentifier>
     </Filter>
+    <Filter Include="04. Etc\03. Dialog\04. EquipTool\00.UI\01.Interface">
+      <UniqueIdentifier>{3c2ea40f-48ea-4f99-820c-8243cdc7e405}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Etc\03. Dialog\04. EquipTool\00.UI\02.Inventory">
+      <UniqueIdentifier>{7fa1eedc-bf94-4d59-b059-801d785736da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Etc\03. Dialog\04. EquipTool\00.UI\03.Skill">
+      <UniqueIdentifier>{d31efc20-d930-43ef-9942-2df11b190416}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Tool.h">
@@ -174,11 +183,20 @@
     <ClInclude Include="DH_UI.h">
       <Filter>04. Etc\03. Dialog\04. EquipTool\00.UI\00.BaseUI</Filter>
     </ClInclude>
-    <ClInclude Include="DH_Interface.h">
-      <Filter>04. Etc\03. Dialog\04. EquipTool\00.UI</Filter>
-    </ClInclude>
     <ClInclude Include="CEquipTool.h">
       <Filter>04. Etc\03. Dialog\04. EquipTool\_.EqiupWnd</Filter>
+    </ClInclude>
+    <ClInclude Include="DH_Interface.h">
+      <Filter>04. Etc\03. Dialog\04. EquipTool\00.UI\01.Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="DH_Inventory.h">
+      <Filter>04. Etc\03. Dialog\04. EquipTool\00.UI\02.Inventory</Filter>
+    </ClInclude>
+    <ClInclude Include="DH_SkillUI.h">
+      <Filter>04. Etc\03. Dialog\04. EquipTool\00.UI\03.Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="CDH_FilePath.h">
+      <Filter>04. Etc\03. Dialog\04. EquipTool\09.DH_Define</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -254,11 +272,20 @@
     <ClCompile Include="DH_UI.cpp">
       <Filter>04. Etc\03. Dialog\04. EquipTool\00.UI\00.BaseUI</Filter>
     </ClCompile>
-    <ClCompile Include="DH_Interface.cpp">
-      <Filter>04. Etc\03. Dialog\04. EquipTool\00.UI</Filter>
-    </ClCompile>
     <ClCompile Include="CEquipTool.cpp">
       <Filter>04. Etc\03. Dialog\04. EquipTool\_.EqiupWnd</Filter>
+    </ClCompile>
+    <ClCompile Include="DH_Interface.cpp">
+      <Filter>04. Etc\03. Dialog\04. EquipTool\00.UI\01.Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="DH_Inventory.cpp">
+      <Filter>04. Etc\03. Dialog\04. EquipTool\00.UI\02.Inventory</Filter>
+    </ClCompile>
+    <ClCompile Include="DH_SkillUI.cpp">
+      <Filter>04. Etc\03. Dialog\04. EquipTool\00.UI\03.Skill</Filter>
+    </ClCompile>
+    <ClCompile Include="CDH_FilePath.cpp">
+      <Filter>04. Etc\03. Dialog\04. EquipTool\09.DH_Define</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

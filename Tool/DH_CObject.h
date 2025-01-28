@@ -21,7 +21,9 @@ public:
 	//GET 함수들
 	tObjInfo* Get_Info_Pointer() { return &m_tObjInfo; }
 	D3DXVECTOR3			GetPos() { return m_tObjInfo.tPos; }
+	D3DXVECTOR3			GetMPos() { return m_tObjTrans.tPos; }
 	D3DXVECTOR3			GetScale() { return m_tObjInfo.tScale; }
+	D3DXVECTOR3			GetMScale() { return m_tObjTrans.tScale; }
 	bool				GetbArrive() { return m_bArrive; }
 	bool				GetbFalling() { return m_bFalling; }
 	const wstring		GetName() { return m_strName; }
@@ -40,7 +42,9 @@ public:
 public:
 	//SET 함수들
 	void		SetPos(D3DXVECTOR3 _Set) { m_tObjInfo.tPos = _Set; }
+	void		SetMPos(D3DXVECTOR3 _Set) { m_tObjTrans.tPos = _Set; }
 	void		SetScale(D3DXVECTOR3 _Set) { m_tObjInfo.tScale = _Set; }
+	void		SetMScale(D3DXVECTOR3 _Set) { m_tObjTrans.tScale = _Set; }
 	void		SetName(const wstring& _strName) { m_strName = _strName; }
 	void		SetbFalling(bool _bFall) { m_bFalling = _bFall; }
 	void		SetbJump(bool _bjump) { m_bJump = _bjump; }
@@ -59,7 +63,9 @@ public:
 public:
 	//더하기 함수들
 	void		AddPos(D3DXVECTOR3 _Set) { m_tObjInfo.tPos + _Set; }
+	void		AddMPos(D3DXVECTOR3 _Set) { m_tObjTrans.tPos + _Set; }
 	void		AddScale(D3DXVECTOR3 _Set) { m_tObjInfo.tScale + _Set; }
+	void		AddMScale(D3DXVECTOR3 _Set) { m_tObjTrans.tScale + _Set; }
 	void		AddfGravity(float _fVel) { m_fGravity += _fVel; }
 	void		AddfJumpSpeed(float _fJump) { m_fJumpSpeed += _fJump; }
 	void		AddfTime(float _fTime) { m_fTime += _fTime; }
@@ -73,6 +79,7 @@ public:
 private:
 	wstring			m_strName;
 	tObjInfo		m_tObjInfo;
+	tObjInfo		m_tObjTrans;
 	RECT			m_rRect;
 	bool			m_bArrive;
 	bool			m_bFalling;

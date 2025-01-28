@@ -26,6 +26,7 @@ void DH_LoopMgr::Initialize()
 void DH_LoopMgr::Progress()
 {
 	Update();
+	LateUpdate();
 	Render();
 }
 
@@ -39,6 +40,7 @@ void DH_LoopMgr::Update()
 
 void DH_LoopMgr::LateUpdate()
 {
+	DH_OBJMgr::Get_Instance()->Late_Update();
 }
 
 void DH_LoopMgr::Render()

@@ -24,7 +24,10 @@ void DH_Interface::Initialize()
 		return;
 	}
 
-	SetPos(D3DXVECTOR3{ 0.f, 0.f, 0.f });
+	//행렬 포지션
+	SetMPos(D3DXVECTOR3{ 0.f, 0.f, 0.f });
+
+	//이미지 크기
 	SetScale(D3DXVECTOR3{ 800.f, 600.f, 0.f });
 }
 
@@ -53,9 +56,9 @@ void DH_Interface::Render(CToolView* pMainView)
 
 	//스크롤 값 제외
 	D3DXMatrixTranslation(&matTrans,
-		GetPos().x + 400, //- pMainView->GetScrollPos(0),
-		GetPos().y + 300, //- pMainView->GetScrollPos(1),
-		GetPos().z);
+		GetMPos().x + GetScale().x / 2, 
+		GetMPos().y + GetScale().y / 2, 
+		GetMPos().z);
 
 	matWorld = matScale * matTrans;
 
