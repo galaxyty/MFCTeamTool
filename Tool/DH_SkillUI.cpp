@@ -3,6 +3,8 @@
 #include "CTextureMgr.h"
 #include "CDevice.h"
 #include "ToolView.h"
+#include "DH_BtnUI.h"
+
 
 DH_SkillUI::DH_SkillUI()
 {
@@ -10,6 +12,11 @@ DH_SkillUI::DH_SkillUI()
 
 DH_SkillUI::~DH_SkillUI()
 {
+	for (auto& ChildUI : GetChildUI())
+	{
+		delete ChildUI;
+		ChildUI = nullptr;
+	}
 }
 
 void DH_SkillUI::Initialize()
@@ -25,8 +32,9 @@ void DH_SkillUI::Initialize()
 	}
 
 	SetMPos(D3DXVECTOR3{ 300.f, 300.f, 0.f });
-
 	SetScale(D3DXVECTOR3{ 245.f, 200.f, 0.f });
+
+	SetButten();
 }
 
 void DH_SkillUI::Update()
@@ -119,4 +127,23 @@ void DH_SkillUI::MouseLUp()
 
 void DH_SkillUI::MouseLClicked()
 {
+}
+
+void DH_SkillUI::SetButten()
+{
+	for (int i = 0; i < 4; ++i)
+	{
+		for (int j = 0; j < 7; ++j)
+		{
+			DH_BtnUI* Btn = new DH_BtnUI;
+
+			wstring name = L"Btn_" + std::to_wstring(i);
+			Btn->SetName(name);
+
+			Btn->SetMPos(D3DXVECTOR3{ -94.f + (30 * j), -49.f + (30 * i), 0.f });
+			Btn->SetScale(D3DXVECTOR3{ 28.f,28.f,0.f });
+			Btn->Initialize();
+			AddParent(Btn);
+		}
+	}
 }

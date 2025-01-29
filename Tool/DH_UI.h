@@ -2,6 +2,13 @@
 #include "DH_CObject.h"
 #include "Include.h"
 
+struct CUSTOMVERTEX
+{
+	float x, y, z, rhw; // 위치와 변환 좌표
+	DWORD color;        // 색상
+};
+
+
 class DH_UI :   public DH_CObject
 {
 public:

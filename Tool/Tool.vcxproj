@@ -208,6 +208,7 @@
     <ClInclude Include="DH_Define.h" />
     <ClInclude Include="DH_Interface.h" />
     <ClInclude Include="DH_Inventory.h" />
+    <ClInclude Include="DH_Item.h" />
     <ClInclude Include="DH_KeyMgr.h" />
     <ClInclude Include="DH_LoopMgr.h" />
     <ClInclude Include="DH_OBJMgr.h" />
@@ -242,6 +243,7 @@
     <ClCompile Include="DH_Define.cpp" />
     <ClCompile Include="DH_Interface.cpp" />
     <ClCompile Include="DH_Inventory.cpp" />
+    <ClCompile Include="DH_Item.cpp" />
     <ClCompile Include="DH_KeyMgr.cpp" />
     <ClCompile Include="DH_LoopMgr.cpp" />
     <ClCompile Include="DH_OBJMgr.cpp" />

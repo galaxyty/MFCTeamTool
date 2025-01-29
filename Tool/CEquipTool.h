@@ -43,6 +43,7 @@ public:
 public:
 	void LoadPngFiles(const CString& folderPath, CListBox* _ListBox);
 	void OnLoadPngFiles(CString _Path, CListBox* _ListBox);
+	void AddItem(wstring _Item, CString _CString);
 
 public:
 	void UIToggle(DH_UI* _UI);
