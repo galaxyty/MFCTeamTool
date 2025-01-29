@@ -8,6 +8,7 @@ DH_CObject::DH_CObject() :
 	m_fSpeed(3.0f), m_bJumpSwitch(false), m_bMoveFrame(true)
 {
 	ZeroMemory(&m_tObjInfo, sizeof(tObjInfo));
+	ZeroMemory(&m_tObjTrans, sizeof(tObjInfo));
 }
 
 DH_CObject::~DH_CObject()

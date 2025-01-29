@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "DH_UI.h"
 
-DH_UI::DH_UI() : m_vFinalPos(D3DXVECTOR3{}), m_pParnetUI(nullptr), m_bMouseOn(false), m_bLDown(false), m_bVisible(false)
+DH_UI::DH_UI() : m_vFinalPos(D3DXVECTOR3{}), m_pParnetUI(nullptr), m_bMouseOn(false), m_bLDown(false), m_bVisible(true)
 {
 }
 
@@ -50,7 +50,7 @@ void DH_UI::LateUpdate()
 
 
 	//UI 의 최종 좌표를 구한다.
-	m_vFinalPos = GetPos();
+	m_vFinalPos = GetMPos();
 
 	if (GetParent())
 	{
@@ -87,8 +87,8 @@ void DH_UI::MouseOnCheck()
 	//마우스 좌표 가져오기
 	D3DXVECTOR3 vMousePos = Get_Mouse();
 
-	if (m_vFinalPos.x <= vMousePos.x && vMousePos.x <= m_vFinalPos.x + GetScale().x
-		&& m_vFinalPos.y <= vMousePos.y && vMousePos.y <= m_vFinalPos.y + GetScale().y)
+	if (m_vFinalPos.x - GetScale().x / 2 <= vMousePos.x && vMousePos.x <= m_vFinalPos.x + GetScale().x / 2
+		&& m_vFinalPos.y - GetScale().y / 2 <= vMousePos.y && vMousePos.y <= m_vFinalPos.y + GetScale().y / 2)
 	{
 		//마우스가 올라가있음
 		m_bMouseOn = true;

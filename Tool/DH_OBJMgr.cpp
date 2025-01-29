@@ -37,6 +37,11 @@ int DH_OBJMgr::Update()
 
 void DH_OBJMgr::Late_Update()
 {
+	for (size_t i = 0; i < OBJID::OBJ_END; ++i)
+	{
+		for (auto& pObj : m_ObjList[i])
+			pObj->LateUpdate();
+	}
 }
 
 void DH_OBJMgr::Render()
