@@ -173,6 +173,12 @@ void CTerrain::Render()
 	TCHAR	szBuf[MIN_STR] = L"";
 	int		iIndex(0);	
 
+	// 오브젝트 배치 중이면 타일 표시 안함.
+	if (CTextureMgr::Get_Instance()->GetObjectKey() != nullptr)
+	{
+		return;
+	}
+
 	for (auto pTile : m_vecTile)
 	{
 		D3DXMatrixIdentity(&matWorld);
@@ -218,8 +224,7 @@ void CTerrain::Render()
 			D3DCOLOR_ARGB(255, 255, 255, 255));
 
 		iIndex++;
-	}	
-	
+	}
 }
 
 void CTerrain::Release()
@@ -313,6 +318,11 @@ void CTerrain::AddObject(CustomOBJECT* _object)
 
 int CTerrain::Get_TileIdx(const D3DXVECTOR3& vPos)
 {
+	if (CTextureMgr::Get_Instance()->GetObjectKey() != nullptr)
+	{
+		return -1;
+	}
+
 	for (size_t index = 0; index < m_vecTile.size(); ++index)
 	{
 		if (Picking_Rect(vPos, index))

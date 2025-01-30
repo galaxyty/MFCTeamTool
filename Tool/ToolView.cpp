@@ -37,6 +37,7 @@ BEGIN_MESSAGE_MAP(CToolView, CScrollView)
 	ON_COMMAND(ID_FILE_PRINT_PREVIEW, &CScrollView::OnFilePrintPreview)
 	ON_WM_DESTROY()
 	ON_WM_LBUTTONDOWN()
+	ON_WM_RBUTTONDOWN()
 	ON_WM_MOUSEMOVE()
 END_MESSAGE_MAP()
 
@@ -126,6 +127,11 @@ void CToolView::OnLButtonDown(UINT nFlags, CPoint point)
 	}
 
 	Invalidate(FALSE);
+}
+
+void CToolView::OnRButtonDown(UINT nFlags, CPoint point)
+{
+	CTextureMgr::Get_Instance()->SetObjectKey(nullptr);
 }
 
 void CToolView::OnMouseMove(UINT nFlags, CPoint point)
