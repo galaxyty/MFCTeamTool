@@ -1,11 +1,10 @@
 #pragma once
 #include "DH_UI.h"
-
-class DH_BtnUI : public DH_UI
+class DH_Item :  public DH_UI
 {
 public:
-	DH_BtnUI();
-	virtual ~DH_BtnUI();
+	DH_Item();
+	virtual ~DH_Item();
 
 public:
 	virtual void MouseOn();
@@ -16,12 +15,15 @@ public:
 public:
 	virtual void Initialize();
 	virtual void Render();
+	virtual void Update();
 
 public:
-	void		SetbClicked(bool _Clicked) { m_bClicked = _Clicked; }
-	bool		GetbClicked() { return m_bClicked; }
+	void	SetImageKey(CString _Key) { m_ImageKey = _Key; }
 
 private:
-	bool		m_bClicked;
+	D3DXVECTOR3	m_vDragStart;
+	CString m_ImageKey;
+	DH_UI* m_Inven;
+
 };
 

@@ -100,6 +100,9 @@
     <Filter Include="04. Etc\03. Dialog\04. EquipTool\00.UI\03.Skill">
       <UniqueIdentifier>{d31efc20-d930-43ef-9942-2df11b190416}</UniqueIdentifier>
     </Filter>
+    <Filter Include="04. Etc\03. Dialog\04. EquipTool\00.UI\04.Item">
+      <UniqueIdentifier>{7418a6e6-70bd-4cc7-8638-35353c1bc624}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Tool.h">
@@ -189,14 +192,17 @@
     <ClInclude Include="DH_Interface.h">
       <Filter>04. Etc\03. Dialog\04. EquipTool\00.UI\01.Interface</Filter>
     </ClInclude>
-    <ClInclude Include="DH_Inventory.h">
-      <Filter>04. Etc\03. Dialog\04. EquipTool\00.UI\02.Inventory</Filter>
-    </ClInclude>
     <ClInclude Include="DH_SkillUI.h">
       <Filter>04. Etc\03. Dialog\04. EquipTool\00.UI\03.Skill</Filter>
     </ClInclude>
     <ClInclude Include="CDH_FilePath.h">
       <Filter>04. Etc\03. Dialog\04. EquipTool\09.DH_Define</Filter>
+    </ClInclude>
+    <ClInclude Include="DH_Item.h">
+      <Filter>04. Etc\03. Dialog\04. EquipTool\00.UI\04.Item</Filter>
+    </ClInclude>
+    <ClInclude Include="DH_Inventory.h">
+      <Filter>04. Etc\03. Dialog\04. EquipTool\00.UI\02.Inventory</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -286,6 +292,9 @@
     </ClCompile>
     <ClCompile Include="CDH_FilePath.cpp">
       <Filter>04. Etc\03. Dialog\04. EquipTool\09.DH_Define</Filter>
+    </ClCompile>
+    <ClCompile Include="DH_Item.cpp">
+      <Filter>04. Etc\03. Dialog\04. EquipTool\00.UI\04.Item</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

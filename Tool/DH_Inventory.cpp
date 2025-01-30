@@ -3,6 +3,8 @@
 #include "CTextureMgr.h"
 #include "CDevice.h"
 #include "ToolView.h"
+#include "DH_BtnUI.h"
+#include "DH_OBJMgr.h"
 
 DH_Inventory::DH_Inventory()
 {
@@ -10,6 +12,11 @@ DH_Inventory::DH_Inventory()
 
 DH_Inventory::~DH_Inventory()
 {
+	for (auto& ChildUI : GetChildUI())
+	{
+		delete ChildUI;
+		ChildUI = nullptr;
+	}
 }
 
 void DH_Inventory::Initialize()
@@ -24,9 +31,11 @@ void DH_Inventory::Initialize()
 		return;
 	}
 
-	SetMPos(D3DXVECTOR3{ 600.f, 300.f, 0.f });
 
+	SetMPos(D3DXVECTOR3{ 600.f, 300.f, 0.f });
 	SetScale(D3DXVECTOR3{ 260.f, 530.f, 0.f });
+
+	SetButten();
 }
 
 void DH_Inventory::Update()
@@ -120,3 +129,25 @@ void DH_Inventory::MouseLUp()
 void DH_Inventory::MouseLClicked()
 {
 }
+
+void DH_Inventory::SetButten()
+{
+	//하위버튼 추가
+	for (int i = 0; i < 7; ++i)
+	{
+		for (int j = 0; j < 8; ++j)
+		{
+			DH_BtnUI* Btn = new DH_BtnUI;
+
+			wstring name = L"Btn_" + std::to_wstring(i);
+			Btn->SetName(name);
+
+			Btn->SetMPos(D3DXVECTOR3{ -106.f + (30 * j), -20.f + (30 * i),0.f });
+			Btn->SetScale(D3DXVECTOR3{ 28.f,28.f,0.f });
+			Btn->Initialize();
+			AddParent(Btn);
+		}
+	}
+}
+
+

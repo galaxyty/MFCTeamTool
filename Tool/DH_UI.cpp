@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "DH_UI.h"
+#include "CTextureMgr.h"
+#include "CDevice.h"
 
 DH_UI::DH_UI() : m_vFinalPos(D3DXVECTOR3{}), m_pParnetUI(nullptr), m_bMouseOn(false), m_bLDown(false), m_bVisible(true)
 {
@@ -24,17 +26,7 @@ void DH_UI::Render()
 	if (!m_bVisible)
 		return; // UI가 비활성화 상태라면 렌더링하지 않음
 
-	D3DXVECTOR3 vPos = GetPinalPos();
-
-
-	if (m_bLDown)
-	{
-		//클릭 했을 때
-	}
-	else
-	{
-		//클릭 안했을 때 
-	}
+	
 
 	RenderChild();
 }

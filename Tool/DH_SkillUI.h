@@ -18,6 +18,9 @@ public:
 	virtual void MouseLClicked();
 
 public:
+	void	SetButten();
+
+public:
 	D3DXVECTOR3	m_vDragStart;
 
 };

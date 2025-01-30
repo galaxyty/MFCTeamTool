@@ -13,6 +13,8 @@
 #include "DH_UI.h"
 #include "DH_Inventory.h"
 #include "CDH_FilePath.h"
+#include "DH_Item.h"
+#include "DH_UI.h"
 
 
 // CEquipTool 대화 상자
@@ -27,7 +29,6 @@ CEquipTool::CEquipTool(CWnd* pParent /*=nullptr*/)
 
 CEquipTool::~CEquipTool()
 {
-
 }
 
 void CEquipTool::DoDataExchange(CDataExchange* pDX)
@@ -155,7 +156,7 @@ void CEquipTool::OnListInven()
 	TCHAR	szFileName[MAX_STR] = L"";
 
 	//상대경로와 이미지 합치기
-	swprintf_s(szFilePath, MAX_PATH, L"%s/%s", m_szFileName, PickedName.GetString());
+	swprintf_s(szFilePath, MAX_PATH, L"%s/%s.png", m_szFileName, PickedName.GetString());
 
 	//맵에서 찾기
 	auto	iter = m_mapPngImage.find(PickedName);
@@ -201,7 +202,7 @@ void CEquipTool::OnSkillList()
 	TCHAR	szFileName[MAX_STR] = L"";
 
 	//상대경로와 이미지 합치기
-	swprintf_s(szFilePath, MAX_PATH, L"%s/%s", m_szSkillName, PickedSkill.GetString());
+	swprintf_s(szFilePath, MAX_PATH, L"%s/%s.png", m_szSkillName, PickedSkill.GetString());
 
 	//맵에서 찾기
 	auto	iter = m_mapPngImage.find(PickedSkill);
@@ -313,7 +314,7 @@ void CEquipTool::OnAddIven()
 
 	// AddString : 리스트 박스에 문자열을 삽입
 	m_IvenAdd.AddString(pUnit->strName);
-
+	AddItem(strFindName.GetString(), strFindName);
 
 	UpdateData(FALSE);
 }
@@ -423,3 +424,27 @@ void CEquipTool::OnDestroy()
 
 
 
+
+void CEquipTool::AddItem(wstring _Item, CString _CString)
+{
+	DH_Item* Item = new DH_Item;
+	Item->SetName(_Item);
+
+	//for 문을 돌리면서 자식의 자식이 있는지 확인
+	for (size_t i = 0; i < Inventory->GetChildUI().size(); ++i)
+	{
+		if (Inventory->GetChildUI()[i]->GetChildUI().size() > 0)
+		{
+			continue;
+		}
+		else
+		{
+			Item->SetMPos(D3DXVECTOR3{ 0.f, 0.f, 0.f });
+			Item->SetScale(D3DXVECTOR3{ 28.f,28.f,0.f });
+			Item->SetImageKey(_CString);
+			Item->Initialize();
+			Inventory->GetChildUI()[i]->AddParent(Item);
+			break;
+		}
+	}
+}
