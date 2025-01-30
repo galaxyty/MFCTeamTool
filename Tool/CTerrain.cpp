@@ -116,11 +116,11 @@ void CTerrain::Render()
 
 		D3DXVECTOR3	vTemp{ fCenterX, fCenterY, 0.f };
 
-		CDevice::Get_Instance()->GetpObject()->Draw(pObject->pTexture,
+		CDevice::Get_Instance()->GetpObjectView()->Draw(pObject->pTexture,
 			nullptr,
 			&vTemp,
 			nullptr,
-			D3DCOLOR_ARGB(255, 255, 255, 255));
+			D3DCOLOR_ARGB(100, 255, 255, 255));
 
 		D3DXMatrixIdentity(&matWorld);
 		D3DXMatrixScaling(&matScale, 1.f, 1.f, 1.f);
@@ -133,7 +133,7 @@ void CTerrain::Render()
 
 		Set_Ratio(&matWorld, g_Ratio, g_Ratio);
 
-		CDevice::Get_Instance()->GetpObject()->SetTransform(&matWorld);		
+		CDevice::Get_Instance()->GetpObjectView()->SetTransform(&matWorld);
 	}
 
 	// 오브젝트.
@@ -150,10 +150,6 @@ void CTerrain::Render()
 			pObjectData->vPos.z);
 
 		matWorld = matScale * matTrans;
-
-		RECT	rc{};
-
-		GetClientRect(m_pMainView->m_hWnd, &rc);
 
 		Set_Ratio(&matWorld, g_Ratio, g_Ratio);
 

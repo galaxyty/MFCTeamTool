@@ -36,6 +36,7 @@ typedef struct tagObject
 	~tagObject()
 	{
 		delete szName;
+		szName = nullptr;
 	}
 
 	D3DXVECTOR3	vPos;				// 타일의 중점 좌표

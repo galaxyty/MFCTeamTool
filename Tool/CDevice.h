@@ -14,6 +14,7 @@ public:
 	LPDIRECT3DDEVICE9			Get_Device() { return m_pDevice; }
 	LPD3DXSPRITE				Get_Sprite() { return m_pSprite; }
 	LPD3DXSPRITE				GetBackground() { return m_pBackground; }
+	LPD3DXSPRITE				GetpObjectView() { return m_pObjectView; }
 	LPD3DXSPRITE				GetpObject() { return m_pObject; }
 	LPD3DXFONT					Get_Font()	 { return m_pFont;  }
 public:
@@ -33,7 +34,8 @@ private:
 
 	LPD3DXSPRITE		m_pSprite;		// 2d 이미지를 출력하기 위한 용도
 	LPD3DXSPRITE		m_pBackground;	// 백그라운드
-	LPD3DXSPRITE		m_pObject;		// 오브젝트.
+	LPD3DXSPRITE		m_pObjectView;		// 오브젝트 미리보기.
+	LPD3DXSPRITE		m_pObject;			// 오브젝트 배치.
 	LPD3DXFONT			m_pFont;
 };
 

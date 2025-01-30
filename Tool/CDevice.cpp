@@ -4,7 +4,7 @@
 IMPLEMENT_SINGLETON(CDevice)
 
 CDevice::CDevice() 
-	: m_pDevice(nullptr), m_pSDK(nullptr), m_pSprite(nullptr), m_pFont(nullptr), m_pBackground(nullptr), m_pObject(nullptr)
+	: m_pDevice(nullptr), m_pSDK(nullptr), m_pSprite(nullptr), m_pFont(nullptr), m_pBackground(nullptr), m_pObjectView(nullptr), m_pObject(nullptr)
 {
 }
 
@@ -73,7 +73,14 @@ HRESULT CDevice::Init_Device()
 		return E_FAIL;
 	}
 
-	// Object
+	// Object View
+	if (FAILED(D3DXCreateSprite(m_pDevice, &m_pObjectView)))
+	{
+		AfxMessageBox(L"D3DXCreateObjectView Failed");
+		return E_FAIL;
+	}
+
+	// Object View
 	if (FAILED(D3DXCreateSprite(m_pDevice, &m_pObject)))
 	{
 		AfxMessageBox(L"D3DXCreateObject Failed");
@@ -118,6 +125,7 @@ void CDevice::Render_Begin()
 	m_pDevice->BeginScene();
 	m_pBackground->Begin(D3DXSPRITE_DONOTSAVESTATE);
 	m_pObject->Begin(D3DXSPRITE_DONOTSAVESTATE);
+	m_pObjectView->Begin(D3DXSPRITE_DONOTSAVESTATE);
 	m_pSprite->Begin(D3DXSPRITE_ALPHABLEND);
 
 }
@@ -126,6 +134,7 @@ void CDevice::Render_End(HWND hWnd)
 {
 	m_pBackground->End();
 	m_pObject->End();
+	m_pObjectView->End();
 	m_pSprite->End();
 
 	m_pDevice->EndScene();
@@ -140,6 +149,7 @@ void CDevice::Release()
 {
 	Safe_Release(m_pFont);
 	Safe_Release(m_pObject);
+	Safe_Release(m_pObjectView);
 	Safe_Release(m_pBackground);
 	Safe_Release(m_pSprite);
 	Safe_Release(m_pDevice);
