@@ -119,7 +119,7 @@ void CToolView::OnLButtonDown(UINT nFlags, CPoint point)
 	{
 		CustomOBJECT* _object = new CustomOBJECT();
 
-		_object->vPos = {(float)point.x, (float)point.y, 0.f};
+		_object->vPos = {(float)point.x + GetScrollPos(0), (float)point.y + GetScrollPos(1), 0.f};
 		_object->vSize = {0.f, 0.f};
 		_object->szName = CTextureMgr::Get_Instance()->GetObjectKeyValue();
 
