@@ -75,6 +75,10 @@ void CTerrain::Render()
 	// 스크린 좌표를 클라이언트 좌표로 변환.
 	ScreenToClient(g_hWnd, &screenPoint);
 
+	// 비율에 맞게 포인트 좌표 갱신.
+	screenPoint.x *= 1.f / g_Ratio;
+	screenPoint.y *= 1.f / g_Ratio;
+
 	// 백그라운드.
 	const TCHAR* bgKey = CTextureMgr::Get_Instance()->GetBGKey();
 	
