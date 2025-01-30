@@ -279,7 +279,7 @@ void CMapTool::OnDestroy()
 	m_objectBackground.clear();
 
 	Safe_Delete(m_mapKey);
-	Safe_Delete(m_objectKey);
+	Safe_Delete(m_objectKey);	
 }
 
 // 배경 리스트 박스 클릭.

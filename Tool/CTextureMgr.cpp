@@ -91,6 +91,11 @@ const TCHAR* CTextureMgr::GetObjectKey() const
 	return m_objectKey;
 }
 
+CString* CTextureMgr::GetObjectKeyValue() const
+{
+	return new CString(m_objectKey);
+}
+
 void CTextureMgr::Release()
 {
 	for_each(m_mapTex.begin(), m_mapTex.end(), [](auto& MyPair)

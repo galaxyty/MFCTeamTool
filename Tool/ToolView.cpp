@@ -120,7 +120,7 @@ void CToolView::OnLButtonDown(UINT nFlags, CPoint point)
 
 		_object->vPos = {(float)point.x, (float)point.y, 0.f};
 		_object->vSize = {0.f, 0.f};
-		_object->szName = CTextureMgr::Get_Instance()->GetObjectKey();
+		_object->szName = CTextureMgr::Get_Instance()->GetObjectKeyValue();
 
 		m_pTerrain->AddObject(_object);
 	}

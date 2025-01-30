@@ -159,7 +159,7 @@ void CTerrain::Render()
 
 		CDevice::Get_Instance()->GetpObject()->SetTransform(&matWorld);
 
-		const TEXINFO* pObj = CTextureMgr::Get_Instance()->Get_Texture(pObjectData->szName, nullptr, 0);
+		const TEXINFO* pObj = CTextureMgr::Get_Instance()->Get_Texture(*pObjectData->szName, nullptr, 0);
 
 		float	fCenterX = pObj->tImgInfo.Width / 2.f;
 		float	fCenterY = pObj->tImgInfo.Height / 2.f;
@@ -240,7 +240,8 @@ void CTerrain::Release()
 		{
 			if (p)
 			{
-				delete p; p = nullptr;
+				delete p;
+				p = nullptr;
 			}
 		});
 	m_vecObject.clear();

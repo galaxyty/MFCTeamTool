@@ -33,10 +33,15 @@ typedef struct tagTile
 
 typedef struct tagObject
 {
+	~tagObject()
+	{
+		delete szName;
+	}
+
 	D3DXVECTOR3	vPos;				// 타일의 중점 좌표
 	D3DXVECTOR2 vSize;				// 타일의 가로, 세로 사이즈
 
-	const TCHAR* szName;			// 오브젝트명.
+	CString* szName;			// 오브젝트명.
 
 }CustomOBJECT;
 

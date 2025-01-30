@@ -27,10 +27,14 @@ public:
 	const TCHAR* GetBGKey() const;
 
 	void SetObjectKey(const TCHAR* _object);
+
+	// call by reference.
 	const TCHAR* GetObjectKey() const;
 
+	// call by value.
+	CString* GetObjectKeyValue() const;
 
-	 void		Release();
+	void		Release();
 
 
 private:
