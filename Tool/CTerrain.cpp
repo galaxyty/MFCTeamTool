@@ -166,7 +166,7 @@ void CTerrain::Render()
 
 		D3DXVECTOR3	vTemp{ fCenterX, fCenterY, 0.f };
 
-		CDevice::Get_Instance()->Get_Sprite()->Draw(pObj->pTexture, //출력할 텍스처 컴객체
+		CDevice::Get_Instance()->GetpObject()->Draw(pObj->pTexture, //출력할 텍스처 컴객체
 			nullptr,		// 출력할 이미지 영역에 대한 Rect 주소, null인 경우 이미지의 0, 0기준으로 출력
 			&vTemp,		// 출력할 이미지의 중심 좌표 vec3 주소, null인 경우 0, 0 이미지 중심
 			nullptr,		// 위치 좌표에 대한 vec3 주소, null인 경우 스크린 상 0, 0 좌표 출력	
