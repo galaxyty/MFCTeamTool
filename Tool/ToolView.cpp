@@ -113,7 +113,7 @@ void CToolView::OnLButtonDown(UINT nFlags, CPoint point)
 
 	m_pTerrain->Tile_Change(D3DXVECTOR3(float(point.x) + GetScrollPos(0) * g_Ratio,
 										float(point.y) + GetScrollPos(1) * g_Ratio,
-										0.f), 0);
+										0.f), 37);
 
 	if (CTextureMgr::Get_Instance()->GetObjectKey() != nullptr)
 	{
@@ -146,7 +146,7 @@ void CToolView::OnMouseMove(UINT nFlags, CPoint point)
 	{
 		m_pTerrain->Tile_Change(D3DXVECTOR3(float(point.x) + GetScrollPos(0) * g_Ratio,
 											float(point.y) + GetScrollPos(1) * g_Ratio,
-											0.f), 0);
+											0.f), 37);
 		Invalidate(FALSE);
 	}
 }

@@ -19,7 +19,7 @@ HRESULT CTerrain::Initialize()
 {
 	if (FAILED(CTextureMgr::Get_Instance()->Insert_Texture(
 		L"../Texture/Stage/Terrain/Tile/Tile%d.png",
-		TEX_MULTI, L"Terrain", L"Tile", 36)))
+		TEX_MULTI, L"Terrain", L"Tile", 38)))
 	{
 		AfxMessageBox(L"Terrain Texture Insert Failed");
 		return E_FAIL;
@@ -52,7 +52,7 @@ HRESULT CTerrain::Initialize()
 			pTile->vPos = { fX, fY, 0.f };
 			pTile->vSize = { (float)TILECX, (float)TILECY};
 			pTile->byOption = 0;
-			pTile->byDrawID = 3;
+			pTile->byDrawID = 36;
 
 			m_vecTile.push_back(pTile);
 		}
@@ -297,7 +297,7 @@ void CTerrain::Tile_Change(const D3DXVECTOR3& vPos, const BYTE& byDrawID)
 		return;
 
 	m_vecTile[iIndex]->byDrawID = byDrawID;
-	m_vecTile[iIndex]->byOption = 1;
+	m_vecTile[iIndex]->byOption = 0;
 }
 
 void CTerrain::Set_Ratio(D3DXMATRIX* pOut, float _fX, float _fY)
