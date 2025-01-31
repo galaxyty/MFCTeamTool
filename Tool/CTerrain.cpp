@@ -19,7 +19,7 @@ HRESULT CTerrain::Initialize()
 {
 	if (FAILED(CTextureMgr::Get_Instance()->Insert_Texture(
 		L"../Texture/Stage/Terrain/Tile/Tile%d.png",
-		TEX_MULTI, L"Terrain", L"Tile", 38)))
+		TEX_MULTI, L"Terrain", L"Tile", 2)))
 	{
 		AfxMessageBox(L"Terrain Texture Insert Failed");
 		return E_FAIL;
@@ -52,7 +52,7 @@ HRESULT CTerrain::Initialize()
 			pTile->vPos = { fX, fY, 0.f };
 			pTile->vSize = { (float)TILECX, (float)TILECY};
 			pTile->byOption = 0;
-			pTile->byDrawID = 36;
+			pTile->byDrawID = 0;
 
 			m_vecTile.push_back(pTile);
 		}
@@ -223,7 +223,7 @@ void CTerrain::Render()
 		CDevice::Get_Instance()->Get_Font()->DrawTextW(CDevice::Get_Instance()->Get_Sprite(),
 			szBuf,		// 출력할 문자열
 			lstrlen(szBuf),  // 문자열 버퍼의 크기
-			nullptr,	// 출력할 렉트 위치
+			nullptr,		// 출력할 렉트 위치
 			0,			// 정렬 기준(옵션)
 			D3DCOLOR_ARGB(255, 255, 255, 255));
 
@@ -289,14 +289,19 @@ void CTerrain::Mini_Render()
 	}
 }
 
-void CTerrain::Tile_Change(const D3DXVECTOR3& vPos, const BYTE& byDrawID)
+void CTerrain::Tile_Change(const D3DXVECTOR3& vPos)
 {
 	int iIndex = Get_TileIdx(vPos);
 
 	if (-1 == iIndex)
 		return;
 
-	m_vecTile[iIndex]->byDrawID = byDrawID;
+	if (++m_vecTile[iIndex]->byDrawID >= 2)
+	{
+		// 0 초기화.
+		m_vecTile[iIndex]->byDrawID = 0;
+	}
+
 	m_vecTile[iIndex]->byOption = 0;
 }
 
