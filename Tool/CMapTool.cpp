@@ -302,7 +302,7 @@ void CMapTool::OnListBGClick()
 
 	CDC* dc = m_BGPicture.GetDC();		
 	//m_BGPicture.SetBitmap(*(iter->second));
-	iter->second->StretchBlt(*dc, 0, 0, 150, 100, SRCCOPY);
+	iter->second->StretchBlt(*dc, 0, 0, 426, 220, SRCCOPY);
 
 	m_BGPicture.ReleaseDC(dc);
 
@@ -358,7 +358,7 @@ void CMapTool::OnListObjectClick()
 
 	CDC* dc = m_ObjectPicture.GetDC();
 	//m_BGPicture.SetBitmap(*(iter->second));
-	iter->second->StretchBlt(*dc, 0, 0, 130, 80, SRCCOPY);
+	iter->second->StretchBlt(*dc, 0, 0, 299, 151, SRCCOPY);
 
 	m_ObjectPicture.ReleaseDC(dc);
 
