@@ -6,8 +6,32 @@ extern float g_Ratio;
 //OBJ STATE
 enum class STATE { IDLE, WALK, FALLING, JUMP, JUMPATTACK, ATTACK, DASH, SKILL1, HIT, DEAD, END };
 
+enum class ITEM { WEAPON, ACCE, AMOR, POTION, END };
+
+enum class ITEMPARTS { SHOULDER, TOP, BOTTOM, BELT, SHOES, BOOK, JEWERLY, WEAPON, SYMBOL, BRACELET, NECK, RING , POTION, ETC , END };
+
+enum class ELEMENT { FIRE, ICE, DARK, LIGHT, POSION, NORMAL, END  };
+
 // 벡터 2개 구조체
 struct tObjInfo { D3DXVECTOR3 tPos; D3DXVECTOR3 tScale; };
+
+typedef	struct tagItemData
+{
+    CString     strSpecialEffect;   // 특수 효과
+    ITEMPARTS   eItemPart;          // 부위
+    ELEMENT     eElement;           // 속성
+    CString     strName;            // 이름
+    float       fCriticalRate;      // 치명타 확률
+    float       fAttackSpeed;       // 공격 속도
+    float       fWeight;            // 무게
+    int         iHp;                // 체력
+    int         iAttack;            // 공격력
+    int         iDurability;        // 내구도
+    int         iRequiredLevel;     // 레벨 요구치
+    int         iDefense;           // 방어력
+    bool        bEnchantable;       // 강화 가능 여부
+
+}ITEMDATA;
 
 typedef	struct tagSkillData
 {

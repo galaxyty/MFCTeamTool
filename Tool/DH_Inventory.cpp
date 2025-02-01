@@ -5,6 +5,7 @@
 #include "ToolView.h"
 #include "DH_BtnUI.h"
 #include "DH_OBJMgr.h"
+#include "DH_Item.h"
 
 DH_Inventory::DH_Inventory()
 {
@@ -139,15 +140,137 @@ void DH_Inventory::SetButten()
 		{
 			DH_BtnUI* Btn = new DH_BtnUI;
 
-			wstring name = L"Btn_" + std::to_wstring(i);
+			wstring name = L"Btn_" + std::to_wstring(i) + L"_" + std::to_wstring(j);
 			Btn->SetName(name);
 
 			Btn->SetMPos(D3DXVECTOR3{ -106.f + (30 * j), -20.f + (30 * i),0.f });
 			Btn->SetScale(D3DXVECTOR3{ 28.f,28.f,0.f });
+			Btn->SeteItemParts(ITEMPARTS::ETC);
 			Btn->Initialize();
 			AddParent(Btn);
 		}
 	}
+
+#pragma region 장비창 버튼
+
+	DH_BtnUI* AmorShoulderBtn = new DH_BtnUI;
+	wstring name = L"AmorShoulderBtn";
+	AmorShoulderBtn->SetName(name);
+	AmorShoulderBtn->SetMPos(D3DXVECTOR3{ -103.f, -180.f ,0.f });
+	AmorShoulderBtn->SetScale(D3DXVECTOR3{ 28.f,28.f,0.f });
+	AmorShoulderBtn->SeteItemParts(ITEMPARTS::SHOULDER);
+	AmorShoulderBtn->Initialize();
+	AddParent(AmorShoulderBtn);
+
+	DH_BtnUI* AmorTopBtn = new DH_BtnUI;
+	name = L"AmorTopBtn";
+	AmorTopBtn->SetName(name);
+	AmorTopBtn->SetMPos(D3DXVECTOR3{ -71.f, -180.f ,0.f });
+	AmorTopBtn->SetScale(D3DXVECTOR3{ 28.f,28.f,0.f });
+	AmorTopBtn->SeteItemParts(ITEMPARTS::TOP);
+	AmorTopBtn->Initialize();
+	AddParent(AmorTopBtn);
+
+	DH_BtnUI* AmorBottomBtn = new DH_BtnUI;
+	name = L"AmorBottomBtn";
+	AmorBottomBtn->SetName(name);
+	AmorBottomBtn->SetMPos(D3DXVECTOR3{ -103.f, -148.f ,0.f });
+	AmorBottomBtn->SetScale(D3DXVECTOR3{ 28.f,28.f,0.f });
+	AmorBottomBtn->SeteItemParts(ITEMPARTS::BOTTOM);
+	AmorBottomBtn->Initialize();
+	AddParent(AmorBottomBtn);
+
+	DH_BtnUI* AmorBeltBtn = new DH_BtnUI;
+	name = L"AmorBeltBtn";
+	AmorBeltBtn->SetName(name);
+	AmorBeltBtn->SetMPos(D3DXVECTOR3{ -71.f, -148.f ,0.f });
+	AmorBeltBtn->SetScale(D3DXVECTOR3{ 28.f,28.f,0.f });
+	AmorBeltBtn->SeteItemParts(ITEMPARTS::BELT);
+	AmorBeltBtn->Initialize();
+	AddParent(AmorBeltBtn);
+
+	DH_BtnUI* AmorShoesBtn = new DH_BtnUI;
+	name = L"AmorShoesBtn";
+	AmorShoesBtn->SetName(name);
+	AmorShoesBtn->SetMPos(D3DXVECTOR3{ -103.f, -116.f ,0.f });
+	AmorShoesBtn->SetScale(D3DXVECTOR3{ 28.f,28.f,0.f });
+	AmorShoesBtn->SeteItemParts(ITEMPARTS::SHOES);
+	AmorShoesBtn->Initialize();
+	AddParent(AmorShoesBtn);
+
+#pragma endregion
+
+#pragma region 문양, 보석
+
+	DH_BtnUI* AmorBookBtn = new DH_BtnUI;
+	name = L"AmorBookBtn";
+	AmorBookBtn->SetName(name);
+	AmorBookBtn->SetMPos(D3DXVECTOR3{ -64.f, -111.f ,0.f });
+	AmorBookBtn->SetScale(D3DXVECTOR3{ 28.f,28.f,0.f });
+	AmorBookBtn->SeteItemParts(ITEMPARTS::BOOK);
+	AmorBookBtn->Initialize();
+	AddParent(AmorBookBtn);
+
+	DH_BtnUI* JewerlyBtn = new DH_BtnUI;
+	name = L"JewerlyBtn";
+	JewerlyBtn->SetName(name);
+	JewerlyBtn->SetMPos(D3DXVECTOR3{ 64.f, -111.f ,0.f });
+	JewerlyBtn->SetScale(D3DXVECTOR3{ 28.f,28.f,0.f });
+	JewerlyBtn->SeteItemParts(ITEMPARTS::JEWERLY);
+	JewerlyBtn->Initialize();
+	AddParent(JewerlyBtn);
+
+#pragma endregion
+
+#pragma region 무기 버튼
+
+	DH_BtnUI* WeaponBtn = new DH_BtnUI;
+	name = L"WeaponBtn";
+	WeaponBtn->SetName(name);
+	WeaponBtn->SetMPos(D3DXVECTOR3{ 103.f, -180.f ,0.f });
+	WeaponBtn->SetScale(D3DXVECTOR3{ 28.f,28.f,0.f });
+	WeaponBtn->SeteItemParts(ITEMPARTS::WEAPON);
+	WeaponBtn->Initialize();
+	AddParent(WeaponBtn);
+
+	DH_BtnUI* SymbolBtn = new DH_BtnUI;
+	name = L"SymbolBtn";
+	SymbolBtn->SetName(name);
+	SymbolBtn->SetMPos(D3DXVECTOR3{ 71.f, -180.f ,0.f });
+	SymbolBtn->SetScale(D3DXVECTOR3{ 28.f,28.f,0.f });
+	SymbolBtn->SeteItemParts(ITEMPARTS::SYMBOL);
+	SymbolBtn->Initialize();
+	AddParent(SymbolBtn);
+
+	DH_BtnUI* BraceletBtn = new DH_BtnUI;
+	name = L"BraceletBtn";
+	BraceletBtn->SetName(name);
+	BraceletBtn->SetMPos(D3DXVECTOR3{ 103.f, -148.f ,0.f });
+	BraceletBtn->SetScale(D3DXVECTOR3{ 28.f,28.f,0.f });
+	BraceletBtn->SeteItemParts(ITEMPARTS::BRACELET);
+	BraceletBtn->Initialize();
+	AddParent(BraceletBtn);
+
+	DH_BtnUI* NeckBtn = new DH_BtnUI;
+	name = L"NeckBtn";
+	NeckBtn->SetName(name);
+	NeckBtn->SetMPos(D3DXVECTOR3{ 71.f, -148.f ,0.f });
+	NeckBtn->SetScale(D3DXVECTOR3{ 28.f,28.f,0.f });
+	NeckBtn->SeteItemParts(ITEMPARTS::NECK);
+	NeckBtn->Initialize();
+	AddParent(NeckBtn);
+
+	DH_BtnUI* RingBtn = new DH_BtnUI;
+	name = L"RingBtn";
+	RingBtn->SetName(name);
+	RingBtn->SetMPos(D3DXVECTOR3{ 103.f, -116.f ,0.f });
+	RingBtn->SetScale(D3DXVECTOR3{ 28.f,28.f,0.f });
+	RingBtn->SeteItemParts(ITEMPARTS::RING);
+	RingBtn->Initialize();
+	AddParent(RingBtn);
+
+#pragma endregion
+
 }
 
 

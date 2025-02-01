@@ -103,6 +103,9 @@
     <Filter Include="04. Etc\03. Dialog\04. EquipTool\00.UI\04.Item">
       <UniqueIdentifier>{7418a6e6-70bd-4cc7-8638-35353c1bc624}</UniqueIdentifier>
     </Filter>
+    <Filter Include="04. Etc\03. Dialog\04. EquipTool\00.UI\05.Skill">
+      <UniqueIdentifier>{271c6ee5-e67d-437b-8489-75861bb6db87}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Tool.h">
@@ -204,6 +207,9 @@
     <ClInclude Include="DH_Inventory.h">
       <Filter>04. Etc\03. Dialog\04. EquipTool\00.UI\02.Inventory</Filter>
     </ClInclude>
+    <ClInclude Include="DH_Skill.h">
+      <Filter>04. Etc\03. Dialog\04. EquipTool\00.UI\05.Skill</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Tool.cpp">
@@ -295,6 +301,9 @@
     </ClCompile>
     <ClCompile Include="DH_Item.cpp">
       <Filter>04. Etc\03. Dialog\04. EquipTool\00.UI\04.Item</Filter>
+    </ClCompile>
+    <ClCompile Include="DH_Skill.cpp">
+      <Filter>04. Etc\03. Dialog\04. EquipTool\00.UI\05.Skill</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

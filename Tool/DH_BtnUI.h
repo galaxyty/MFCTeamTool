@@ -20,8 +20,11 @@ public:
 public:
 	void		SetbClicked(bool _Clicked) { m_bClicked = _Clicked; }
 	bool		GetbClicked() { return m_bClicked; }
+	void		SeteItemParts(ITEMPARTS _Parts) { m_eParts = _Parts; }
+	ITEMPARTS	GeteItemParts() { return m_eParts; }
 
 private:
 	bool		m_bClicked;
+	ITEMPARTS	m_eParts;
 };
 

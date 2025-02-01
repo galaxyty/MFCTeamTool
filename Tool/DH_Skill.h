@@ -1,10 +1,10 @@
 #pragma once
-#include "DH_UI.h"
-class DH_Item :  public DH_UI
+#include "DH_BtnUI.h"
+class DH_Skill :  public DH_BtnUI
 {
 public:
-	DH_Item();
-	virtual ~DH_Item();
+	DH_Skill();
+	virtual ~DH_Skill();
 
 public:
 	virtual void MouseOn();
@@ -19,20 +19,12 @@ public:
 
 public:
 	void	SetImageKey(CString _Key) { m_ImageKey = _Key; }
-	void	SetItem(const ITEM& item) { m_sITEM = item; }
-	void	SetpITEMDATA(ITEMDATA* _ITEMDATA) { m_pITEMDATA = _ITEMDATA; }
-	ITEM	GetItem() const {	return m_sITEM;	}
 
 private:
 	D3DXVECTOR3	m_vDragStart;
 	CString m_ImageKey;
-	DH_UI* m_Inven;
-
-	ITEMDATA* m_pITEMDATA;
+	DH_UI* m_Skill;
 
 	bool m_bDragOn;
-	int m_PreviousIndex;
-	ITEM m_sITEM;
-
 };
 
