@@ -123,8 +123,10 @@ void CToolView::OnLButtonDown(UINT nFlags, CPoint point)
 		GetCursorPos(&screenPoint);
 
 		// 스크린 좌표를 클라이언트 좌표로 변환.
-		// 다른 네임스페이스에 있는 ScreenToClient와 겹치지 않게 :: 붙여줌 (그 네임스페이스가 뭔진 잘 모름).
-		::ScreenToClient(m_pTerrain->m_pMainView->m_hWnd, &screenPoint);
+		// MFC 관련 클래스를 상속 받은 상태라 ScreenToClient 함수는 MFC 네임스페이스쪽 함수임
+		// MFC에서 지원하는게 아닌 기존에 있는 ScreenToClient 함수를 써야하니 :: 를 붙여 기존 네임스페이스를 가리킴.
+		// :: 왼쪽에 비어 있는 이유는 아마 C++에서 ::만 쓰면 디폴트 네임스페이스로 잡아줘서 그런 거 같다.
+		::ScreenToClient(m_pTerrain->m_pMainView->m_hWnd, &screenPoint);		
 
 		// 비율에 맞게 포인트 좌표 갱신.
 		screenPoint.x *= 1.f / g_Ratio;
