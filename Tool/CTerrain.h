@@ -30,6 +30,7 @@ private:
 	bool	Picking_Dot(const D3DXVECTOR3& vPos, const int& iIndex);
 	int		Get_TileIdx(const D3DXVECTOR3& vPos);
 
+	friend class CToolView;
 
 private:
 	vector<TILE*>		m_vecTile;

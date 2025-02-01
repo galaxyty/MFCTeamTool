@@ -117,13 +117,22 @@ void CToolView::OnLButtonDown(UINT nFlags, CPoint point)
 
 	if (CTextureMgr::Get_Instance()->GetObjectKey() != nullptr)
 	{
-		// 비율에 맞게 마우스 좌표 갱신.
-		point.x *= long(1.f / g_Ratio);
-		point.y *= long(1.f / g_Ratio);
+		// 화면 좌표 가져오기
+		// point 매개변수쓰면 안맞아서 안씀.
+		CPoint screenPoint;
+		GetCursorPos(&screenPoint);
+
+		// 스크린 좌표를 클라이언트 좌표로 변환.
+		// 다른 네임스페이스에 있는 ScreenToClient와 겹치지 않게 :: 붙여줌 (그 네임스페이스가 뭔진 잘 모름).
+		::ScreenToClient(m_pTerrain->m_pMainView->m_hWnd, &screenPoint);
+
+		// 비율에 맞게 포인트 좌표 갱신.
+		screenPoint.x *= 1.f / g_Ratio;
+		screenPoint.y *= 1.f / g_Ratio;
 
 		CustomOBJECT* _object = new CustomOBJECT();
 
-		_object->vPos = {(float)point.x + GetScrollPos(0), (float)point.y + GetScrollPos(1), 0.f};
+		_object->vPos = {(float)screenPoint.x + GetScrollPos(0), (float)screenPoint.y + GetScrollPos(1), 0.f};
 		_object->vSize = {0.f, 0.f};
 		_object->szName = CTextureMgr::Get_Instance()->GetObjectKeyValue();
 
