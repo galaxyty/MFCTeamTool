@@ -66,6 +66,7 @@ public:
 protected:
 	bool m_bMouseOn;
 	bool m_bLDown;
+	bool m_bRDown;
 	bool m_bVisible;
 
 

@@ -213,6 +213,7 @@
     <ClInclude Include="DH_LoopMgr.h" />
     <ClInclude Include="DH_OBJMgr.h" />
     <ClInclude Include="DH_PanelUI.h" />
+    <ClInclude Include="DH_Skill.h" />
     <ClInclude Include="DH_SkillUI.h" />
     <ClInclude Include="DH_UI.h" />
     <ClInclude Include="DH_UIMgr.h" />
@@ -248,6 +249,7 @@
     <ClCompile Include="DH_LoopMgr.cpp" />
     <ClCompile Include="DH_OBJMgr.cpp" />
     <ClCompile Include="DH_PanelUI.cpp" />
+    <ClCompile Include="DH_Skill.cpp" />
     <ClCompile Include="DH_SkillUI.cpp" />
     <ClCompile Include="DH_UI.cpp" />
     <ClCompile Include="DH_UIMgr.cpp" />

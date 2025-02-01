@@ -3,7 +3,7 @@
 #include "CDevice.h"
 #include "CTextureMgr.h"
 
-DH_BtnUI::DH_BtnUI() : m_bClicked(false)
+DH_BtnUI::DH_BtnUI() : m_bClicked(false), m_eParts(ITEMPARTS::END)
 {
 }
 
@@ -18,6 +18,7 @@ DH_BtnUI::~DH_BtnUI()
 
 void DH_BtnUI::MouseOn()
 {
+	m_bMouseOn = true;
 }
 
 void DH_BtnUI::MouseLDown()
@@ -86,7 +87,7 @@ void DH_BtnUI::Render()
 	CDevice::Get_Instance()->Get_Sprite()->SetTransform(&matWorld);
 
 	//클릭 , 비클릭
-	if (m_bLDown)
+	if (m_bMouseOn)
 	{
 		CDevice::Get_Instance()->Get_Sprite()->Draw(
 			pTexInfo->pTexture,

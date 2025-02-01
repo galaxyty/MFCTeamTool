@@ -28,7 +28,9 @@ void DH_UIMgr::Update()
 			return;
 
 		bool bLTap = KEY_TAP(KEY::LBUTTEN);
+		bool bRTap = KEY_TAP(KEY::RBUTTEN);
 		bool bLAway = KEY_AWAY(KEY::LBUTTEN);
+		bool bRAway = KEY_AWAY(KEY::RBUTTEN);
 
 		DH_UI* pTarget = GetTargetedUI(m_FocusedUI);
 
@@ -51,6 +53,14 @@ void DH_UIMgr::Update()
 				}
 
 				pTarget->m_bLDown = false;
+			}
+			if (bRTap)
+			{
+				pTarget->m_bRDown = true;
+			}
+			else if (bRAway)
+			{
+				pTarget->m_bRDown = false;
 			}
 		}
 	}
@@ -90,6 +100,7 @@ void DH_UIMgr::SetFocusedUI(DH_UI* _pUI)
 DH_UI* DH_UIMgr::GetTargetedUI(DH_UI* _pParentUI)
 {
 	bool bLAway = KEY_AWAY(KEY::LBUTTEN);
+	bool bRAway = KEY_AWAY(KEY::RBUTTEN);
 	DH_UI* pTargetUI = nullptr;
 
 	//1. 부모 포함 , 모든 자식들을 검사한다.
@@ -138,6 +149,14 @@ DH_UI* DH_UIMgr::GetTargetedUI(DH_UI* _pParentUI)
 		for (size_t i = 0; i < vecNonTarget.size(); ++i)
 		{
 			vecNonTarget[i]->m_bLDown = false;
+		}
+	}
+
+	if (bRAway)
+	{
+		for (size_t i = 0; i < vecNonTarget.size(); ++i)
+		{
+			vecNonTarget[i]->m_bRDown = false;
 		}
 	}
 

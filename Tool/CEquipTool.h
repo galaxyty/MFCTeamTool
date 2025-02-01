@@ -43,7 +43,11 @@ public:
 public:
 	void LoadPngFiles(const CString& folderPath, CListBox* _ListBox);
 	void OnLoadPngFiles(CString _Path, CListBox* _ListBox);
-	void AddItem(wstring _Item, CString _CString);
+	void AddItem(wstring _Item, CString _CString, ITEMDATA* pItemData);
+	void DeleteItem(CString _CString);
+	void AddSkill(wstring _Item, CString _CString);
+	void DeleteSkill(CString _CString);
+	void SetItemInfo(CString _CString, ITEMDATA* pItemData);
 
 public:
 	void UIToggle(DH_UI* _UI);
@@ -63,8 +67,9 @@ public:
 	TCHAR	m_szSkillName[MAX_STR];
 
 	multimap<CString, CImage*>			m_mapPngImage;
-	multimap<CString, UNITDATA*>		m_mapUnitData;
+	multimap<CString, ITEMDATA*>		m_mapItemData;
 	multimap<CString, SKILLDATA*>		m_mapSkillData;
+
 	afx_msg void OnWeopon();
 	afx_msg void OnAmor();
 	afx_msg void OnAcce();

@@ -118,8 +118,8 @@ void CToolView::OnLButtonDown(UINT nFlags, CPoint point)
 	if (CTextureMgr::Get_Instance()->GetObjectKey() != nullptr)
 	{
 		// 비율에 맞게 마우스 좌표 갱신.
-		point.x *= 1.f / g_Ratio;
-		point.y *= 1.f / g_Ratio;
+		point.x *= long(1.f / g_Ratio);
+		point.y *= long(1.f / g_Ratio);
 
 		CustomOBJECT* _object = new CustomOBJECT();
 

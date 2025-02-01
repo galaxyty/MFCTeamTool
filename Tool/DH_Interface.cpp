@@ -33,7 +33,6 @@ void DH_Interface::Initialize()
 
 void DH_Interface::Update()
 {
-	int a = 0;
 }
 
 void DH_Interface::Render(CToolView* pMainView)
