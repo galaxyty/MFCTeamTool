@@ -358,7 +358,7 @@ void CMapTool::OnListObjectClick()
 
 	CDC* dc = m_ObjectPicture.GetDC();
 	//m_BGPicture.SetBitmap(*(iter->second));
-	iter->second->StretchBlt(*dc, 0, 0, 100, 100, SRCCOPY);
+	iter->second->StretchBlt(*dc, 0, 0, 130, 80, SRCCOPY);
 
 	m_ObjectPicture.ReleaseDC(dc);
 
