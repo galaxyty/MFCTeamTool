@@ -68,6 +68,13 @@ void CTerrain::Update()
 
 void CTerrain::Render()
 {
+	RECT	rc{};
+
+	GetClientRect(m_pMainView->m_hWnd, &rc);
+
+	float	fX = WINCX / float(rc.right - rc.left);
+	float	fY = WINCY / float(rc.bottom - rc.top);
+
 	// 화면 좌표 가져오기
 	CPoint screenPoint;
 	GetCursorPos(&screenPoint);
@@ -100,7 +107,7 @@ void CTerrain::Render()
 
 	matWorld = matScale * matTrans;
 
-	Set_Ratio(&matWorld, g_Ratio, g_Ratio);
+	Set_Ratio(&matWorld, fX * g_Ratio, fY * g_Ratio);
 
 	CDevice::Get_Instance()->GetBackground()->SetTransform(&matWorld);
 
@@ -135,7 +142,7 @@ void CTerrain::Render()
 
 		matWorld = matScale * matTrans;
 
-		Set_Ratio(&matWorld, g_Ratio, g_Ratio);
+		Set_Ratio(&matWorld, fX * g_Ratio, fY * g_Ratio);
 
 		CDevice::Get_Instance()->GetpObjectView()->SetTransform(&matWorld);
 	}
@@ -155,7 +162,7 @@ void CTerrain::Render()
 
 		matWorld = matScale * matTrans;
 
-		Set_Ratio(&matWorld, g_Ratio, g_Ratio);
+		Set_Ratio(&matWorld, fX * g_Ratio, fY * g_Ratio);
 
 		CDevice::Get_Instance()->GetpObject()->SetTransform(&matWorld);
 
@@ -192,16 +199,9 @@ void CTerrain::Render()
 			pTile->vPos.y - m_pMainView->GetScrollPos(1),
 			pTile->vPos.z);
 
-		matWorld = matScale * matTrans;
+		matWorld = matScale * matTrans;		
 
-		RECT	rc{};
-
-		GetClientRect(m_pMainView->m_hWnd, &rc);
-
-		float	fX = WINCX / float(rc.right - rc.left);
-		float	fY = WINCY / float(rc.bottom - rc.top);
-
-		Set_Ratio(&matWorld, g_Ratio, g_Ratio);
+		Set_Ratio(&matWorld, fX * g_Ratio, fY * g_Ratio);
 
 		CDevice::Get_Instance()->Get_Sprite()->SetTransform(&matWorld);
 
