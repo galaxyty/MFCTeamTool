@@ -22,7 +22,6 @@ public:
 	void	Tile_Change(const D3DXVECTOR3& vPos);
 	void	Set_MainView(CToolView* pMainView) { m_pMainView = pMainView;  }
 	void	Set_Ratio(D3DXMATRIX* pOut, float _fX, float _fY);
-	void	AddObject(CustomOBJECT* _object);
 
 private:
 	bool	Picking_Rect(const D3DXVECTOR3& vPos, const int& iIndex);
@@ -33,9 +32,7 @@ private:
 	friend class CToolView;
 
 private:
-	vector<TILE*>		m_vecTile;
-	TILE*				m_imgBackground;
-	vector<CustomOBJECT*>		m_vecObject;
-	CToolView*			m_pMainView;
+	CToolView*					m_pMainView;
+	int m_RoomIndex;
 };
 

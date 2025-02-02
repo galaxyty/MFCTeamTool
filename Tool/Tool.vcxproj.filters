@@ -210,6 +210,9 @@
     <ClInclude Include="DH_Skill.h">
       <Filter>04. Etc\03. Dialog\04. EquipTool\00.UI\05.Skill</Filter>
     </ClInclude>
+    <ClInclude Include="CMapManager.h">
+      <Filter>03. Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Tool.cpp">
@@ -304,6 +307,9 @@
     </ClCompile>
     <ClCompile Include="DH_Skill.cpp">
       <Filter>04. Etc\03. Dialog\04. EquipTool\00.UI\05.Skill</Filter>
+    </ClCompile>
+    <ClCompile Include="CMapManager.cpp">
+      <Filter>03. Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

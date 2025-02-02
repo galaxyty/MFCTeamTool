@@ -9,6 +9,7 @@
 #include "CTerrain.h"
 #include "MainFrm.h"
 #include "CTextureMgr.h"
+#include "CMapManager.h"
 
 
 // CMapTool 대화 상자
@@ -33,6 +34,7 @@ void CMapTool::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_BACKGROUND_PICTURE, m_BGPicture);
 	DDX_Control(pDX, IDC_LIST_BOX_OBJECT, m_ListBoxObject);
 	DDX_Control(pDX, IDC_OBJECT_PICTURE, m_ObjectPicture);
+	DDX_Control(pDX, IDC_MAP_COMBO, m_RoomComboBox);
 }
 
 void CMapTool::OnDropFiles(HDROP hDropInfo)
@@ -181,6 +183,8 @@ BEGIN_MESSAGE_MAP(CMapTool, CDialog)
 	ON_LBN_SELCHANGE(IDC_LIST_BOX_OBJECT, &CMapTool::OnListObjectClick)
 	ON_BN_CLICKED(IDC_OBJECT_APPLY_BUTTON, &CMapTool::OnObjectApplyClick)
 	ON_BN_CLICKED(IDC_OBJECT_DELETE_BUTTON, &CMapTool::OnObjectDeleteClick)
+	ON_BN_CLICKED(IDC_ROOM_ADD_BUTTON, &CMapTool::OnRoomAdd)
+	ON_CBN_SELCHANGE(IDC_MAP_COMBO, &CMapTool::OnRoomClick)
 END_MESSAGE_MAP()
 
 
@@ -203,7 +207,10 @@ BOOL CMapTool::OnInitDialog()
 
 	// TODO:  여기에 추가 초기화 작업을 추가합니다.	
 	m_RatioSlider.SetRange(20, 100);	
-	m_RatioSlider.SetPos(100);
+	m_RatioSlider.SetPos(100);	
+
+	m_RoomComboBox.AddString(L"룸1");
+	m_RoomComboBox.SelectString(0, L"룸1");
 	
 	UpdateRender();
 
@@ -312,14 +319,14 @@ void CMapTool::OnListBGClick()
 // 적용 버튼.
 void CMapTool::OnApplyClick()
 {
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.	
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	CString strItem;
 	m_ListBoxMap.GetText(m_ListBoxMap.GetCurSel(), strItem);
 
 	// CString에서 TCHAR 배열로 복사
 	_tcscpy_s(m_mapKey, MAX_PATH, strItem);
 
-	CTextureMgr::Get_Instance()->SetBGKey(m_mapKey);	
+	CMapManager::Get_Instance()->m_vecBG[CMapManager::Get_Instance()->m_RoomIndex]->szBGKey = m_mapKey;
 
 	UpdateRender();
 }
@@ -374,8 +381,9 @@ void CMapTool::OnObjectApplyClick()
 
 	// CString에서 TCHAR 배열로 복사
 	_tcscpy_s(m_objectKey, MAX_PATH, strItem);
-
-	CTextureMgr::Get_Instance()->SetObjectKey(m_objectKey);
+	
+	CMapManager::Get_Instance()->SetObjectKey(m_objectKey);
+	CMapManager::Get_Instance()->m_IsObjectSetting = true;
 }
 
 // 오브젝트 삭제 버튼.
@@ -390,4 +398,19 @@ void CMapTool::OnObjectDeleteClick()
 	m_objectBackground.erase(strItem);
 
 	UpdateRender();
+}
+
+// 룸 추가.
+void CMapTool::OnRoomAdd()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	m_RoomComboBox.AddString(L"룸2");
+	CMapManager::Get_Instance()->CreateRoom();
+}
+
+
+void CMapTool::OnRoomClick()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	CMapManager::Get_Instance()->m_RoomIndex = m_RoomComboBox.GetCurSel();
 }

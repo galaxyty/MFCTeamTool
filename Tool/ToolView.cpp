@@ -18,6 +18,7 @@
 #include "CTerrain.h"
 #include "DH_OBJMgr.h"
 #include "DH_LoopMgr.h"
+#include "CMapManager.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -115,7 +116,7 @@ void CToolView::OnLButtonDown(UINT nFlags, CPoint point)
 										float(point.y) + GetScrollPos(1) * g_Ratio,
 										0.f));
 
-	if (CTextureMgr::Get_Instance()->GetObjectKey() != nullptr)
+	if (CMapManager::Get_Instance()->m_IsObjectSetting == true)
 	{
 		// 화면 좌표 가져오기
 		// point 매개변수쓰면 안맞아서 안씀.
@@ -136,9 +137,9 @@ void CToolView::OnLButtonDown(UINT nFlags, CPoint point)
 
 		_object->vPos = {(float)screenPoint.x + GetScrollPos(0), (float)screenPoint.y + GetScrollPos(1), 0.f};
 		_object->vSize = {0.f, 0.f};
-		_object->szName = CTextureMgr::Get_Instance()->GetObjectKeyValue();
+		_object->szName = CMapManager::Get_Instance()->GetObjectKeyValue();
 
-		m_pTerrain->AddObject(_object);
+		CMapManager::Get_Instance()->AddObject(_object);
 	}
 
 	Invalidate(FALSE);
@@ -146,7 +147,7 @@ void CToolView::OnLButtonDown(UINT nFlags, CPoint point)
 
 void CToolView::OnRButtonDown(UINT nFlags, CPoint point)
 {
-	CTextureMgr::Get_Instance()->SetObjectKey(nullptr);
+	CMapManager::Get_Instance()->m_IsObjectSetting = false;
 }
 
 void CToolView::OnMouseMove(UINT nFlags, CPoint point)
@@ -178,6 +179,7 @@ void CToolView::OnDestroy()
 	Safe_Delete(m_pTerrain);
 
 	CTextureMgr::Destroy_Instance();
+	CMapManager::Destroy_Instance();
 	m_pDevice->Destroy_Instance();
 
 }

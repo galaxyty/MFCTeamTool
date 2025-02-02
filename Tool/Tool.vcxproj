@@ -194,6 +194,7 @@
     <ClInclude Include="CDevice.h" />
     <ClInclude Include="CDH_FilePath.h" />
     <ClInclude Include="CEquipTool.h" />
+    <ClInclude Include="CMapManager.h" />
     <ClInclude Include="CMapTool.h" />
     <ClInclude Include="CMiniView.h" />
     <ClInclude Include="CMultiTexture.h" />
@@ -230,6 +231,7 @@
     <ClCompile Include="CDevice.cpp" />
     <ClCompile Include="CDH_FilePath.cpp" />
     <ClCompile Include="CEquipTool.cpp" />
+    <ClCompile Include="CMapManager.cpp" />
     <ClCompile Include="CMapTool.cpp" />
     <ClCompile Include="CMiniView.cpp" />
     <ClCompile Include="CMultiTexture.cpp" />

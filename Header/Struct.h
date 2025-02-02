@@ -35,8 +35,11 @@ typedef struct tagObject
 {
 	~tagObject()
 	{
-		delete szName;
-		szName = nullptr;
+		if (szName != nullptr)
+		{
+			delete szName;
+			szName = nullptr;
+		}		
 	}
 
 	D3DXVECTOR3	vPos;				// 타일의 중점 좌표
@@ -45,6 +48,24 @@ typedef struct tagObject
 	CString* szName;			// 오브젝트명.
 
 }CustomOBJECT;
+
+typedef struct tagBackground
+{
+	/*~tagBackground()
+	{
+		if (szBGKey != nullptr)
+		{
+			delete szBGKey;
+			szBGKey = nullptr;
+		}		
+	}*/
+
+	D3DXVECTOR3	vPos;				// 타일의 중점 좌표
+	D3DXVECTOR2 vSize;				// 타일의 가로, 세로 사이즈
+
+	TCHAR* szBGKey;
+
+}CustomBACKGROUND;
 
 typedef	struct tagUnitData
 {

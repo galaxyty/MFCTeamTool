@@ -51,4 +51,7 @@ public:
 	afx_msg void OnObjectApplyClick();
 	afx_msg void OnObjectDeleteClick();
 	CStatic m_ObjectPicture;
+	CComboBox m_RoomComboBox;
+	afx_msg void OnRoomAdd();
+	afx_msg void OnRoomClick();
 };

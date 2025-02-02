@@ -18,6 +18,7 @@
 #define IDC_EQUIP_BUTTON                1003
 #define IDC_RATIO_SLIDER                1004
 #define IDC_RATIO_TEXT                  1005
+#define IDC_RATIO_TEXT2                 1006
 #define IDC_LIST_BOX_MAP                1007
 #define IDC_BACKGROUND_PICTURE          1008
 #define IDC_MAP_APPLY_BUTTON            1009
@@ -29,13 +30,15 @@
 #define IDC_RADIO1                      1012
 #define IDC_OBJECT_DELETE_BUTTON        1013
 #define IDC_RADIO2                      1013
-#define IDC_BACKGROUND_PICTURE2			1014
-#define IDC_OBJECT_PICTURE				1014
+#define IDC_BACKGROUND_PICTURE2         1014
+#define IDC_OBJECT_PICTURE              1014
 #define IDC_RADIO3                      1014
 #define IDC_RADIO4                      1015
 #define IDC_PICTURE                     1016
 #define IDC_LIST3                       1021
 #define IDC_BUTTON3                     1024
+#define IDC_MAP_COMBO                   1025
+#define IDC_ROOM_ADD_BUTTON             1026
 #define IDC_BUTTON5                     1031
 #define IDC_RADIO5                      1032
 #define IDC_LIST2                       1033
@@ -53,7 +56,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        316
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1025
+#define _APS_NEXT_CONTROL_VALUE         1027
 #define _APS_NEXT_SYMED_VALUE           318
 #endif
 #endif

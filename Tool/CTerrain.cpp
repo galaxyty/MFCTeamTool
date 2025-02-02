@@ -2,12 +2,13 @@
 #include "CTerrain.h"
 #include "CTextureMgr.h"
 #include "CDevice.h"
+#include "CMapManager.h"
 
 float g_Ratio = 1.f;
 
 CTerrain::CTerrain()
 {
-	m_vecTile.reserve(TILEX * TILEY);
+	CMapManager::Get_Instance()->m_vecTile.reserve(TILEX * TILEY);
 }
 
 CTerrain::~CTerrain()
@@ -17,6 +18,8 @@ CTerrain::~CTerrain()
 
 HRESULT CTerrain::Initialize()
 {
+	m_RoomIndex = CMapManager::Get_Instance()->m_RoomIndex;
+
 	if (FAILED(CTextureMgr::Get_Instance()->Insert_Texture(
 		L"../Texture/Stage/Terrain/Tile/Tile%d.png",
 		TEX_MULTI, L"Terrain", L"Tile", 2)))
@@ -25,38 +28,17 @@ HRESULT CTerrain::Initialize()
 		return E_FAIL;
 	}
 
-	TCHAR* c = L"Pub";
-	CTextureMgr::Get_Instance()->SetBGKey(c);
+	TCHAR* mapKey = L"Pub";
 
 	if (FAILED(CTextureMgr::Get_Instance()->Insert_Texture(
 		L"../Texture/Picked/Map/Pub.bmp",
-		TEX_SINGLE, c, nullptr, 0)))
+		TEX_SINGLE, mapKey, nullptr, 0)))
 	{
 		AfxMessageBox(L"Background Texture Insert Failed");
 		return E_FAIL;
 	}
 
-	m_imgBackground = new TILE;
-	m_imgBackground->vPos = {0.f, 0.f, 0.f};
-	m_imgBackground->vSize = { 1344.f, 600.f};
-
-	for (int i = 0; i < TILEY; ++i)
-	{
-		for (int j = 0; j < TILEX; ++j)
-		{
-			TILE* pTile = new TILE;
-
-			float	fY = TILECY * i;
-			float	fX = TILECX * j;
-
-			pTile->vPos = { fX, fY, 0.f };
-			pTile->vSize = { (float)TILECX, (float)TILECY};
-			pTile->byOption = 0;
-			pTile->byDrawID = 0;
-
-			m_vecTile.push_back(pTile);
-		}
-	}
+	CMapManager::Get_Instance()->CreateRoom();
 
 	return S_OK;
 }
@@ -68,6 +50,8 @@ void CTerrain::Update()
 
 void CTerrain::Render()
 {
+	m_RoomIndex = CMapManager::Get_Instance()->m_RoomIndex;
+
 	RECT	rc{};
 
 	GetClientRect(m_pMainView->m_hWnd, &rc);
@@ -79,7 +63,7 @@ void CTerrain::Render()
 	CPoint screenPoint;
 	GetCursorPos(&screenPoint);
 
-	// 스크린 좌표를 클라이언트 좌표로 변환.
+	// 스크린 좌표를 m_pMainView 클라이언트 좌표로 변환.
 	ScreenToClient(m_pMainView->m_hWnd, &screenPoint);
 
 	// 비율에 맞게 포인트 좌표 갱신.
@@ -87,11 +71,9 @@ void CTerrain::Render()
 	screenPoint.y *= 1.f / g_Ratio;
 
 	// 백그라운드.
-	const TCHAR* bgKey = CTextureMgr::Get_Instance()->GetBGKey();
-	
 	D3DXMATRIX	matWorld, matScale, matTrans;
 
-	const TEXINFO* pBackground = CTextureMgr::Get_Instance()->Get_Texture(bgKey, nullptr, 0);
+	const TEXINFO* pBackground = CTextureMgr::Get_Instance()->Get_Texture(CMapManager::Get_Instance()->m_vecBG[m_RoomIndex]->szBGKey, nullptr, 0);
 	CDevice::Get_Instance()->GetBackground()->Draw(pBackground->pTexture,
 		nullptr,
 		nullptr,
@@ -101,9 +83,9 @@ void CTerrain::Render()
 	D3DXMatrixIdentity(&matWorld);
 	D3DXMatrixScaling(&matScale, 1.f, 1.f, 1.f);
 	D3DXMatrixTranslation(&matTrans,
-		m_imgBackground->vPos.x - m_pMainView->GetScrollPos(0),
-		m_imgBackground->vPos.y - m_pMainView->GetScrollPos(1),
-		m_imgBackground->vPos.z);
+		CMapManager::Get_Instance()->m_vecBG[m_RoomIndex]->vPos.x - m_pMainView->GetScrollPos(0),
+		CMapManager::Get_Instance()->m_vecBG[m_RoomIndex]->vPos.y - m_pMainView->GetScrollPos(1),
+		CMapManager::Get_Instance()->m_vecBG[m_RoomIndex]->vPos.z);
 
 	matWorld = matScale * matTrans;
 
@@ -112,9 +94,11 @@ void CTerrain::Render()
 	CDevice::Get_Instance()->GetBackground()->SetTransform(&matWorld);
 
 	// 오브젝트 설치 시 미리보기.
-	const TCHAR* objectKey = CTextureMgr::Get_Instance()->GetObjectKey();
+	const TCHAR* objectKey = CMapManager::Get_Instance()->GetObjectKey();
 
-	if (objectKey != nullptr)
+	bool s = CMapManager::Get_Instance()->m_IsObjectSetting;
+
+	if (CMapManager::Get_Instance()->m_IsObjectSetting == true)
 	{
 		D3DXMatrixIdentity(&matWorld);
 		D3DXMatrixIdentity(&matScale);
@@ -148,7 +132,7 @@ void CTerrain::Render()
 	}
 
 	// 오브젝트.
-	for (auto pObjectData : m_vecObject)
+	for (auto pObjectData : CMapManager::Get_Instance()->m_vecObject[m_RoomIndex])
 	{
 		D3DXMatrixIdentity(&matWorld);
 		D3DXMatrixIdentity(&matScale);
@@ -185,12 +169,12 @@ void CTerrain::Render()
 	int		iIndex(0);	
 
 	// 오브젝트 배치 중이면 타일 표시 안함.
-	if (CTextureMgr::Get_Instance()->GetObjectKey() != nullptr)
+	if (CMapManager::Get_Instance()->m_IsObjectSetting == true)
 	{
 		return;
 	}
 
-	for (auto pTile : m_vecTile)
+	for (auto pTile : CMapManager::Get_Instance()->m_vecTile[m_RoomIndex])
 	{
 		D3DXMatrixIdentity(&matWorld);
 		D3DXMatrixScaling(&matScale, 1.f, 1.f, 1.f);
@@ -233,33 +217,14 @@ void CTerrain::Render()
 
 void CTerrain::Release()
 {
-	for_each(m_vecTile.begin(), m_vecTile.end(), [](auto& p) 
-		{ 
-			if (p)
-			{ delete p; p = nullptr; }
-		});
-	m_vecTile.clear();
-	m_vecTile.shrink_to_fit();
-
-	for_each(m_vecObject.begin(), m_vecObject.end(), [](auto& p)
-		{
-			if (p)
-			{
-				delete p;
-				p = nullptr;
-			}
-		});
-	m_vecObject.clear();
-	m_vecObject.shrink_to_fit();
-
-	Safe_Delete(m_imgBackground);
+	
 }
 
 void CTerrain::Mini_Render()
 {
 	D3DXMATRIX	matWorld, matScale, matTrans;
 
-	for (auto pTile : m_vecTile)
+	for (auto pTile : CMapManager::Get_Instance()->m_vecTile[m_RoomIndex])
 	{
 		D3DXMatrixIdentity(&matWorld);
 		D3DXMatrixScaling(&matScale, 1.f, 1.f, 1.f);
@@ -296,13 +261,13 @@ void CTerrain::Tile_Change(const D3DXVECTOR3& vPos)
 	if (-1 == iIndex)
 		return;
 
-	if (++m_vecTile[iIndex]->byDrawID >= 2)
+	if (++CMapManager::Get_Instance()->m_vecTile[m_RoomIndex][iIndex]->byDrawID >= 2)
 	{
 		// 0 초기화.
-		m_vecTile[iIndex]->byDrawID = 0;
+		CMapManager::Get_Instance()->m_vecTile[m_RoomIndex][iIndex]->byDrawID = 0;
 	}
 
-	m_vecTile[iIndex]->byOption = 0;
+	CMapManager::Get_Instance()->m_vecTile[m_RoomIndex][iIndex]->byOption = 0;
 }
 
 void CTerrain::Set_Ratio(D3DXMATRIX* pOut, float _fX, float _fY)
@@ -319,20 +284,14 @@ void CTerrain::Set_Ratio(D3DXMATRIX* pOut, float _fX, float _fY)
 
 }
 
-void CTerrain::AddObject(CustomOBJECT* _object)
-{
-	m_vecObject.push_back(_object);
-}
-
-
 int CTerrain::Get_TileIdx(const D3DXVECTOR3& vPos)
 {
-	if (CTextureMgr::Get_Instance()->GetObjectKey() != nullptr)
+	if (CMapManager::Get_Instance()->m_IsObjectSetting == true)
 	{
 		return -1;
 	}
 
-	for (size_t index = 0; index < m_vecTile.size(); ++index)
+	for (size_t index = 0; index < CMapManager::Get_Instance()->m_vecTile[m_RoomIndex].size(); ++index)
 	{
 		if (Picking_Rect(vPos, index))
 		{
@@ -355,7 +314,7 @@ bool CTerrain::Picking_Rect(const D3DXVECTOR3& vPos, const int& iIndex)
 	matWorld = matScale;
 	Set_Ratio(&matWorld, g_Ratio, g_Ratio);
 
-	D3DXVec3TransformCoord(&vectorPos, &m_vecTile[iIndex]->vPos, &matWorld);
+	D3DXVec3TransformCoord(&vectorPos, &CMapManager::Get_Instance()->m_vecTile[m_RoomIndex][iIndex]->vPos, &matWorld);
 
 	return (vPos.x >= vectorPos.x - (TILECX * (0.5f * g_Ratio)) &&
 		vPos.x < vectorPos.x + (TILECX * (0.5f * g_Ratio))) &&
@@ -377,10 +336,10 @@ bool CTerrain::Picking(const D3DXVECTOR3& vPos, const int& iIndex)
 	// 12 -> 3 -> 6 -> 9
 	D3DXVECTOR3	vPoint[4] =
 	{
-		{ m_vecTile[iIndex]->vPos.x, m_vecTile[iIndex]->vPos.y + (TILECY / 2.f), 0.f },
-		{ m_vecTile[iIndex]->vPos.x + (TILECX / 2.f), m_vecTile[iIndex]->vPos.y, 0.f },
-		{ m_vecTile[iIndex]->vPos.x, m_vecTile[iIndex]->vPos.y - (TILECY / 2.f), 0.f },
-		{ m_vecTile[iIndex]->vPos.x - (TILECX / 2.f), m_vecTile[iIndex]->vPos.y, 0.f },
+		{ CMapManager::Get_Instance()->m_vecTile[m_RoomIndex][iIndex]->vPos.x, CMapManager::Get_Instance()->m_vecTile[m_RoomIndex][iIndex]->vPos.y + (TILECY / 2.f), 0.f },
+		{ CMapManager::Get_Instance()->m_vecTile[m_RoomIndex][iIndex]->vPos.x + (TILECX / 2.f), CMapManager::Get_Instance()->m_vecTile[m_RoomIndex][iIndex]->vPos.y, 0.f },
+		{ CMapManager::Get_Instance()->m_vecTile[m_RoomIndex][iIndex]->vPos.x, CMapManager::Get_Instance()->m_vecTile[m_RoomIndex][iIndex]->vPos.y - (TILECY / 2.f), 0.f },
+		{ CMapManager::Get_Instance()->m_vecTile[m_RoomIndex][iIndex]->vPos.x - (TILECX / 2.f), CMapManager::Get_Instance()->m_vecTile[m_RoomIndex][iIndex]->vPos.y, 0.f },
 
 	};
 
@@ -419,7 +378,7 @@ bool CTerrain::Picking(const D3DXVECTOR3& vPos, const int& iIndex)
 		bCheck[3] = true;
 
 
-	return bCheck[0] && bCheck[1] && bCheck[2] && bCheck[3];
+	return bCheck[m_RoomIndex] && bCheck[1] && bCheck[2] && bCheck[3];
 }
 
 bool CTerrain::Picking_Dot(const D3DXVECTOR3& vPos, const int& iIndex)
@@ -427,10 +386,10 @@ bool CTerrain::Picking_Dot(const D3DXVECTOR3& vPos, const int& iIndex)
 	// 12 -> 3 -> 6 -> 9
 	D3DXVECTOR3	vPoint[4] =
 	{
-		{ m_vecTile[iIndex]->vPos.x, m_vecTile[iIndex]->vPos.y + (TILECY / 2.f), 0.f },
-		{ m_vecTile[iIndex]->vPos.x + (TILECX / 2.f), m_vecTile[iIndex]->vPos.y, 0.f },
-		{ m_vecTile[iIndex]->vPos.x, m_vecTile[iIndex]->vPos.y - (TILECY / 2.f), 0.f },
-		{ m_vecTile[iIndex]->vPos.x - (TILECX / 2.f), m_vecTile[iIndex]->vPos.y, 0.f },
+		{ CMapManager::Get_Instance()->m_vecTile[m_RoomIndex][iIndex]->vPos.x, CMapManager::Get_Instance()->m_vecTile[m_RoomIndex][iIndex]->vPos.y + (TILECY / 2.f), 0.f },
+		{ CMapManager::Get_Instance()->m_vecTile[m_RoomIndex][iIndex]->vPos.x + (TILECX / 2.f), CMapManager::Get_Instance()->m_vecTile[m_RoomIndex][iIndex]->vPos.y, 0.f },
+		{ CMapManager::Get_Instance()->m_vecTile[m_RoomIndex][iIndex]->vPos.x, CMapManager::Get_Instance()->m_vecTile[m_RoomIndex][iIndex]->vPos.y - (TILECY / 2.f), 0.f },
+		{ CMapManager::Get_Instance()->m_vecTile[m_RoomIndex][iIndex]->vPos.x - (TILECX / 2.f), CMapManager::Get_Instance()->m_vecTile[m_RoomIndex][iIndex]->vPos.y, 0.f },
 
 	};
 
