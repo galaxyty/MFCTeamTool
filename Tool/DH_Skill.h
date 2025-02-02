@@ -19,12 +19,16 @@ public:
 
 public:
 	void	SetImageKey(CString _Key) { m_ImageKey = _Key; }
+	void	MouseDrag(DH_UI* _UI);
 
 private:
 	D3DXVECTOR3	m_vDragStart;
 	CString m_ImageKey;
 	DH_UI* m_Skill;
 
+	SKILLDATA* m_pSkillDATA;
+
 	bool m_bDragOn;
+	int m_PreviousIndex;
 };
 

@@ -4,6 +4,8 @@
 #include "DH_UI.h"
 #include "CTextureMgr.h"
 #include "CDevice.h"
+#include "DH_Interface.h"
+#include "DH_SkillUI.h"
 
 DH_Skill::DH_Skill() : m_Skill(nullptr), m_ImageKey()
 {
@@ -16,63 +18,63 @@ DH_Skill::~DH_Skill()
 
 void DH_Skill::MouseOn()
 {
-	if (m_bDragOn)
-	{
-		//마우스가 올라간 상태에서 버튼이 눌리면 움직임
-		D3DXVECTOR3 vDiff = { 0.f, 0.f, 0.f };
-		vDiff.x = Get_Mouse().x - m_vDragStart.x;
-		vDiff.y = Get_Mouse().y - m_vDragStart.y;
-
-		D3DXVECTOR3 vCurPos = GetMPos();
-		vCurPos = vCurPos + vDiff;
-		SetMPos(vCurPos);
-
-		m_vDragStart = Get_Mouse();
-	}
+	
 }
 
 void DH_Skill::MouseLDown()
 {
-	//다운했을때? 객체랑 마우스랑 출돌했다는 뜻(스위치 ON)
 	m_bDragOn = true;
 	m_vDragStart = Get_Mouse();
+
+	//벡터 맨뒤로 보내기
+	auto& Btn = *GetParent();
+	auto& Inven = *GetParent()->GetParent();
+	auto& childUI = Inven.GetChildUI();
+
+	for (size_t i = 0; i < childUI.size(); ++i)
+	{
+		if (childUI[i] == &Btn)
+		{
+			m_PreviousIndex = i;
+			auto temp = childUI[i];   // 요소 복사
+			childUI.erase(childUI.begin() + i); // 기존 위치에서 제거
+			childUI.push_back(temp);  // 끝에 추가
+			break;
+		}
+	}
 }
 
 void DH_Skill::MouseLUp()
 {
 	m_bDragOn = false;
-	D3DXVECTOR3 fMouse = Get_Mouse();
 
-	//원하는 최상위 부모를 m_Inven 에 담기
-	auto& AllUI = DH_OBJMgr::Get_Instance()->Get_UI();
-	for (auto& _UISkill : AllUI)
-	{
-		if (L"Skill" == _UISkill->GetName())
-		{
-			m_Skill = dynamic_cast<DH_UI*>(_UISkill);
-		}
-	}
-	//베이스 부모의 자식버튼을 순회한다.
-	for (auto& Btn : m_Skill->GetChildUI())
-	{
-		//버튼 위에 마우스가 있으면?
-		if (Btn->IsMouseOn())
-		{
-			//현재 부모의 자식배열에서 자신을 삭제
-			auto& oldParent = *GetParent();
-			auto& oldChildList = oldParent.GetChildUI();
-			oldChildList.erase(remove(oldChildList.begin(), oldChildList.end(), this), oldChildList.end());
-			//새로운 부모 연결
-			Btn->AddParent(this);
-			//포지션 셋팅
-			SetMPos({ 0.f, 0.f, 0.f });
-		}
-		else
-		{
-			SetMPos({ 0.f, 0.f, 0.f });
-		}
-	}
+	//아이템 순서 원위치
+	auto& Btn = *GetParent();
+	auto& Inven = *GetParent()->GetParent();
+	auto& childUI = Inven.GetChildUI();
 
+	auto temp = childUI.back(); // 맨 뒤 아이템 복사
+	childUI.pop_back(); // 맨 뒤에서 제거
+	childUI.insert(childUI.begin() + m_PreviousIndex, temp); // 이전 위치로 복귀
+
+	//지금 부모가 스킬창일때
+	if (GetParent()->GetParent()->GetName() == L"Skill")
+	{
+		m_Skill = GetParent()->GetParent();
+		DH_Interface* InterfaceUI = dynamic_cast<DH_SkillUI*>(m_Skill)->GetInterface();
+
+		MouseDrag(m_Skill);
+		MouseDrag(InterfaceUI);
+	}
+	//부모가 인터페이스창일 때
+	else if (GetParent()->GetParent()->GetName() == L"Interface")
+	{
+		m_Skill = GetParent()->GetParent();
+		DH_SkillUI* SkillUI = dynamic_cast<DH_Interface*>(m_Skill)->GetSkillUI();
+
+		MouseDrag(m_Skill);
+		MouseDrag(SkillUI);
+	}
 }
 
 void DH_Skill::MouseLClicked()
@@ -173,5 +175,51 @@ void DH_Skill::Render()
 
 void DH_Skill::Update()
 {
+	if (m_bDragOn)
+	{
+		//마우스가 올라간 상태에서 버튼이 눌리면 움직임
+		D3DXVECTOR3 vDiff = { 0.f, 0.f, 0.f };
+		vDiff.x = Get_Mouse().x - m_vDragStart.x;
+		vDiff.y = Get_Mouse().y - m_vDragStart.y;
+
+		D3DXVECTOR3 vCurPos = GetMPos();
+		vCurPos = vCurPos + vDiff;
+		SetMPos(vCurPos);
+
+		m_vDragStart = Get_Mouse();
+	}
+
 	DH_UI::Update();
+}
+
+void DH_Skill::MouseDrag(DH_UI* _UI)
+{
+	//베이스 부모의 자식버튼을 순회한다.
+	for (auto& Btn : _UI->GetChildUI())
+	{
+		//버튼UI 위에 마우스가 있으면?
+		if (Btn->IsMouseOn() && dynamic_cast<DH_BtnUI*>(Btn)->GeteItemParts() == ITEMPARTS::SKILL)
+		{
+			//현재 부모의 자식배열에서 자신을 삭제
+			auto& oldParent = *GetParent();
+			auto& oldChildList = oldParent.GetChildUI();
+			oldChildList.erase(remove(oldChildList.begin(), oldChildList.end(), this), oldChildList.end());
+			//새로운 부모 연결
+			Btn->AddParent(this);
+			//포지션 셋팅
+			SetMPos({ 0.f, 0.f, 0.f });
+
+			//기존 자식을 삭제 후 스왑
+			if (Btn->GetChildUI().size() > 1)
+			{
+				//Btn->GetChildUI().begin = 원래 있던 아이템
+				oldParent.AddParent(Btn->GetChildUI().front());
+				Btn->GetChildUI().erase(Btn->GetChildUI().begin());
+			}
+		}
+		else
+		{
+			SetMPos({ 0.f, 0.f, 0.f });
+		}
+	}
 }

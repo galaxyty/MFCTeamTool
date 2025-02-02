@@ -7,11 +7,11 @@
 #include "DH_OBJMgr.h"
 #include "DH_Item.h"
 
-DH_Inventory::DH_Inventory()
+DH_Inventory::DH_Inventory() : Interface(nullptr)
 {
 }
 
-DH_Inventory::~DH_Inventory()
+DH_Inventory::~DH_Inventory() 
 {
 	for (auto& ChildUI : GetChildUI())
 	{
@@ -80,20 +80,20 @@ void DH_Inventory::Render(CToolView* pMainView)
 	if (m_bLDown)
 	{
 		// 렌더링
-		CDevice::Get_Instance()->Get_Sprite()->Draw(pTexInfo->pTexture, //출력할 텍스처 컴객체
-			nullptr,		// 출력할 이미지 영역에 대한 Rect 주소, null인 경우 이미지의 0, 0기준으로 출력
-			&vTemp,			// 출력할 이미지의 중심 좌표 vec3 주소, null인 경우 0, 0 이미지 중심
-			nullptr,		// 위치 좌표에 대한 vec3 주소, null인 경우 스크린 상 0, 0 좌표 출력	
-			D3DCOLOR_ARGB(255, 255, 255, 255)); // 출력할 이미지와 섞을 색상 값, 0xffffffff를 넘겨주면 섞지 않고 원본 색상 유지
+		CDevice::Get_Instance()->Get_Sprite()->Draw(pTexInfo->pTexture, 
+			nullptr,		
+			&vTemp,			
+			nullptr,		
+			D3DCOLOR_ARGB(255, 255, 255, 255)); 
 	}
 	else
 	{
 		// 렌더링
-		CDevice::Get_Instance()->Get_Sprite()->Draw(pTexInfo->pTexture, //출력할 텍스처 컴객체
-			nullptr,		// 출력할 이미지 영역에 대한 Rect 주소, null인 경우 이미지의 0, 0기준으로 출력
-			&vTemp,			// 출력할 이미지의 중심 좌표 vec3 주소, null인 경우 0, 0 이미지 중심
-			nullptr,		// 위치 좌표에 대한 vec3 주소, null인 경우 스크린 상 0, 0 좌표 출력	
-			D3DCOLOR_ARGB(255, 255, 255, 255)); // 출력할 이미지와 섞을 색상 값, 0xffffffff를 넘겨주면 섞지 않고 원본 색상 유지
+		CDevice::Get_Instance()->Get_Sprite()->Draw(pTexInfo->pTexture, 
+			nullptr,		
+			&vTemp,			
+			nullptr,		
+			D3DCOLOR_ARGB(255, 255, 255, 255)); 
 	}
 
 
@@ -159,6 +159,7 @@ void DH_Inventory::SetButten()
 	AmorShoulderBtn->SetMPos(D3DXVECTOR3{ -103.f, -180.f ,0.f });
 	AmorShoulderBtn->SetScale(D3DXVECTOR3{ 28.f,28.f,0.f });
 	AmorShoulderBtn->SeteItemParts(ITEMPARTS::SHOULDER);
+	AmorShoulderBtn->SetbEquip(true);
 	AmorShoulderBtn->Initialize();
 	AddParent(AmorShoulderBtn);
 
@@ -168,6 +169,7 @@ void DH_Inventory::SetButten()
 	AmorTopBtn->SetMPos(D3DXVECTOR3{ -71.f, -180.f ,0.f });
 	AmorTopBtn->SetScale(D3DXVECTOR3{ 28.f,28.f,0.f });
 	AmorTopBtn->SeteItemParts(ITEMPARTS::TOP);
+	AmorTopBtn->SetbEquip(true);
 	AmorTopBtn->Initialize();
 	AddParent(AmorTopBtn);
 
@@ -177,6 +179,7 @@ void DH_Inventory::SetButten()
 	AmorBottomBtn->SetMPos(D3DXVECTOR3{ -103.f, -148.f ,0.f });
 	AmorBottomBtn->SetScale(D3DXVECTOR3{ 28.f,28.f,0.f });
 	AmorBottomBtn->SeteItemParts(ITEMPARTS::BOTTOM);
+	AmorBottomBtn->SetbEquip(true);
 	AmorBottomBtn->Initialize();
 	AddParent(AmorBottomBtn);
 
@@ -186,6 +189,7 @@ void DH_Inventory::SetButten()
 	AmorBeltBtn->SetMPos(D3DXVECTOR3{ -71.f, -148.f ,0.f });
 	AmorBeltBtn->SetScale(D3DXVECTOR3{ 28.f,28.f,0.f });
 	AmorBeltBtn->SeteItemParts(ITEMPARTS::BELT);
+	AmorBeltBtn->SetbEquip(true);
 	AmorBeltBtn->Initialize();
 	AddParent(AmorBeltBtn);
 
@@ -195,6 +199,7 @@ void DH_Inventory::SetButten()
 	AmorShoesBtn->SetMPos(D3DXVECTOR3{ -103.f, -116.f ,0.f });
 	AmorShoesBtn->SetScale(D3DXVECTOR3{ 28.f,28.f,0.f });
 	AmorShoesBtn->SeteItemParts(ITEMPARTS::SHOES);
+	AmorShoesBtn->SetbEquip(true);
 	AmorShoesBtn->Initialize();
 	AddParent(AmorShoesBtn);
 
@@ -208,6 +213,7 @@ void DH_Inventory::SetButten()
 	AmorBookBtn->SetMPos(D3DXVECTOR3{ -64.f, -111.f ,0.f });
 	AmorBookBtn->SetScale(D3DXVECTOR3{ 28.f,28.f,0.f });
 	AmorBookBtn->SeteItemParts(ITEMPARTS::BOOK);
+	AmorBookBtn->SetbEquip(true);
 	AmorBookBtn->Initialize();
 	AddParent(AmorBookBtn);
 
@@ -217,6 +223,7 @@ void DH_Inventory::SetButten()
 	JewerlyBtn->SetMPos(D3DXVECTOR3{ 64.f, -111.f ,0.f });
 	JewerlyBtn->SetScale(D3DXVECTOR3{ 28.f,28.f,0.f });
 	JewerlyBtn->SeteItemParts(ITEMPARTS::JEWERLY);
+	JewerlyBtn->SetbEquip(true);
 	JewerlyBtn->Initialize();
 	AddParent(JewerlyBtn);
 
@@ -227,36 +234,40 @@ void DH_Inventory::SetButten()
 	DH_BtnUI* WeaponBtn = new DH_BtnUI;
 	name = L"WeaponBtn";
 	WeaponBtn->SetName(name);
-	WeaponBtn->SetMPos(D3DXVECTOR3{ 103.f, -180.f ,0.f });
+	WeaponBtn->SetMPos(D3DXVECTOR3{ 71.f, -180.f ,0.f });
 	WeaponBtn->SetScale(D3DXVECTOR3{ 28.f,28.f,0.f });
 	WeaponBtn->SeteItemParts(ITEMPARTS::WEAPON);
+	WeaponBtn->SetbEquip(true);
 	WeaponBtn->Initialize();
 	AddParent(WeaponBtn);
 
 	DH_BtnUI* SymbolBtn = new DH_BtnUI;
 	name = L"SymbolBtn";
 	SymbolBtn->SetName(name);
-	SymbolBtn->SetMPos(D3DXVECTOR3{ 71.f, -180.f ,0.f });
+	SymbolBtn->SetMPos(D3DXVECTOR3{ 103.f, -180.f, 0.f });
 	SymbolBtn->SetScale(D3DXVECTOR3{ 28.f,28.f,0.f });
 	SymbolBtn->SeteItemParts(ITEMPARTS::SYMBOL);
+	SymbolBtn->SetbEquip(true);
 	SymbolBtn->Initialize();
 	AddParent(SymbolBtn);
 
 	DH_BtnUI* BraceletBtn = new DH_BtnUI;
 	name = L"BraceletBtn";
 	BraceletBtn->SetName(name);
-	BraceletBtn->SetMPos(D3DXVECTOR3{ 103.f, -148.f ,0.f });
+	BraceletBtn->SetMPos(D3DXVECTOR3{ 71.f, -148.f ,0.f });
 	BraceletBtn->SetScale(D3DXVECTOR3{ 28.f,28.f,0.f });
 	BraceletBtn->SeteItemParts(ITEMPARTS::BRACELET);
+	BraceletBtn->SetbEquip(true);
 	BraceletBtn->Initialize();
 	AddParent(BraceletBtn);
 
 	DH_BtnUI* NeckBtn = new DH_BtnUI;
 	name = L"NeckBtn";
 	NeckBtn->SetName(name);
-	NeckBtn->SetMPos(D3DXVECTOR3{ 71.f, -148.f ,0.f });
+	NeckBtn->SetMPos(D3DXVECTOR3{ 103.f, -148.f, 0.f });
 	NeckBtn->SetScale(D3DXVECTOR3{ 28.f,28.f,0.f });
 	NeckBtn->SeteItemParts(ITEMPARTS::NECK);
+	NeckBtn->SetbEquip(true);
 	NeckBtn->Initialize();
 	AddParent(NeckBtn);
 
@@ -266,6 +277,7 @@ void DH_Inventory::SetButten()
 	RingBtn->SetMPos(D3DXVECTOR3{ 103.f, -116.f ,0.f });
 	RingBtn->SetScale(D3DXVECTOR3{ 28.f,28.f,0.f });
 	RingBtn->SeteItemParts(ITEMPARTS::RING);
+	RingBtn->SetbEquip(true);
 	RingBtn->Initialize();
 	AddParent(RingBtn);
 

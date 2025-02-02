@@ -106,6 +106,12 @@
     <Filter Include="04. Etc\03. Dialog\04. EquipTool\00.UI\05.Skill">
       <UniqueIdentifier>{271c6ee5-e67d-437b-8489-75861bb6db87}</UniqueIdentifier>
     </Filter>
+    <Filter Include="04. Etc\03. Dialog\04. EquipTool\00.UI\06.MyState">
+      <UniqueIdentifier>{9882914a-4198-45d6-be68-a6b7a0bce8c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Etc\03. Dialog\04. EquipTool\02.Player">
+      <UniqueIdentifier>{7066b36e-fc67-470c-8590-359ea090bdb4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Tool.h">
@@ -210,8 +216,11 @@
     <ClInclude Include="DH_Skill.h">
       <Filter>04. Etc\03. Dialog\04. EquipTool\00.UI\05.Skill</Filter>
     </ClInclude>
-    <ClInclude Include="CMapManager.h">
-      <Filter>03. Manager</Filter>
+    <ClInclude Include="DH_MyState.h">
+      <Filter>04. Etc\03. Dialog\04. EquipTool\00.UI\06.MyState</Filter>
+    </ClInclude>
+    <ClInclude Include="DH_Player.h">
+      <Filter>04. Etc\03. Dialog\04. EquipTool\02.Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -308,8 +317,11 @@
     <ClCompile Include="DH_Skill.cpp">
       <Filter>04. Etc\03. Dialog\04. EquipTool\00.UI\05.Skill</Filter>
     </ClCompile>
-    <ClCompile Include="CMapManager.cpp">
-      <Filter>03. Manager</Filter>
+    <ClCompile Include="DH_MyState.cpp">
+      <Filter>04. Etc\03. Dialog\04. EquipTool\00.UI\06.MyState</Filter>
+    </ClCompile>
+    <ClCompile Include="DH_Player.cpp">
+      <Filter>04. Etc\03. Dialog\04. EquipTool\02.Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

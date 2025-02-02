@@ -92,11 +92,11 @@ HRESULT CDevice::Init_Device()
 	D3DXFONT_DESCW		tFontInfo;
 	ZeroMemory(&tFontInfo, sizeof(D3DXFONT_DESCW));
 
-	tFontInfo.Height = 20;
-	tFontInfo.Width = 10;
-	tFontInfo.Weight = FW_HEAVY;
+	tFontInfo.Height = 13;
+	tFontInfo.Width = 7;
+	tFontInfo.Weight = FW_NORMAL;
 	tFontInfo.CharSet = HANGEUL_CHARSET;
-	lstrcpy(tFontInfo.FaceName, L"±Ã¼­");
+	lstrcpy(tFontInfo.FaceName, L"±¼¸²Ã¼");
 
 	if (FAILED(D3DXCreateFontIndirect(m_pDevice, &tFontInfo, &m_pFont)))
 	{

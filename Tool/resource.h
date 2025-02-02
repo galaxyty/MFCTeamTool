@@ -15,6 +15,7 @@
 #define IDC_BUTTON2                     1001
 #define IDC_EDIT2                       1002
 #define IDC_MAP_BUTTON                  1002
+#define IDC_BUTTON7                     1002
 #define IDC_EQUIP_BUTTON                1003
 #define IDC_RATIO_SLIDER                1004
 #define IDC_RATIO_TEXT                  1005
