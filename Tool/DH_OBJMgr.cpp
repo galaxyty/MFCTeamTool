@@ -56,7 +56,8 @@ void DH_OBJMgr::Render()
 
 void DH_OBJMgr::Release()
 {
-	for (size_t i = 0; i < OBJ_END; ++i)
+	//플레이어 싱글톤이여서 다른곳에서 삭제했음
+	for (size_t i = 1; i < OBJ_END; ++i)
 	{
 		for(auto& pObj : m_ObjList[i])
 		{

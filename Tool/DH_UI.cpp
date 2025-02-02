@@ -3,7 +3,7 @@
 #include "CTextureMgr.h"
 #include "CDevice.h"
 
-DH_UI::DH_UI() : m_vFinalPos(D3DXVECTOR3{}), m_pParnetUI(nullptr), m_bMouseOn(false), m_bLDown(false), m_bRDown(false), m_bVisible(true)
+DH_UI::DH_UI() : m_vFinalPos(D3DXVECTOR3{}), m_pParnetUI(nullptr), m_bMouseOn(false), m_bLDown(false), m_bRDown(false), m_bVisible(false)
 {
 }
 

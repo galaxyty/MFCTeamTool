@@ -6,7 +6,7 @@
 #include "DH_BtnUI.h"
 
 
-DH_SkillUI::DH_SkillUI()
+DH_SkillUI::DH_SkillUI() : Interface(nullptr)
 {
 }
 
@@ -31,7 +31,7 @@ void DH_SkillUI::Initialize()
 		return;
 	}
 
-	SetMPos(D3DXVECTOR3{ 300.f, 300.f, 0.f });
+	SetMPos(D3DXVECTOR3{ 347.f, 460.f, 0.f });
 	SetScale(D3DXVECTOR3{ 245.f, 200.f, 0.f });
 
 	SetButten();
@@ -78,20 +78,20 @@ void DH_SkillUI::Render(CToolView* pMainView)
 	if (m_bLDown)
 	{
 		// 렌더링
-		CDevice::Get_Instance()->Get_Sprite()->Draw(pTexInfo->pTexture, //출력할 텍스처 컴객체
-			nullptr,		// 출력할 이미지 영역에 대한 Rect 주소, null인 경우 이미지의 0, 0기준으로 출력
-			&vTemp,			// 출력할 이미지의 중심 좌표 vec3 주소, null인 경우 0, 0 이미지 중심
-			nullptr,		// 위치 좌표에 대한 vec3 주소, null인 경우 스크린 상 0, 0 좌표 출력	
-			D3DCOLOR_ARGB(255, 255, 255, 255)); // 출력할 이미지와 섞을 색상 값, 0xffffffff를 넘겨주면 섞지 않고 원본 색상 유지
+		CDevice::Get_Instance()->Get_Sprite()->Draw(pTexInfo->pTexture,
+			nullptr,
+			&vTemp,
+			nullptr,
+			D3DCOLOR_ARGB(255, 255, 255, 255));
 	}
 	else
 	{
 		// 렌더링
-		CDevice::Get_Instance()->Get_Sprite()->Draw(pTexInfo->pTexture, //출력할 텍스처 컴객체
-			nullptr,		// 출력할 이미지 영역에 대한 Rect 주소, null인 경우 이미지의 0, 0기준으로 출력
-			&vTemp,			// 출력할 이미지의 중심 좌표 vec3 주소, null인 경우 0, 0 이미지 중심
-			nullptr,		// 위치 좌표에 대한 vec3 주소, null인 경우 스크린 상 0, 0 좌표 출력	
-			D3DCOLOR_ARGB(255, 255, 255, 255)); // 출력할 이미지와 섞을 색상 값, 0xffffffff를 넘겨주면 섞지 않고 원본 색상 유지
+		CDevice::Get_Instance()->Get_Sprite()->Draw(pTexInfo->pTexture,
+			nullptr,
+			&vTemp,
+			nullptr,
+			D3DCOLOR_ARGB(255, 255, 255, 255)); 
 	}
 
 
@@ -142,8 +142,10 @@ void DH_SkillUI::SetButten()
 
 			Btn->SetMPos(D3DXVECTOR3{ -94.f + (30 * j), -49.f + (30 * i), 0.f });
 			Btn->SetScale(D3DXVECTOR3{ 28.f,28.f,0.f });
+			Btn->SeteItemParts(ITEMPARTS::SKILL);
 			Btn->Initialize();
 			AddParent(Btn);
 		}
 	}
 }
+

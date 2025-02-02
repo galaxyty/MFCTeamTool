@@ -3,6 +3,8 @@
 #include "CTextureMgr.h"
 #include "CDevice.h"
 #include "ToolView.h"
+#include "DH_BtnUI.h"
+
 
 DH_Interface::DH_Interface()
 {
@@ -10,6 +12,11 @@ DH_Interface::DH_Interface()
 
 DH_Interface::~DH_Interface()
 {
+	for (auto& ChildUI : GetChildUI())
+	{
+		delete ChildUI;
+		ChildUI = nullptr;
+	}
 }
 
 void DH_Interface::Initialize()
@@ -24,19 +31,22 @@ void DH_Interface::Initialize()
 		return;
 	}
 
-	//행렬 포지션
-	SetMPos(D3DXVECTOR3{ 0.f, 0.f, 0.f });
-
-	//이미지 크기
+	SetMPos(D3DXVECTOR3{ 400.f, 556.f, 0.f });
 	SetScale(D3DXVECTOR3{ 800.f, 600.f, 0.f });
+
+
+	SetButten();
 }
 
 void DH_Interface::Update()
 {
+	DH_UI::Update();
 }
 
 void DH_Interface::Render(CToolView* pMainView)
 {
+	if (!m_bVisible)
+		return; // UI가 비활성화 상태라면 렌더링하지 않음
 
 	D3DXMATRIX	matWorld, matScale, matTrans;
 
@@ -54,10 +64,7 @@ void DH_Interface::Render(CToolView* pMainView)
 	D3DXMatrixScaling(&matScale, 1.f, 1.f, 1.f);
 
 	//스크롤 값 제외
-	D3DXMatrixTranslation(&matTrans,
-		GetMPos().x + GetScale().x / 2, 
-		GetMPos().y + GetScale().y / 2, 
-		GetMPos().z);
+	D3DXMatrixTranslation(&matTrans,GetMPos().x, GetMPos().y, GetMPos().z);
 
 	matWorld = matScale * matTrans;
 
@@ -67,12 +74,14 @@ void DH_Interface::Render(CToolView* pMainView)
 
 
 	// 렌더링
-	CDevice::Get_Instance()->Get_Sprite()->Draw(pTexInfo->pTexture, //출력할 텍스처 컴객체
-		nullptr,		// 출력할 이미지 영역에 대한 Rect 주소, null인 경우 이미지의 0, 0기준으로 출력
-		&vTemp,			// 출력할 이미지의 중심 좌표 vec3 주소, null인 경우 0, 0 이미지 중심
-		nullptr,		// 위치 좌표에 대한 vec3 주소, null인 경우 스크린 상 0, 0 좌표 출력	
-		D3DCOLOR_ARGB(255, 255, 255, 255)); // 출력할 이미지와 섞을 색상 값, 0xffffffff를 넘겨주면 섞지 않고 원본 색상 유지
+	CDevice::Get_Instance()->Get_Sprite()->Draw(pTexInfo->pTexture,
+		nullptr,
+		&vTemp,
+		nullptr,
+		D3DCOLOR_ARGB(255, 255, 255, 255));
 
+
+	RenderChild();
 }
 
 void DH_Interface::MouseOn()
@@ -89,4 +98,38 @@ void DH_Interface::MouseLUp()
 
 void DH_Interface::MouseLClicked()
 {
+}
+
+void DH_Interface::SetButten()
+{
+	//하위버튼 추가
+	for (int i = 0; i < 6; ++i)
+	{
+		DH_BtnUI* Btn = new DH_BtnUI;
+
+		wstring name = L"PotionBtn_" + std::to_wstring(i);
+		Btn->SetName(name);
+
+		Btn->SetMPos(D3DXVECTOR3{ -301.f + (30 * i), 272 - 256.f, 0.f });
+		Btn->SetScale(D3DXVECTOR3{ 28.f,28.f,0.f });
+		Btn->SeteItemParts(ITEMPARTS::POTION);
+		Btn->SetVisible(true);
+		Btn->Initialize();
+		AddParent(Btn);
+	}
+
+	for (int i = 0; i < 6; ++i)
+	{
+		DH_BtnUI* Btn = new DH_BtnUI;
+
+		wstring name = L"SkillBtn_" + std::to_wstring(i);
+		Btn->SetName(name);
+
+		Btn->SetMPos(D3DXVECTOR3{ 152.f + (30 * i), 272.f - 256, 0.f });
+		Btn->SetScale(D3DXVECTOR3{ 28.f,28.f,0.f });
+		Btn->SeteItemParts(ITEMPARTS::SKILL);
+		Btn->SetVisible(true);
+		Btn->Initialize();
+		AddParent(Btn);
+	}
 }

@@ -15,7 +15,9 @@
 #include "CDH_FilePath.h"
 #include "DH_Item.h"
 #include "DH_Skill.h"
+#include "DH_MyState.h"
 #include "DH_UI.h"
+#include "DH_Player.h"
 
 
 // CEquipTool 대화 상자
@@ -67,6 +69,7 @@ BEGIN_MESSAGE_MAP(CEquipTool, CDialog)
 	ON_LBN_SELCHANGE(IDC_LIST2, &CEquipTool::OnSkillList)
 	ON_BN_CLICKED(IDC_BUTTON4, &CEquipTool::OnAddSkill)
 	ON_BN_CLICKED(IDC_BUTTON6, &CEquipTool::OnDeleteSkill)
+	ON_BN_CLICKED(IDC_BUTTON7, &CEquipTool::OnMyState)
 END_MESSAGE_MAP()
 
 
@@ -78,24 +81,44 @@ BOOL CEquipTool::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
+	//인터페이스 추가
+	Interface = new DH_Interface;
+	Interface->SetName(L"Interface");
+	Interface->SetVisible(true);
+	Interface->Initialize();
+	DH_OBJMgr::Get_Instance()->Add_Object(OBJ_UI, Interface);
+
 	//인벤토리 추가
 	Inventory = new DH_Inventory;
 	Inventory->SetName(L"Inventory");
+	Inventory->SetInterface(Interface);
 	Inventory->Initialize();
 	DH_OBJMgr::Get_Instance()->Add_Object(OBJ_UI, Inventory);
 
 	//스킬 추가
 	Skill = new DH_SkillUI;
 	Skill->SetName(L"Skill");
+	Skill->SetInterface(Interface);
 	Skill->Initialize();
 	DH_OBJMgr::Get_Instance()->Add_Object(OBJ_UI, Skill);
 
+	//스테이트 추가
+	MyState = new DH_MyState;
+	MyState->SetName(L"MyState");
+	MyState->Initialize();
+	DH_OBJMgr::Get_Instance()->Add_Object(OBJ_UI, MyState);
 
-	//인터페이스 추가
-	Interface = new DH_Interface;
-	Interface->SetName(L"Interface");
-	Interface->Initialize();
-	DH_OBJMgr::Get_Instance()->Add_Object(OBJ_UI, Interface);
+	Interface->SetInventory(Inventory);
+	Interface->SetSkillUI(Skill);
+
+	//플레이어 추가
+	pPlayer = DH_Player::Get_Instance();
+	pPlayer->SetName(L"pPlayer");
+	pPlayer->SetInventory(Inventory);
+	pPlayer->SetInterface(Interface);
+	pPlayer->SetMyState(MyState);
+	pPlayer->Initialize();
+	DH_OBJMgr::Get_Instance()->Add_Object(OBJ_PLAYER, pPlayer);
 
 	
 	wcscpy_s(m_szFileName, L"../Texture/Picked/Item/Amor");
@@ -117,6 +140,10 @@ void CEquipTool::OnInventory()
 void CEquipTool::OnSkill()
 {
 	UIToggle(Skill);
+}
+void CEquipTool::OnMyState()
+{
+	UIToggle(MyState);
 }
 void CEquipTool::UIToggle(DH_UI* _UI)
 {
@@ -416,6 +443,7 @@ void CEquipTool::OnDestroy()
 
 	m_mapPngImage.clear();
 
+	DH_Player::Destroy_Instance();
 }
 
 
@@ -444,12 +472,13 @@ void CEquipTool::AddItem(wstring _Item, CString _CString, ITEMDATA* pItemData)
 			else if (m_Item[1].GetCheck())
 				Item->SetItem(ITEM::AMOR);
 			else if (m_Item[2].GetCheck())
-				Item->SetItem(ITEM::ACCE);
+				Item->SetItem(ITEM::ACCE); 
 			else if (m_Item[3].GetCheck())
 				Item->SetItem(ITEM::POTION);
 
 			Item->SetImageKey(_CString);
 			Item->SetpITEMDATA(pItemData);
+			Item->SetVisible(true);
 			Item->Initialize();
 			Inventory->GetChildUI()[i]->AddParent(Item);
 			break;
@@ -493,6 +522,7 @@ void CEquipTool::AddSkill(wstring _Item, CString _CString)
 			SkillIcon->SetMPos(D3DXVECTOR3{ 0.f, 0.f, 0.f });
 			SkillIcon->SetScale(D3DXVECTOR3{ 28.f,28.f,0.f });
 			SkillIcon->SetImageKey(_CString);
+			SkillIcon->SetVisible(true);
 			SkillIcon->Initialize();
 			Skill->GetChildUI()[i]->AddParent(SkillIcon);
 			break;
@@ -524,108 +554,197 @@ void CEquipTool::SetItemInfo(CString _CString, ITEMDATA* pItemData)
 	if (_CString == L"00.Band")
 	{
 		pItemData->strName = L"00.Band";
-		pItemData->strSpecialEffect = L"손가락에 착용 시 방어력을 약간 증가시키는 단순한 금속 밴드입니다.";
+		pItemData->strExplan = L"손가락에 착용 시 방어력을 약간 증가시키는 단순한 금속 밴드입니다.";
 		pItemData->eItemPart = ITEMPARTS::BRACELET;
 		pItemData->eElement = ELEMENT::NORMAL;
-		pItemData->fCriticalRate = 10.0f;
-		pItemData->fAttackSpeed = 1.0f;
-		pItemData->fWeight = 5.0f;
-		pItemData->iHp = 50;
-		pItemData->iAttack = 10;
-		pItemData->iDurability = 100;
-		pItemData->iRequiredLevel = 15;
-		pItemData->iDefense = 30;
-		pItemData->bEnchantable = true;
+
+
+		pItemData->fCriticalRate = 0.05f;       // 치명타 확률: 5%
+		pItemData->fWeight = 0.1f;              // 무게: 가벼움
+		pItemData->iDurability = 100;           // 내구도: 100
+		pItemData->iRequiredLevel = 5;          // 요구 레벨: 5
+		pItemData->bEnchantable = true;         // 강화 가능 여부: 가능
+
+		pItemData->iHP = 50;                    // 체력: +50
+		pItemData->iMP = 30;                    // 마나: +30
+		pItemData->iIntelligence = 10;          // 지능: +10
+		pItemData->iStrength = 5;               // 체력(스탯): +5
+		pItemData->iPhysicalAtk = 15;           // 물리 공격: +15
+		pItemData->iMagicAtk = 10;              // 마법 공격: +10
+		pItemData->iFireResist = 3;             // 화염 저항: +3
+		pItemData->iLightResist = 2;            // 명저항: +2
+		pItemData->iManaResist = 5;             // 마나 저항: +5
+		pItemData->iAgility = 8;                // 이속: +8
+		pItemData->iAttackSpeed = 5;            // 공격 속도: +5
+		pItemData->iPhysicalDef = 10;           // 물리 방어: +10
+		pItemData->iMagicDef = 8;               // 마법 방어: +8
+		pItemData->iWaterResist = 2;            // 수저항: +2
+		pItemData->iDarkResist = 4;             // 암저항: +4
 
 		m_mapItemData.insert(make_pair(pItemData->strName, pItemData));
 	}
 	else if (_CString == L"00.Heart")
 	{
 		pItemData->strName = L"00.Heart";
-		pItemData->strSpecialEffect = L"사용 시 랜덤한 효과를 발휘하는 신비로운 하트 형태의 아이템입니다.";
+		pItemData->strExplan = L"사용 시 랜덤한 효과를 발휘하는 신비로운 하트 형태의 아이템입니다.";
 		pItemData->eItemPart = ITEMPARTS::JEWERLY;
 		pItemData->eElement = ELEMENT::NORMAL;
-		pItemData->fCriticalRate = 15.0f;
-		pItemData->fAttackSpeed = 5.0f;
-		pItemData->fWeight = 10.0f;
-		pItemData->iHp = 300;
-		pItemData->iAttack = 30;
-		pItemData->iDurability = 100;
-		pItemData->iRequiredLevel = 0;
-		pItemData->iDefense = 50;
-		pItemData->bEnchantable = true;
+
+		pItemData->fCriticalRate = 0.1f;           // 치명타 확률: 10%
+		pItemData->fWeight = 0.05f;                // 무게: 매우 가벼움
+		pItemData->iDurability = 80;               // 내구도: 80
+		pItemData->iRequiredLevel = 10;            // 요구 레벨: 10
+		pItemData->bEnchantable = true;            // 강화 가능 여부: 가능
+
+		// 스탯 및 능력치 초기화
+		pItemData->iHP = 100;                      // 체력: +100
+		pItemData->iMP = 50;                       // 마나: +50
+		pItemData->iIntelligence = 15;             // 지능: +15
+		pItemData->iStrength = 8;                  // 힘: +8
+		pItemData->iPhysicalAtk = 5;               // 물리 공격: +5
+		pItemData->iMagicAtk = 20;                 // 마법 공격: +20
+		pItemData->iFireResist = 5;                // 화염 저항: +5
+		pItemData->iLightResist = 8;               // 명저항: +8
+		pItemData->iManaResist = 10;               // 마나 저항: +10
+		pItemData->iAgility = 10;                  // 이속: +10
+		pItemData->iAttackSpeed = 5;               // 공격 속도: +5
+		pItemData->iPhysicalDef = 5;               // 물리 방어: +5
+		pItemData->iMagicDef = 10;                 // 마법 방어: +10
+		pItemData->iWaterResist = 7;               // 수저항: +7
+		pItemData->iDarkResist = 12;               // 암저항: +12
 
 		m_mapItemData.insert(make_pair(pItemData->strName, pItemData));
 	}
 	else if (_CString == L"00.Neck")
 	{
 		pItemData->strName = L"00.Neck";
-		pItemData->strSpecialEffect = L"착용 시 마법 방어력을 강화하는 신비로운 빛을 내뿜는 목걸이입니다.";
+		pItemData->strExplan = L"착용 시 마법 방어력을 강화하는 신비로운 빛을 내뿜는 목걸이입니다.";
 		pItemData->eItemPart = ITEMPARTS::NECK;
 		pItemData->eElement = ELEMENT::NORMAL;
-		pItemData->fCriticalRate = 25.f;
-		pItemData->fAttackSpeed = 0.0f;
-		pItemData->fWeight = 15.0f;
-		pItemData->iHp = 200;
-		pItemData->iAttack = 10;
-		pItemData->iDurability = 100;
-		pItemData->iRequiredLevel = 20;
-		pItemData->iDefense = 25;
-		pItemData->bEnchantable = true;
+		
+		// 아이템 특성 초기화
+		pItemData->fCriticalRate = 0.05f;           // 치명타 확률: 5%
+		pItemData->fWeight = 0.15f;                 // 무게: 약간 무거움
+		pItemData->iDurability = 90;                // 내구도: 90
+		pItemData->iRequiredLevel = 15;             // 요구 레벨: 15
+		pItemData->bEnchantable = true;             // 강화 가능 여부: 가능
+
+		// 스탯 및 능력치 초기화
+		pItemData->iHP = 50;                        // 체력: +50
+		pItemData->iMP = 70;                        // 마나: +70
+		pItemData->iIntelligence = 20;              // 지능: +20
+		pItemData->iStrength = 5;                   // 힘: +5
+		pItemData->iPhysicalAtk = 8;                // 물리 공격: +8
+		pItemData->iMagicAtk = 25;                  // 마법 공격: +25
+		pItemData->iFireResist = 8;                 // 화염 저항: +8
+		pItemData->iLightResist = 10;               // 명저항: +10
+		pItemData->iManaResist = 15;                // 마나 저항: +15
+		pItemData->iAgility = 6;                    // 이속: +6
+		pItemData->iAttackSpeed = 5;                // 공격 속도: +5
+		pItemData->iPhysicalDef = 5;                // 물리 방어: +5
+		pItemData->iMagicDef = 20;                  // 마법 방어: +20
+		pItemData->iWaterResist = 10;               // 수저항: +10
+		pItemData->iDarkResist = 12;                // 암저항: +12
 
 		m_mapItemData.insert(make_pair(pItemData->strName, pItemData));
 	}
 	else if (_CString == L"00.Ring1")
 	{
 		pItemData->strName = L"00.Ring1";
-		pItemData->strSpecialEffect = L"마법의 힘을 담고 있어 착용자의 능력을 소폭 강화시키는 반지입니다.";
+		pItemData->strExplan = L"마법의 힘을 담고 있어 착용자의 능력을 소폭 강화시키는 반지입니다.";
 		pItemData->eItemPart = ITEMPARTS::RING;
 		pItemData->eElement = ELEMENT::NORMAL;
-		pItemData->fCriticalRate = 10.f;
-		pItemData->fAttackSpeed = 0.0f;
-		pItemData->fWeight = 25.0f;
-		pItemData->iHp = 150;
-		pItemData->iAttack = 15;
-		pItemData->iDurability = 100;
-		pItemData->iRequiredLevel = 10;
-		pItemData->iDefense = 15;
-		pItemData->bEnchantable = true;
+		
+		// 아이템 특성 초기화
+		pItemData->fCriticalRate = 0.08f;           // 치명타 확률: 8%
+		pItemData->fWeight = 0.02f;                 // 무게: 매우 가벼움
+		pItemData->iDurability = 50;                // 내구도: 50
+		pItemData->iRequiredLevel = 8;              // 요구 레벨: 8
+		pItemData->bEnchantable = true;             // 강화 가능 여부: 가능
+
+		// 스탯 및 능력치 초기화
+		pItemData->iHP = 30;                        // 체력: +30
+		pItemData->iMP = 60;                        // 마나: +60
+		pItemData->iIntelligence = 15;              // 지능: +15
+		pItemData->iStrength = 5;                   // 힘: +5
+		pItemData->iPhysicalAtk = 10;               // 물리 공격: +10
+		pItemData->iMagicAtk = 20;                  // 마법 공격: +20
+		pItemData->iFireResist = 5;                 // 화염 저항: +5
+		pItemData->iLightResist = 5;                // 명저항: +5
+		pItemData->iManaResist = 8;                 // 마나 저항: +8
+		pItemData->iAgility = 7;                    // 이속: +7
+		pItemData->iAttackSpeed = 4;                // 공격 속도: +4
+		pItemData->iPhysicalDef = 3;                // 물리 방어: +3
+		pItemData->iMagicDef = 7;                   // 마법 방어: +7
+		pItemData->iWaterResist = 4;                // 수저항: +4
+		pItemData->iDarkResist = 6;                 // 암저항: +6
 
 		m_mapItemData.insert(make_pair(pItemData->strName, pItemData));
 	}
 	else if (_CString == L"00.Ring2")
 	{
 		pItemData->strName = L"00.Ring2";
-		pItemData->strSpecialEffect = L"착용자에게 공격력을 증폭시키는 어둠의 기운이 깃든 반지입니다.";
+		pItemData->strExplan = L"착용자에게 공격력을 증폭시키는 어둠의 기운이 깃든 반지입니다.";
 		pItemData->eItemPart = ITEMPARTS::RING;
 		pItemData->eElement = ELEMENT::NORMAL;
-		pItemData->fCriticalRate = 30.f;
-		pItemData->fAttackSpeed = 5.0f;
-		pItemData->fWeight = 25.0f;
-		pItemData->iHp = 50;
-		pItemData->iAttack = 40;
-		pItemData->iDurability = 100;
-		pItemData->iRequiredLevel = 30;
-		pItemData->iDefense = 5;
-		pItemData->bEnchantable = true;
+		
+		// 아이템 특성 초기화
+		pItemData->fCriticalRate = 0.12f;           // 치명타 확률: 12%
+		pItemData->fWeight = 0.03f;                 // 무게: 가벼움
+		pItemData->iDurability = 60;                // 내구도: 60
+		pItemData->iRequiredLevel = 12;             // 요구 레벨: 12
+		pItemData->bEnchantable = true;             // 강화 가능 여부: 가능
+
+		// 스탯 및 능력치 초기화
+		pItemData->iHP = 40;                        // 체력: +40
+		pItemData->iMP = 50;                        // 마나: +50
+		pItemData->iIntelligence = 10;              // 지능: +10
+		pItemData->iStrength = 12;                  // 힘: +12
+		pItemData->iPhysicalAtk = 30;               // 물리 공격: +30
+		pItemData->iMagicAtk = 15;                  // 마법 공격: +15
+		pItemData->iFireResist = 6;                 // 화염 저항: +6
+		pItemData->iLightResist = 4;                // 명저항: +4
+		pItemData->iManaResist = 7;                 // 마나 저항: +7
+		pItemData->iAgility = 9;                    // 이속: +9
+		pItemData->iAttackSpeed = 6;                // 공격 속도: +6
+		pItemData->iPhysicalDef = 5;                // 물리 방어: +5
+		pItemData->iMagicDef = 6;                   // 마법 방어: +6
+		pItemData->iWaterResist = 5;                // 수저항: +5
+		pItemData->iDarkResist = 10;                // 암저항: +10
 
 		m_mapItemData.insert(make_pair(pItemData->strName, pItemData));
 	}
 	else if (_CString == L"00.Ring3")
 	{
 		pItemData->strName = L"00.Ring3";
-		pItemData->strSpecialEffect = L"착용 시 마력을 증대시키며 푸른 에너지를 발산하는 신비로운 목걸이입니다.";
+		pItemData->strExplan = L"착용 시 마력을 증대시키며 푸른 에너지를 발산하는 신비로운 목걸이입니다.";
 		pItemData->eItemPart = ITEMPARTS::NECK;
 		pItemData->eElement = ELEMENT::NORMAL;
-		pItemData->fCriticalRate = 5.f;
-		pItemData->fAttackSpeed = 0.0f;
-		pItemData->fWeight = 10.0f;
-		pItemData->iHp = 100;
-		pItemData->iAttack = 00;
-		pItemData->iDurability = 100;
-		pItemData->iRequiredLevel = 25;
-		pItemData->iDefense = 100;
-		pItemData->bEnchantable = true;
+		
+		// 아이템 특성 초기화
+		pItemData->fCriticalRate = 0.1f;            // 치명타 확률: 10%
+		pItemData->fWeight = 0.05f;                 // 무게: 가벼움
+		pItemData->iDurability = 70;                // 내구도: 70
+		pItemData->iRequiredLevel = 10;             // 요구 레벨: 10
+		pItemData->bEnchantable = true;             // 강화 가능 여부: 가능
+
+		// 스탯 및 능력치 초기화
+		pItemData->iHP = 20;                        // 체력: +20
+		pItemData->iMP = 100;                       // 마나: +100
+		pItemData->iIntelligence = 25;              // 지능: +25
+		pItemData->iStrength = 5;                   // 힘: +5
+		pItemData->iPhysicalAtk = 5;                // 물리 공격: +5
+		pItemData->iMagicAtk = 30;                  // 마법 공격: +30
+		pItemData->iFireResist = 8;                 // 화염 저항: +8
+		pItemData->iLightResist = 10;               // 명저항: +10
+		pItemData->iManaResist = 12;                // 마나 저항: +12
+		pItemData->iAgility = 6;                    // 이속: +6
+		pItemData->iAttackSpeed = 4;                // 공격 속도: +4
+		pItemData->iPhysicalDef = 3;                // 물리 방어: +3
+		pItemData->iMagicDef = 15;                  // 마법 방어: +15
+		pItemData->iWaterResist = 12;               // 수저항: +12
+		pItemData->iDarkResist = 7;                 // 암저항: +7
+
 
 		m_mapItemData.insert(make_pair(pItemData->strName, pItemData));
 	}
@@ -634,198 +753,364 @@ void CEquipTool::SetItemInfo(CString _CString, ITEMDATA* pItemData)
 	else if (_CString == L"00.Muffler")
 	{
 		pItemData->strName = L"00.Muffler";
-		pItemData->strSpecialEffect = L"착용 시 따뜻함과 함께 방어력을 소폭 증가시키는 황금빛 머플러입니다.";
+		pItemData->strExplan = L"착용 시 따뜻함과 함께 방어력을 소폭 증가시키는 황금빛 머플러입니다.";
 		pItemData->eItemPart = ITEMPARTS::NECK;
 		pItemData->eElement = ELEMENT::NORMAL;
-		pItemData->fCriticalRate = 0.f;
-		pItemData->fAttackSpeed = 0.0f;
-		pItemData->fWeight = 5.0f;
-		pItemData->iHp = 150;
-		pItemData->iAttack = 00;
-		pItemData->iDurability = 100;
-		pItemData->iRequiredLevel = 5;
-		pItemData->iDefense = 50;
-		pItemData->bEnchantable = true;
+		
+		// 아이템 특성 초기화
+		pItemData->fCriticalRate = 0.05f;           // 치명타 확률: 5%
+		pItemData->fWeight = 0.2f;                  // 무게: 약간 무거움
+		pItemData->iDurability = 80;                // 내구도: 80
+		pItemData->iRequiredLevel = 10;             // 요구 레벨: 10
+		pItemData->bEnchantable = true;             // 강화 가능 여부: 가능
+
+		// 스탯 및 능력치 초기화
+		pItemData->iHP = 60;                        // 체력: +60
+		pItemData->iMP = 40;                        // 마나: +40
+		pItemData->iIntelligence = 10;              // 지능: +10
+		pItemData->iStrength = 12;                  // 힘: +12
+		pItemData->iPhysicalAtk = 8;                // 물리 공격: +8
+		pItemData->iMagicAtk = 5;                   // 마법 공격: +5
+		pItemData->iFireResist = 10;                // 화염 저항: +10
+		pItemData->iLightResist = 8;                // 명저항: +8
+		pItemData->iManaResist = 6;                 // 마나 저항: +6
+		pItemData->iAgility = 5;                    // 이속: +5
+		pItemData->iAttackSpeed = 3;                // 공격 속도: +3
+		pItemData->iPhysicalDef = 15;               // 물리 방어: +15
+		pItemData->iMagicDef = 12;                  // 마법 방어: +12
+		pItemData->iWaterResist = 10;               // 수저항: +10
+		pItemData->iDarkResist = 7;                 // 암저항: +7
 
 		m_mapItemData.insert(make_pair(pItemData->strName, pItemData));
 	}
 	else if (_CString == L"01.Belt2")
 	{
 		pItemData->strName = L"01.Belt2";
-		pItemData->strSpecialEffect = L"공격 속도를 증가시키며 전투 능력을 향상시키는 강철 벨트입니다.";
+		pItemData->strExplan = L"공격 속도를 증가시키며 전투 능력을 향상시키는 강철 벨트입니다.";
 		pItemData->eItemPart = ITEMPARTS::BELT;
 		pItemData->eElement = ELEMENT::NORMAL;
-		pItemData->fCriticalRate = 5.f;
-		pItemData->fAttackSpeed = 15.0f;
-		pItemData->fWeight = 10.0f;
-		pItemData->iHp = 150;
-		pItemData->iAttack = 10;
-		pItemData->iDurability = 100;
-		pItemData->iRequiredLevel = 50;
-		pItemData->iDefense = 75;
-		pItemData->bEnchantable = true;
+		
+		// 아이템 특성 초기화
+		pItemData->fCriticalRate = 0.1f;            // 치명타 확률: 10%
+		pItemData->fWeight = 0.25f;                 // 무게: 약간 무거움
+		pItemData->iDurability = 90;                // 내구도: 90
+		pItemData->iRequiredLevel = 15;             // 요구 레벨: 15
+		pItemData->bEnchantable = true;             // 강화 가능 여부: 가능
+
+		// 스탯 및 능력치 초기화
+		pItemData->iHP = 50;                        // 체력: +50
+		pItemData->iMP = 30;                        // 마나: +30
+		pItemData->iIntelligence = 12;              // 지능: +12
+		pItemData->iStrength = 20;                  // 힘: +20
+		pItemData->iPhysicalAtk = 25;               // 물리 공격: +25
+		pItemData->iMagicAtk = 10;                  // 마법 공격: +10
+		pItemData->iFireResist = 7;                 // 화염 저항: +7
+		pItemData->iLightResist = 5;                // 명저항: +5
+		pItemData->iManaResist = 8;                 // 마나 저항: +8
+		pItemData->iAgility = 15;                   // 이속: +15
+		pItemData->iAttackSpeed = 10;               // 공격 속도: +10
+		pItemData->iPhysicalDef = 10;               // 물리 방어: +10
+		pItemData->iMagicDef = 8;                   // 마법 방어: +8
+		pItemData->iWaterResist = 6;                // 수저항: +6
+		pItemData->iDarkResist = 7;                 // 암저항: +7
 
 		m_mapItemData.insert(make_pair(pItemData->strName, pItemData));
 	}
 	else if (_CString == L"01.Belt3")
 	{
 		pItemData->strName = L"01.Belt3";
-		pItemData->strSpecialEffect = L"마법 에너지가 깃들어 착용자의 마력과 방어력을 증대시키는 신비로운 벨트입니다.";
+		pItemData->strExplan = L"마법 에너지가 깃들어 착용자의 마력과 방어력을 증대시키는 신비로운 벨트입니다.";
 		pItemData->eItemPart = ITEMPARTS::BELT;
 		pItemData->eElement = ELEMENT::NORMAL;
-		pItemData->fCriticalRate = 0.f;
-		pItemData->fAttackSpeed = 0.0f;
-		pItemData->fWeight = 15.0f;
-		pItemData->iHp = 300;
-		pItemData->iAttack = 00;
-		pItemData->iDurability = 100;
-		pItemData->iRequiredLevel = 50;
-		pItemData->iDefense = 150;
-		pItemData->bEnchantable = true;
+		
+		// 아이템 특성 초기화
+		pItemData->fCriticalRate = 0.08f;           // 치명타 확률: 8%
+		pItemData->fWeight = 0.2f;                  // 무게: 중간 정도
+		pItemData->iDurability = 85;                // 내구도: 85
+		pItemData->iRequiredLevel = 15;             // 요구 레벨: 15
+		pItemData->bEnchantable = true;             // 강화 가능 여부: 가능
+
+		// 스탯 및 능력치 초기화
+		pItemData->iHP = 60;                        // 체력: +60
+		pItemData->iMP = 90;                        // 마나: +90
+		pItemData->iIntelligence = 20;              // 지능: +20
+		pItemData->iStrength = 10;                  // 힘: +10
+		pItemData->iPhysicalAtk = 15;               // 물리 공격: +15
+		pItemData->iMagicAtk = 25;                  // 마법 공격: +25
+		pItemData->iFireResist = 10;                // 화염 저항: +10
+		pItemData->iLightResist = 12;               // 명저항: +12
+		pItemData->iManaResist = 15;                // 마나 저항: +15
+		pItemData->iAgility = 8;                    // 이속: +8
+		pItemData->iAttackSpeed = 6;                // 공격 속도: +6
+		pItemData->iPhysicalDef = 12;               // 물리 방어: +12
+		pItemData->iMagicDef = 18;                  // 마법 방어: +18
+		pItemData->iWaterResist = 8;                // 수저항: +8
+		pItemData->iDarkResist = 10;                // 암저항: +10
+
 
 		m_mapItemData.insert(make_pair(pItemData->strName, pItemData));
 		}
 	else if (_CString == L"02.Coat2")
 	{
 		pItemData->strName = L"02.Coat2";
-		pItemData->strSpecialEffect = L"불꽃의 힘을 품고 있어 방어력과 화염 저항을 강화하는 붉은 코트입니다.";
+		pItemData->strExplan = L"불꽃의 힘을 품고 있어 방어력과 화염 저항을 강화하는 붉은 코트입니다.";
 		pItemData->eItemPart = ITEMPARTS::TOP;
 		pItemData->eElement = ELEMENT::NORMAL;
-		pItemData->fCriticalRate = 10.f;
-		pItemData->fAttackSpeed = 5.f;
-		pItemData->fWeight = 20.0f;
-		pItemData->iHp = 200;
-		pItemData->iAttack = 00;
-		pItemData->iDurability = 100;
-		pItemData->iRequiredLevel = 50;
-		pItemData->iDefense = 200;
-		pItemData->bEnchantable = true;
+		
+		// 아이템 특성 초기화
+		pItemData->fCriticalRate = 0.05f;           // 치명타 확률: 5%
+		pItemData->fWeight = 1.0f;                  // 무게: 무거움
+		pItemData->iDurability = 100;               // 내구도: 100
+		pItemData->iRequiredLevel = 20;             // 요구 레벨: 20
+		pItemData->bEnchantable = true;             // 강화 가능 여부: 가능
+
+		// 스탯 및 능력치 초기화
+		pItemData->iHP = 100;                       // 체력: +100
+		pItemData->iMP = 50;                        // 마나: +50
+		pItemData->iIntelligence = 15;              // 지능: +15
+		pItemData->iStrength = 20;                  // 힘: +20
+		pItemData->iPhysicalAtk = 10;               // 물리 공격: +10
+		pItemData->iMagicAtk = 10;                  // 마법 공격: +10
+		pItemData->iFireResist = 25;                // 화염 저항: +25
+		pItemData->iLightResist = 10;               // 명저항: +10
+		pItemData->iManaResist = 12;                // 마나 저항: +12
+		pItemData->iAgility = 5;                    // 이속: +5
+		pItemData->iAttackSpeed = 3;                // 공격 속도: +3
+		pItemData->iPhysicalDef = 30;               // 물리 방어: +30
+		pItemData->iMagicDef = 20;                  // 마법 방어: +20
+		pItemData->iWaterResist = 8;                // 수저항: +8
+		pItemData->iDarkResist = 10;                // 암저항: +10
 
 		m_mapItemData.insert(make_pair(pItemData->strName, pItemData));
 	}
 	else if (_CString == L"03.Coat3")
 	{
 		pItemData->strName = L"03.Coat3";
-		pItemData->strSpecialEffect = L"마법 보호막을 생성하여 방어력과 마법 저항을 크게 증가시키는 고급 코트입니다.";
+		pItemData->strExplan = L"마법 보호막을 생성하여 방어력과 마법 저항을 크게 증가시키는 고급 코트입니다.";
 		pItemData->eItemPart = ITEMPARTS::TOP;
 		pItemData->eElement = ELEMENT::NORMAL;
-		pItemData->fCriticalRate = 5.f;
-		pItemData->fAttackSpeed = 5.f;
-		pItemData->fWeight = 30.0f;
-		pItemData->iHp = 500;
-		pItemData->iAttack = 00;
-		pItemData->iDurability = 100;
-		pItemData->iRequiredLevel = 50;
-		pItemData->iDefense = 150;
-		pItemData->bEnchantable = true;
+		
+		// 아이템 특성 초기화
+		pItemData->fCriticalRate = 0.04f;           // 치명타 확률: 4%
+		pItemData->fWeight = 1.2f;                  // 무게: 무거움
+		pItemData->iDurability = 120;               // 내구도: 120
+		pItemData->iRequiredLevel = 25;             // 요구 레벨: 25
+		pItemData->bEnchantable = true;             // 강화 가능 여부: 가능
+
+		// 스탯 및 능력치 초기화
+		pItemData->iHP = 120;                       // 체력: +120
+		pItemData->iMP = 100;                       // 마나: +100
+		pItemData->iIntelligence = 25;              // 지능: +25
+		pItemData->iStrength = 15;                  // 힘: +15
+		pItemData->iPhysicalAtk = 10;               // 물리 공격: +10
+		pItemData->iMagicAtk = 15;                  // 마법 공격: +15
+		pItemData->iFireResist = 12;                // 화염 저항: +12
+		pItemData->iLightResist = 20;               // 명저항: +20
+		pItemData->iManaResist = 25;                // 마나 저항: +25
+		pItemData->iAgility = 6;                    // 이속: +6
+		pItemData->iAttackSpeed = 4;                // 공격 속도: +4
+		pItemData->iPhysicalDef = 40;               // 물리 방어: +40
+		pItemData->iMagicDef = 35;                  // 마법 방어: +35
+		pItemData->iWaterResist = 10;               // 수저항: +10
+		pItemData->iDarkResist = 15;                // 암저항: +15
 
 		m_mapItemData.insert(make_pair(pItemData->strName, pItemData));
 	}
 	else if (_CString == L"04.Neck2")
 	{
 		pItemData->strName = L"04.Neck2";
-		pItemData->strSpecialEffect = L"고대의 힘이 깃들어 착용자의 체력과 방어력을 증가시키는 견갑입니다.";
+		pItemData->strExplan = L"고대의 힘이 깃들어 착용자의 체력과 방어력을 증가시키는 견갑입니다.";
 		pItemData->eItemPart = ITEMPARTS::SHOULDER;
 		pItemData->eElement = ELEMENT::NORMAL;
-		pItemData->fCriticalRate = 15.f;
-		pItemData->fAttackSpeed = 5.f;
-		pItemData->fWeight = 20.0f;
-		pItemData->iHp = 200;
-		pItemData->iAttack = 00;
-		pItemData->iDurability = 100;
-		pItemData->iRequiredLevel = 50;
-		pItemData->iDefense = 100;
-		pItemData->bEnchantable = true;
+		
+		// 아이템 특성 초기화
+		pItemData->fCriticalRate = 0.03f;           // 치명타 확률: 3%
+		pItemData->fWeight = 1.5f;                  // 무게: 무거움
+		pItemData->iDurability = 110;               // 내구도: 110
+		pItemData->iRequiredLevel = 18;             // 요구 레벨: 18
+		pItemData->bEnchantable = true;             // 강화 가능 여부: 가능
+
+		// 스탯 및 능력치 초기화
+		pItemData->iHP = 150;                       // 체력: +150
+		pItemData->iMP = 30;                        // 마나: +30
+		pItemData->iIntelligence = 10;              // 지능: +10
+		pItemData->iStrength = 25;                  // 힘: +25
+		pItemData->iPhysicalAtk = 15;               // 물리 공격: +15
+		pItemData->iMagicAtk = 5;                   // 마법 공격: +5
+		pItemData->iFireResist = 8;                 // 화염 저항: +8
+		pItemData->iLightResist = 12;               // 명저항: +12
+		pItemData->iManaResist = 10;                // 마나 저항: +10
+		pItemData->iAgility = 5;                    // 이속: +5
+		pItemData->iAttackSpeed = 3;                // 공격 속도: +3
+		pItemData->iPhysicalDef = 35;               // 물리 방어: +35
+		pItemData->iMagicDef = 20;                  // 마법 방어: +20
+		pItemData->iWaterResist = 7;                // 수저항: +7
+		pItemData->iDarkResist = 10;                // 암저항: +10
 
 		m_mapItemData.insert(make_pair(pItemData->strName, pItemData));
 		}
 	else if (_CString == L"05.Neck3")
 	{
 		pItemData->strName = L"05.Neck3";
-		pItemData->strSpecialEffect = L"마력을 증폭시켜 강력한 마법 효과를 부여하는 신비로운 견갑입니다.";
+		pItemData->strExplan = L"마력을 증폭시켜 강력한 마법 효과를 부여하는 신비로운 견갑입니다.";
 		pItemData->eItemPart = ITEMPARTS::SHOULDER;
 		pItemData->eElement = ELEMENT::NORMAL;
-		pItemData->fCriticalRate = 25.f;
-		pItemData->fAttackSpeed = 5.f;
-		pItemData->fWeight = 10.0f;
-		pItemData->iHp = 150;
-		pItemData->iAttack = 00;
-		pItemData->iDurability = 100;
-		pItemData->iRequiredLevel = 50;
-		pItemData->iDefense = 50;
-		pItemData->bEnchantable = true;
+		
+		// 아이템 특성 초기화
+		pItemData->fCriticalRate = 0.06f;           // 치명타 확률: 6%
+		pItemData->fWeight = 1.2f;                  // 무게: 중간 정도
+		pItemData->iDurability = 100;               // 내구도: 100
+		pItemData->iRequiredLevel = 20;             // 요구 레벨: 20
+		pItemData->bEnchantable = true;             // 강화 가능 여부: 가능
+
+		// 스탯 및 능력치 초기화
+		pItemData->iHP = 80;                        // 체력: +80
+		pItemData->iMP = 120;                       // 마나: +120
+		pItemData->iIntelligence = 30;              // 지능: +30
+		pItemData->iStrength = 10;                  // 힘: +10
+		pItemData->iPhysicalAtk = 8;                // 물리 공격: +8
+		pItemData->iMagicAtk = 35;                  // 마법 공격: +35
+		pItemData->iFireResist = 10;                // 화염 저항: +10
+		pItemData->iLightResist = 15;               // 명저항: +15
+		pItemData->iManaResist = 20;                // 마나 저항: +20
+		pItemData->iAgility = 6;                    // 이속: +6
+		pItemData->iAttackSpeed = 4;                // 공격 속도: +4
+		pItemData->iPhysicalDef = 20;               // 물리 방어: +20
+		pItemData->iMagicDef = 30;                  // 마법 방어: +30
+		pItemData->iWaterResist = 12;               // 수저항: +12
+		pItemData->iDarkResist = 15;                // 암저항: +15
 
 		m_mapItemData.insert(make_pair(pItemData->strName, pItemData));
 	}
 	else if (_CString == L"06.Pant2")
 	{
 		pItemData->strName = L"06.Pant2";
-		pItemData->strSpecialEffect = L"화염 속성의 보호 효과를 제공하며 방어력을 강화하는 붉은 하의입니다.";
+		pItemData->strExplan = L"화염 속성의 보호 효과를 제공하며 방어력을 강화하는 붉은 하의입니다.";
 		pItemData->eItemPart = ITEMPARTS::BOTTOM;
 		pItemData->eElement = ELEMENT::NORMAL;
-		pItemData->fCriticalRate = 5.f;
-		pItemData->fAttackSpeed = 10.f;
-		pItemData->fWeight = 30.0f;
-		pItemData->iHp = 400;
-		pItemData->iAttack = 10;
-		pItemData->iDurability = 100;
-		pItemData->iRequiredLevel = 50;
-		pItemData->iDefense = 200;
-		pItemData->bEnchantable = true;
+		
+		// 아이템 특성 초기화
+		pItemData->fCriticalRate = 0.05f;           // 치명타 확률: 5%
+		pItemData->fWeight = 1.3f;                  // 무게: 중간 정도
+		pItemData->iDurability = 110;               // 내구도: 110
+		pItemData->iRequiredLevel = 20;             // 요구 레벨: 20
+		pItemData->bEnchantable = true;             // 강화 가능 여부: 가능
+
+		// 스탯 및 능력치 초기화
+		pItemData->iHP = 120;                       // 체력: +120
+		pItemData->iMP = 40;                        // 마나: +40
+		pItemData->iIntelligence = 15;              // 지능: +15
+		pItemData->iStrength = 20;                  // 힘: +20
+		pItemData->iPhysicalAtk = 10;               // 물리 공격: +10
+		pItemData->iMagicAtk = 8;                   // 마법 공격: +8
+		pItemData->iFireResist = 25;                // 화염 저항: +25
+		pItemData->iLightResist = 10;               // 명저항: +10
+		pItemData->iManaResist = 12;                // 마나 저항: +12
+		pItemData->iAgility = 5;                    // 이속: +5
+		pItemData->iAttackSpeed = 3;                // 공격 속도: +3
+		pItemData->iPhysicalDef = 30;               // 물리 방어: +30
+		pItemData->iMagicDef = 25;                  // 마법 방어: +25
+		pItemData->iWaterResist = 8;                // 수저항: +8
+		pItemData->iDarkResist = 10;                // 암저항: +10
 
 		m_mapItemData.insert(make_pair(pItemData->strName, pItemData));
 	}
 	else if (_CString == L"07.Pant3")
 	{
 		pItemData->strName = L"07.Pant3";
-		pItemData->strSpecialEffect = L"착용자의 이동 속도와 방어력을 크게 향상시키는 마법이 깃든 하의입니다.";
+		pItemData->strExplan = L"착용자의 이동 속도와 방어력을 크게 향상시키는 마법이 깃든 하의입니다.";
 		pItemData->eItemPart = ITEMPARTS::BOTTOM;
 		pItemData->eElement = ELEMENT::NORMAL;
-		pItemData->fCriticalRate = 0.f;
-		pItemData->fAttackSpeed = 30.f;
-		pItemData->fWeight = 30.0f;
-		pItemData->iHp = 350;
-		pItemData->iAttack = 10;
-		pItemData->iDurability = 100;
-		pItemData->iRequiredLevel = 50;
-		pItemData->iDefense = 100;
-		pItemData->bEnchantable = true;
+		
+		// 아이템 특성 초기화
+		pItemData->fCriticalRate = 0.05f;           // 치명타 확률: 5%
+		pItemData->fWeight = 1.1f;                  // 무게: 중간 정도
+		pItemData->iDurability = 105;               // 내구도: 105
+		pItemData->iRequiredLevel = 22;             // 요구 레벨: 22
+		pItemData->bEnchantable = true;             // 강화 가능 여부: 가능
+
+		// 스탯 및 능력치 초기화
+		pItemData->iHP = 100;                       // 체력: +100
+		pItemData->iMP = 50;                        // 마나: +50
+		pItemData->iIntelligence = 15;              // 지능: +15
+		pItemData->iStrength = 18;                  // 힘: +18
+		pItemData->iPhysicalAtk = 12;               // 물리 공격: +12
+		pItemData->iMagicAtk = 10;                  // 마법 공격: +10
+		pItemData->iFireResist = 10;                // 화염 저항: +10
+		pItemData->iLightResist = 12;               // 명저항: +12
+		pItemData->iManaResist = 15;                // 마나 저항: +15
+		pItemData->iAgility = 20;                   // 이속: +20
+		pItemData->iAttackSpeed = 5;                // 공격 속도: +5
+		pItemData->iPhysicalDef = 28;               // 물리 방어: +28
+		pItemData->iMagicDef = 25;                  // 마법 방어: +25
+		pItemData->iWaterResist = 10;               // 수저항: +10
+		pItemData->iDarkResist = 12;                // 암저항: +12
 
 		m_mapItemData.insert(make_pair(pItemData->strName, pItemData));
 		}
 	else if (_CString == L"08.Shoes2")
 	{
 		pItemData->strName = L"08.Shoes2";
-		pItemData->strSpecialEffect = L"불꽃의 힘이 담겨 착용자의 속도와 내구성을 증가시키는 붉은 신발입니다.";
+		pItemData->strExplan = L"불꽃의 힘이 담겨 착용자의 속도와 내구성을 증가시키는 붉은 신발입니다.";
 		pItemData->eItemPart = ITEMPARTS::SHOES;
 		pItemData->eElement = ELEMENT::NORMAL;
-		pItemData->fCriticalRate = 10.f;
-		pItemData->fAttackSpeed = 10.f;
-		pItemData->fWeight = 15.0f;
-		pItemData->iHp = 150;
-		pItemData->iAttack = 10;
-		pItemData->iDurability = 100;
-		pItemData->iRequiredLevel = 50;
-		pItemData->iDefense = 150;
-		pItemData->bEnchantable = true;
+		
+		// 아이템 특성 초기화
+		pItemData->fCriticalRate = 0.04f;           // 치명타 확률: 4%
+		pItemData->fWeight = 0.8f;                  // 무게: 가벼움
+		pItemData->iDurability = 120;               // 내구도: 120
+		pItemData->iRequiredLevel = 18;             // 요구 레벨: 18
+		pItemData->bEnchantable = true;             // 강화 가능 여부: 가능
+
+		// 스탯 및 능력치 초기화
+		pItemData->iHP = 80;                        // 체력: +80
+		pItemData->iMP = 40;                        // 마나: +40
+		pItemData->iIntelligence = 12;              // 지능: +12
+		pItemData->iStrength = 15;                  // 힘: +15
+		pItemData->iPhysicalAtk = 10;               // 물리 공격: +10
+		pItemData->iMagicAtk = 8;                   // 마법 공격: +8
+		pItemData->iFireResist = 12;                // 화염 저항: +12
+		pItemData->iLightResist = 10;               // 명저항: +10
+		pItemData->iManaResist = 8;                 // 마나 저항: +8
+		pItemData->iAgility = 25;                   // 이속: +25
+		pItemData->iAttackSpeed = 5;                // 공격 속도: +5
+		pItemData->iPhysicalDef = 20;               // 물리 방어: +20
+		pItemData->iMagicDef = 15;                  // 마법 방어: +15
+		pItemData->iWaterResist = 8;                // 수저항: +8
+		pItemData->iDarkResist = 10;                // 암저항: +10
 
 		m_mapItemData.insert(make_pair(pItemData->strName, pItemData));
 	}
 	else if (_CString == L"09.Shoes3")
 	{
 		pItemData->strName = L"09.Shoes3";
-		pItemData->strSpecialEffect = L"마법의 힘이 깃들어 이동 속도와 회피 능력을 크게 향상시키는 신비로운 신발입니다.";
+		pItemData->strExplan = L"마법의 힘이 깃들어 이동 속도와 회피 능력을 크게 향상시키는 신비로운 신발입니다.";
 		pItemData->eItemPart = ITEMPARTS::SHOES;
 		pItemData->eElement = ELEMENT::NORMAL;
-		pItemData->fCriticalRate = 15.f;
-		pItemData->fAttackSpeed = 5.f;
-		pItemData->fWeight = 15.0f;
-		pItemData->iHp = 200;
-		pItemData->iAttack = 10;
-		pItemData->iDurability = 100;
-		pItemData->iRequiredLevel = 50;
-		pItemData->iDefense = 100;
-		pItemData->bEnchantable = true;
+
+		// 아이템 특성 초기화
+		pItemData->fCriticalRate = 0.05f;           // 치명타 확률: 5%
+		pItemData->fWeight = 0.7f;                  // 무게: 매우 가벼움
+		pItemData->iDurability = 100;               // 내구도: 100
+		pItemData->iRequiredLevel = 20;             // 요구 레벨: 20
+		pItemData->bEnchantable = true;             // 강화 가능 여부: 가능
+
+		// 스탯 및 능력치 초기화
+		pItemData->iHP = 70;                        // 체력: +70
+		pItemData->iMP = 60;                        // 마나: +60
+		pItemData->iIntelligence = 18;              // 지능: +18
+		pItemData->iStrength = 12;                  // 힘: +12
+		pItemData->iPhysicalAtk = 10;               // 물리 공격: +10
+		pItemData->iMagicAtk = 12;                  // 마법 공격: +12
+		pItemData->iFireResist = 10;                // 화염 저항: +10
+		pItemData->iLightResist = 15;               // 명저항: +15
+		pItemData->iManaResist = 10;                // 마나 저항: +10
+		pItemData->iAgility = 30;                   // 이속: +30
+		pItemData->iAttackSpeed = 6;                // 공격 속도: +6
+		pItemData->iPhysicalDef = 18;               // 물리 방어: +18
+		pItemData->iMagicDef = 20;                  // 마법 방어: +20
+		pItemData->iWaterResist = 12;               // 수저항: +12
+		pItemData->iDarkResist = 15;                // 암저항: +15
 
 		m_mapItemData.insert(make_pair(pItemData->strName, pItemData));
 	}
@@ -834,90 +1119,165 @@ void CEquipTool::SetItemInfo(CString _CString, ITEMDATA* pItemData)
 	else if (_CString == L"00.Berry")
 	{
 		pItemData->strName = L"00.Berry";
-		pItemData->strSpecialEffect = L"뒷산에서 따온 신선한 산딸기이다.";
+		pItemData->strExplan = L"뒷산에서 따온 신선한 산딸기이다.";
 		pItemData->eItemPart = ITEMPARTS::POTION;
 		pItemData->eElement = ELEMENT::NORMAL;
-		pItemData->fCriticalRate = 0.f;
-		pItemData->fAttackSpeed = 0.f;
-		pItemData->fWeight = 1.0f;
-		pItemData->iHp = 100;
-		pItemData->iAttack = 0;
-		pItemData->iDurability = 0;
-		pItemData->iRequiredLevel = 0;
-		pItemData->iDefense = 0;
-		pItemData->bEnchantable = true;
+		
+		// 아이템 특성 초기화
+		pItemData->fCriticalRate = 0.0f;            // 치명타 확률: 없음
+		pItemData->fWeight = 0.1f;                  // 무게: 가벼움
+		pItemData->iDurability = 0;                 // 내구도: 없음
+		pItemData->iRequiredLevel = 0;              // 요구 레벨: 없음
+		pItemData->bEnchantable = false;            // 강화 가능 여부: 불가
+
+		// 스탯 및 능력치 초기화
+		pItemData->iHP = 50;                        // 체력: +50 (소비 시 효과)
+		pItemData->iMP = 0;                         // 마나: 없음
+		pItemData->iIntelligence = 0;               // 지능: 없음
+		pItemData->iStrength = 0;                   // 힘: 없음
+		pItemData->iPhysicalAtk = 0;                // 물리 공격: 없음
+		pItemData->iMagicAtk = 0;                   // 마법 공격: 없음
+		pItemData->iFireResist = 0;                 // 화염 저항: 없음
+		pItemData->iLightResist = 0;                // 명저항: 없음
+		pItemData->iManaResist = 0;                 // 마나 저항: 없음
+		pItemData->iAgility = 0;                    // 이속: 없음
+		pItemData->iAttackSpeed = 0;                // 공격 속도: 없음
+		pItemData->iPhysicalDef = 0;                // 물리 방어: 없음
+		pItemData->iMagicDef = 0;                   // 마법 방어: 없음
+		pItemData->iWaterResist = 0;                // 수저항: 없음
+		pItemData->iDarkResist = 0;                 // 암저항: 없음
 
 		m_mapItemData.insert(make_pair(pItemData->strName, pItemData));
 	}
 	else if (_CString == L"01.Bread")
 	{
 		pItemData->strName = L"01.Bread";
-		pItemData->strSpecialEffect = L"칸나가 만든 신선한 빵이다.";
+		pItemData->strExplan = L"칸나가 만든 신선한 빵이다.";
 		pItemData->eItemPart = ITEMPARTS::POTION;
 		pItemData->eElement = ELEMENT::NORMAL;
-		pItemData->fCriticalRate = 0.f;
-		pItemData->fAttackSpeed = 0.f;
-		pItemData->fWeight = 2.0f;
-		pItemData->iHp = 150;
-		pItemData->iAttack = 0;
-		pItemData->iDurability = 0;
-		pItemData->iRequiredLevel = 0;
-		pItemData->iDefense = 0;
-		pItemData->bEnchantable = true;
+		
+		// 아이템 특성 초기화
+		pItemData->fCriticalRate = 0.0f;            // 치명타 확률: 없음
+		pItemData->fWeight = 0.2f;                  // 무게: 가벼움
+		pItemData->iDurability = 0;                 // 내구도: 없음
+		pItemData->iRequiredLevel = 0;              // 요구 레벨: 없음
+		pItemData->bEnchantable = false;            // 강화 가능 여부: 불가
+
+		// 스탯 및 능력치 초기화
+		pItemData->iHP = 80;                        // 체력: +80 (소비 시 효과)
+		pItemData->iMP = 0;                         // 마나: 없음
+		pItemData->iIntelligence = 0;               // 지능: 없음
+		pItemData->iStrength = 0;                   // 힘: 없음
+		pItemData->iPhysicalAtk = 0;                // 물리 공격: 없음
+		pItemData->iMagicAtk = 0;                   // 마법 공격: 없음
+		pItemData->iFireResist = 0;                 // 화염 저항: 없음
+		pItemData->iLightResist = 0;                // 명저항: 없음
+		pItemData->iManaResist = 0;                 // 마나 저항: 없음
+		pItemData->iAgility = 0;                    // 이속: 없음
+		pItemData->iAttackSpeed = 0;                // 공격 속도: 없음
+		pItemData->iPhysicalDef = 0;                // 물리 방어: 없음
+		pItemData->iMagicDef = 0;                   // 마법 방어: 없음
+		pItemData->iWaterResist = 0;                // 수저항: 없음
+		pItemData->iDarkResist = 0;                 // 암저항: 없음
 
 		m_mapItemData.insert(make_pair(pItemData->strName, pItemData));
 		}
 	else if (_CString == L"02.Potion")
 	{
 		pItemData->strName = L"02.Potion";
-		pItemData->strSpecialEffect = L"잡화상점에서 구할 수 있는 흔한 포션이다.";
+		pItemData->strExplan = L"잡화상점에서 구할 수 있는 흔한 포션이다.";
 		pItemData->eItemPart = ITEMPARTS::POTION;
 		pItemData->eElement = ELEMENT::NORMAL;
-		pItemData->fCriticalRate = 0.f;
-		pItemData->fAttackSpeed = 0.f;
-		pItemData->fWeight = 3.0f;
-		pItemData->iHp = 200;
-		pItemData->iAttack = 0;
-		pItemData->iDurability = 0;
-		pItemData->iRequiredLevel = 0;
-		pItemData->iDefense = 0;
-		pItemData->bEnchantable = true;
+		
+		// 아이템 특성 초기화
+		pItemData->fCriticalRate = 0.0f;            // 치명타 확률: 없음
+		pItemData->fWeight = 0.2f;                  // 무게: 가벼움
+		pItemData->iDurability = 0;                 // 내구도: 없음
+		pItemData->iRequiredLevel = 0;              // 요구 레벨: 없음
+		pItemData->bEnchantable = false;            // 강화 가능 여부: 불가
+
+		// 스탯 및 능력치 초기화
+		pItemData->iHP = 100;                        // 체력: +100 (소비 시 효과)
+		pItemData->iMP = 0;                         // 마나: 없음
+		pItemData->iIntelligence = 0;               // 지능: 없음
+		pItemData->iStrength = 0;                   // 힘: 없음
+		pItemData->iPhysicalAtk = 0;                // 물리 공격: 없음
+		pItemData->iMagicAtk = 0;                   // 마법 공격: 없음
+		pItemData->iFireResist = 0;                 // 화염 저항: 없음
+		pItemData->iLightResist = 0;                // 명저항: 없음
+		pItemData->iManaResist = 0;                 // 마나 저항: 없음
+		pItemData->iAgility = 0;                    // 이속: 없음
+		pItemData->iAttackSpeed = 0;                // 공격 속도: 없음
+		pItemData->iPhysicalDef = 0;                // 물리 방어: 없음
+		pItemData->iMagicDef = 0;                   // 마법 방어: 없음
+		pItemData->iWaterResist = 0;                // 수저항: 없음
+		pItemData->iDarkResist = 0;                 // 암저항: 없음
 
 		m_mapItemData.insert(make_pair(pItemData->strName, pItemData));
 	}
 	else if (_CString == L"03.Meat")
 	{
 		pItemData->strName = L"03.Meat";
-		pItemData->strSpecialEffect = L"던전에서 잡은 멧돼지의 뒷다리고기이다.";
+		pItemData->strExplan = L"던전에서 잡은 멧돼지의 뒷다리고기이다.";
 		pItemData->eItemPart = ITEMPARTS::POTION;
 		pItemData->eElement = ELEMENT::NORMAL;
-		pItemData->fCriticalRate = 0.f;
-		pItemData->fAttackSpeed = 0.f;
-		pItemData->fWeight = 5.0f;
-		pItemData->iHp = 300;
-		pItemData->iAttack = 0;
-		pItemData->iDurability = 0;
-		pItemData->iRequiredLevel = 0;
-		pItemData->iDefense = 0;
-		pItemData->bEnchantable = true;
+		
+		// 아이템 특성 초기화
+		pItemData->fCriticalRate = 0.0f;            // 치명타 확률: 없음
+		pItemData->fWeight = 0.2f;                  // 무게: 가벼움
+		pItemData->iDurability = 0;                 // 내구도: 없음
+		pItemData->iRequiredLevel = 0;              // 요구 레벨: 없음
+		pItemData->bEnchantable = false;            // 강화 가능 여부: 불가
+
+		// 스탯 및 능력치 초기화
+		pItemData->iHP = 150;                        // 체력: +150 (소비 시 효과)
+		pItemData->iMP = 0;                         // 마나: 없음
+		pItemData->iIntelligence = 0;               // 지능: 없음
+		pItemData->iStrength = 0;                   // 힘: 없음
+		pItemData->iPhysicalAtk = 0;                // 물리 공격: 없음
+		pItemData->iMagicAtk = 0;                   // 마법 공격: 없음
+		pItemData->iFireResist = 0;                 // 화염 저항: 없음
+		pItemData->iLightResist = 0;                // 명저항: 없음
+		pItemData->iManaResist = 0;                 // 마나 저항: 없음
+		pItemData->iAgility = 0;                    // 이속: 없음
+		pItemData->iAttackSpeed = 0;                // 공격 속도: 없음
+		pItemData->iPhysicalDef = 0;                // 물리 방어: 없음
+		pItemData->iMagicDef = 0;                   // 마법 방어: 없음
+		pItemData->iWaterResist = 0;                // 수저항: 없음
+		pItemData->iDarkResist = 0;                 // 암저항: 없음
 
 		m_mapItemData.insert(make_pair(pItemData->strName, pItemData));
 		}
 	else if (_CString == L"04.Flower")
 	{
 		pItemData->strName = L"04.Flower";
-		pItemData->strSpecialEffect = L"마나의 기운을 담고있는 약초이다.";
+		pItemData->strExplan = L"마나의 기운을 담고있는 약초이다.";
 		pItemData->eItemPart = ITEMPARTS::POTION;
 		pItemData->eElement = ELEMENT::NORMAL;
-		pItemData->fCriticalRate = 0.f;
-		pItemData->fAttackSpeed = 0.f;
-		pItemData->fWeight = 2.0f;
-		pItemData->iHp = 100;
-		pItemData->iAttack = 0;
-		pItemData->iDurability = 0;
-		pItemData->iRequiredLevel = 0;
-		pItemData->iDefense = 0;
-		pItemData->bEnchantable = true;
+		
+		// 아이템 특성 초기화
+		pItemData->fCriticalRate = 0.0f;            // 치명타 확률: 없음
+		pItemData->fWeight = 0.2f;                  // 무게: 가벼움
+		pItemData->iDurability = 0;                 // 내구도: 없음
+		pItemData->iRequiredLevel = 0;              // 요구 레벨: 없음
+		pItemData->bEnchantable = false;            // 강화 가능 여부: 불가
+
+		// 스탯 및 능력치 초기화
+		pItemData->iHP = 0;                         // 체력: 없음
+		pItemData->iMP = 150;                       // 마나: +150
+		pItemData->iIntelligence = 0;               // 지능: 없음
+		pItemData->iStrength = 0;                   // 힘: 없음
+		pItemData->iPhysicalAtk = 0;                // 물리 공격: 없음
+		pItemData->iMagicAtk = 0;                   // 마법 공격: 없음
+		pItemData->iFireResist = 0;                 // 화염 저항: 없음
+		pItemData->iLightResist = 0;                // 명저항: 없음
+		pItemData->iManaResist = 0;                 // 마나 저항: 없음
+		pItemData->iAgility = 0;                    // 이속: 없음
+		pItemData->iAttackSpeed = 0;                // 공격 속도: 없음
+		pItemData->iPhysicalDef = 0;                // 물리 방어: 없음
+		pItemData->iMagicDef = 0;                   // 마법 방어: 없음
+		pItemData->iWaterResist = 0;                // 수저항: 없음
+		pItemData->iDarkResist = 0;                 // 암저항: 없음
 
 		m_mapItemData.insert(make_pair(pItemData->strName, pItemData));
 	}
@@ -926,40 +1286,73 @@ void CEquipTool::SetItemInfo(CString _CString, ITEMDATA* pItemData)
 	else if (_CString == L"Weapon01")
 	{
 		pItemData->strName = L"Weapon01";
-		pItemData->strSpecialEffect = L"불꽃의 기운이 깃든 강력한 검으로, 적에게 화염 피해를 입힙니다.";
+		pItemData->strExplan = L"불꽃의 기운이 깃든 강력한 검으로, 적에게 화염 피해를 입힙니다.";
 		pItemData->eItemPart = ITEMPARTS::WEAPON;
 		pItemData->eElement = ELEMENT::FIRE;
-		pItemData->fCriticalRate = 30.f;
-		pItemData->fAttackSpeed = 30.f;
-		pItemData->fWeight = 50.0f;
-		pItemData->iHp = 0;
-		pItemData->iAttack = 150;
-		pItemData->iDurability = 100;
-		pItemData->iRequiredLevel = 60;
-		pItemData->iDefense = 0;
-		pItemData->bEnchantable = true;
+		
+		// 아이템 특성 초기화
+		pItemData->fCriticalRate = 0.15f;           // 치명타 확률: 15%
+		pItemData->fWeight = 2.5f;                  // 무게: 무거움
+		pItemData->iDurability = 150;               // 내구도: 150
+		pItemData->iRequiredLevel = 25;             // 요구 레벨: 25
+		pItemData->bEnchantable = true;             // 강화 가능 여부: 가능
+
+		// 스탯 및 능력치 초기화
+		pItemData->iHP = 0;                         // 체력: 없음
+		pItemData->iMP = 0;                         // 마나: 없음
+		pItemData->iIntelligence = 5;               // 지능: +5 (약간의 마법 효과)
+		pItemData->iStrength = 30;                  // 힘: +30 (물리 공격력 보조)
+		pItemData->iPhysicalAtk = 50;               // 물리 공격: +50
+		pItemData->iMagicAtk = 20;                  // 마법 공격: +20 (화염 속성 효과)
+		pItemData->iFireResist = 10;                // 화염 저항: +10
+		pItemData->iLightResist = 0;                // 명저항: 없음
+		pItemData->iManaResist = 0;                 // 마나 저항: 없음
+		pItemData->iAgility = 10;                   // 이속: +10
+		pItemData->iAttackSpeed = 8;                // 공격 속도: +8
+		pItemData->iPhysicalDef = 5;                // 물리 방어: +5 (약간의 방어력 추가)
+		pItemData->iMagicDef = 0;                   // 마법 방어: 없음
+		pItemData->iWaterResist = 0;                // 수저항: 없음
+		pItemData->iDarkResist = 0;                 // 암저항: 없음
 
 		m_mapItemData.insert(make_pair(pItemData->strName, pItemData));
 	}
 	else if (_CString == L"Weapon02")
 	{
 		pItemData->strName = L"Weapon02";
-		pItemData->strSpecialEffect = L"전기를 품은 총기로, 적에게 번개 피해를 가하는 강력한 무기입니다.";
+		pItemData->strExplan = L"전기를 품은 총기로, 적에게 번개 피해를 가하는 강력한 무기입니다.";
 		pItemData->eItemPart = ITEMPARTS::WEAPON;
 		pItemData->eElement = ELEMENT::LIGHT;
-		pItemData->fCriticalRate = 20.f;
-		pItemData->fAttackSpeed = 25.f;
-		pItemData->fWeight = 60.0f;
-		pItemData->iHp = 0;
-		pItemData->iAttack = 200;
-		pItemData->iDurability = 100;
-		pItemData->iRequiredLevel = 60;
-		pItemData->iDefense = 0;
-		pItemData->bEnchantable = true;
+		
+		// 아이템 특성 초기화
+		pItemData->fCriticalRate = 0.2f;            // 치명타 확률: 20%
+		pItemData->fWeight = 3.0f;                  // 무게: 무겁게 설정
+		pItemData->iDurability = 160;               // 내구도: 160
+		pItemData->iRequiredLevel = 30;             // 요구 레벨: 30
+		pItemData->bEnchantable = true;             // 강화 가능 여부: 가능
+
+		// 스탯 및 능력치 초기화
+		pItemData->iHP = 0;                         // 체력: 없음
+		pItemData->iMP = 0;                         // 마나: 없음
+		pItemData->iIntelligence = 10;              // 지능: +10 (번개 속성 관련 효과)
+		pItemData->iStrength = 35;                  // 힘: +35
+		pItemData->iPhysicalAtk = 55;               // 물리 공격: +55
+		pItemData->iMagicAtk = 25;                  // 마법 공격: +25 (번개 속성 효과)
+		pItemData->iFireResist = 5;                 // 화염 저항: +5
+		pItemData->iLightResist = 15;               // 번개 저항: +15
+		pItemData->iManaResist = 0;                 // 마나 저항: 없음
+		pItemData->iAgility = 8;                    // 이속: +8
+		pItemData->iAttackSpeed = 10;               // 공격 속도: +10
+		pItemData->iPhysicalDef = 10;               // 물리 방어: +10
+		pItemData->iMagicDef = 5;                   // 마법 방어: +5
+		pItemData->iWaterResist = 5;                // 수저항: +5
+		pItemData->iDarkResist = 5;                 // 암저항: +5
 
 		m_mapItemData.insert(make_pair(pItemData->strName, pItemData));
 	}
 	else{return;}
 }
+
+
+
 
 

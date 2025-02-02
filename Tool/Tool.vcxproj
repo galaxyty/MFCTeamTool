@@ -211,8 +211,10 @@
     <ClInclude Include="DH_Item.h" />
     <ClInclude Include="DH_KeyMgr.h" />
     <ClInclude Include="DH_LoopMgr.h" />
+    <ClInclude Include="DH_MyState.h" />
     <ClInclude Include="DH_OBJMgr.h" />
     <ClInclude Include="DH_PanelUI.h" />
+    <ClInclude Include="DH_Player.h" />
     <ClInclude Include="DH_Skill.h" />
     <ClInclude Include="DH_SkillUI.h" />
     <ClInclude Include="DH_UI.h" />
@@ -247,8 +249,10 @@
     <ClCompile Include="DH_Item.cpp" />
     <ClCompile Include="DH_KeyMgr.cpp" />
     <ClCompile Include="DH_LoopMgr.cpp" />
+    <ClCompile Include="DH_MyState.cpp" />
     <ClCompile Include="DH_OBJMgr.cpp" />
     <ClCompile Include="DH_PanelUI.cpp" />
+    <ClCompile Include="DH_Player.cpp" />
     <ClCompile Include="DH_Skill.cpp" />
     <ClCompile Include="DH_SkillUI.cpp" />
     <ClCompile Include="DH_UI.cpp" />

@@ -3,7 +3,7 @@
 #include "CDevice.h"
 #include "CTextureMgr.h"
 
-DH_BtnUI::DH_BtnUI() : m_bClicked(false), m_eParts(ITEMPARTS::END)
+DH_BtnUI::DH_BtnUI() : m_bClicked(false), m_eParts(ITEMPARTS::END), m_bEquip(false)
 {
 }
 

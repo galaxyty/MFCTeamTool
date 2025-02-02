@@ -168,10 +168,11 @@ DH_UI* DH_UIMgr::GetFocusUI()
 	list<DH_CObject*>& vecUI = DH_OBJMgr::Get_Instance()->Get_UI();
 
 	bool bLTap = KEY_TAP(KEY::LBUTTEN);
+	bool bRTap = KEY_TAP(KEY::RBUTTEN);
 
 	DH_UI* pFocusedUI = m_FocusedUI;
 
-	if (!bLTap)
+	if (!bLTap && !bRTap)
 	{
 		return pFocusedUI;
 	}

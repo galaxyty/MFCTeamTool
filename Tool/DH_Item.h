@@ -21,7 +21,12 @@ public:
 	void	SetImageKey(CString _Key) { m_ImageKey = _Key; }
 	void	SetItem(const ITEM& item) { m_sITEM = item; }
 	void	SetpITEMDATA(ITEMDATA* _ITEMDATA) { m_pITEMDATA = _ITEMDATA; }
+	ITEMDATA* GetpITEMDATA() { return m_pITEMDATA; }
 	ITEM	GetItem() const {	return m_sITEM;	}
+	
+public:
+	void MouseDrag(DH_UI* _UI);
+	void RenderItemInfo(TCHAR* _Key);
 
 private:
 	D3DXVECTOR3	m_vDragStart;

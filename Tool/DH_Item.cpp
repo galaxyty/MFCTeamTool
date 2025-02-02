@@ -5,6 +5,9 @@
 #include "DH_UI.h"
 #include "CTextureMgr.h"
 #include "CDevice.h"
+#include "DH_Inventory.h"
+#include "DH_Interface.h"
+#include "DH_Player.h"
 
 DH_Item::DH_Item() : m_Inven(nullptr), m_ImageKey(), m_bDragOn(false), m_pITEMDATA(nullptr), m_PreviousIndex(0)
 {
@@ -19,6 +22,30 @@ void DH_Item::MouseOn()
 {
 	if (m_bRDown)
 	{
+		if (dynamic_cast<DH_BtnUI*>(GetParent())->GetbEquip())
+		{
+			//우클릭했는데 장비칸이라면?
+
+			//현재 부모의 자식배열에서 자신을 삭제
+			auto& oldParent = *GetParent();
+			auto& oldChildList = oldParent.GetChildUI();
+			oldChildList.erase(remove(oldChildList.begin(), oldChildList.end(), this), oldChildList.end());
+			//새로운 부모 연결
+			auto& Inventory = *GetParent()->GetParent();
+			for (auto& BtnUI : Inventory.GetChildUI())
+			{
+				if (BtnUI->GetChildUI().size() == 0)
+				{
+					dynamic_cast<DH_BtnUI*>(BtnUI)->AddParent(this);
+					//포지션 셋팅
+					DH_Player::Get_Instance()->SetItemUpdate(true);
+					SetMPos({ 0.f, 0.f, 0.f });
+
+					m_bRDown = false;
+					return;
+				}
+			}
+		}
 		// 바꿔끼기 해야함
 		auto& Inventory = *GetParent()->GetParent();
 		for (auto& BtnUI : Inventory.GetChildUI())
@@ -33,6 +60,7 @@ void DH_Item::MouseOn()
 				//새로운 부모 연결
 				dynamic_cast<DH_BtnUI*>(BtnUI)->AddParent(this);
 				//포지션 셋팅
+				DH_Player::Get_Instance()->SetItemUpdate(true);
 				SetMPos({ 0.f, 0.f, 0.f });
 
 				//기존 자식을 삭제 후 스왑
@@ -44,21 +72,8 @@ void DH_Item::MouseOn()
 				}
 			}
 		}
-	}
 
-
-	if (m_bDragOn)
-	{
-		//마우스가 올라간 상태에서 버튼이 눌리면 움직임
-		D3DXVECTOR3 vDiff = {0.f, 0.f, 0.f};
-		vDiff.x = Get_Mouse().x - m_vDragStart.x;
-		vDiff.y = Get_Mouse().y - m_vDragStart.y;
-
-		D3DXVECTOR3 vCurPos = GetMPos();
-		vCurPos = vCurPos + vDiff;
-		SetMPos(vCurPos);
-
-		m_vDragStart = Get_Mouse();
+		m_bRDown = false;
 	}
 }
 
@@ -101,42 +116,84 @@ void DH_Item::MouseLUp()
 
 	D3DXVECTOR3 fMouse = Get_Mouse();
 	
-	//원하는 최상위 부모를 m_Inven 에 담기
-	auto& AllUI = DH_OBJMgr::Get_Instance()->Get_UI();
-	for (auto& _UIInven : AllUI)
-	{
-		if (L"Inventory" == _UIInven->GetName())
-		{
-			m_Inven = dynamic_cast<DH_UI*>(_UIInven);
-		}
-	}
-	//베이스 부모의 자식버튼을 순회한다.
-	for (auto& Btn : m_Inven->GetChildUI())
-	{
-		//버튼 위에 마우스가 있으면?
-		if (Btn->IsMouseOn())
-		{
-			//현재 부모의 자식배열에서 자신을 삭제
-			auto& oldParent = *GetParent();
-			auto& oldChildList = oldParent.GetChildUI();
-			oldChildList.erase(remove(oldChildList.begin(), oldChildList.end(), this), oldChildList.end());
-			//새로운 부모 연결
-			Btn->AddParent(this);
-			//포지션 셋팅
-			SetMPos({0.f, 0.f, 0.f});
+	//m_Inven 설정
+	m_Inven = dynamic_cast<DH_UI*>(GetParent()->GetParent());
 
-			//기존 자식을 삭제 후 스왑
-			if (Btn->GetChildUI().size() > 1)
+	//지금 부모가 스킬창일때
+	if (GetParent()->GetParent()->GetName() == L"Inventory")
+	{
+		//베이스 부모의 자식버튼을 순회한다.
+		for (auto& Btn : m_Inven->GetChildUI())
+		{
+			//버튼UI 위에 마우스가 있으면? && 버튼이 ETC 라면?
+			if (Btn->IsMouseOn() && dynamic_cast<DH_BtnUI*>(Btn)->GeteItemParts() == ITEMPARTS::ETC)
 			{
-				//Btn->GetChildUI().begin = 원래 있던 아이템
-				oldParent.AddParent(Btn->GetChildUI().front());
-				Btn->GetChildUI().erase(Btn->GetChildUI().begin());
+				//현재 부모의 자식배열에서 자신을 삭제
+				auto& oldParent = *GetParent();
+				auto& oldChildList = oldParent.GetChildUI();
+				oldChildList.erase(remove(oldChildList.begin(), oldChildList.end(), this), oldChildList.end());
+				//새로운 부모 연결
+				Btn->AddParent(this);
+				//포지션 셋팅
+				DH_Player::Get_Instance()->SetItemUpdate(true);
+				SetMPos({ 0.f, 0.f, 0.f });
+
+				//기존 자식을 삭제 후 스왑
+				if (Btn->GetChildUI().size() > 1)
+				{
+					//Btn->GetChildUI().begin = 원래 있던 아이템
+					oldParent.AddParent(Btn->GetChildUI().front());
+					Btn->GetChildUI().erase(Btn->GetChildUI().begin());
+				}
+			}
+			//만약 마우스를 올려놨는데 장비칸이다?
+			else if (Btn->IsMouseOn() && dynamic_cast<DH_BtnUI*>(Btn)->GetbEquip())
+			{
+				//장비칸과 아이템의 성질이 같다?
+				if (dynamic_cast<DH_BtnUI*>(Btn)->GeteItemParts() == m_pITEMDATA->eItemPart)
+				{
+					//현재 부모의 자식배열에서 자신을 삭제
+					auto& oldParent = *GetParent();
+					auto& oldChildList = oldParent.GetChildUI();
+					oldChildList.erase(remove(oldChildList.begin(), oldChildList.end(), this), oldChildList.end());
+					//새로운 부모 연결
+					Btn->AddParent(this);
+					//포지션 셋팅
+					DH_Player::Get_Instance()->SetItemUpdate(true);
+					SetMPos({ 0.f, 0.f, 0.f });
+
+					//기존 자식을 삭제 후 스왑
+					if (Btn->GetChildUI().size() > 1)
+					{
+						//Btn->GetChildUI().begin = 원래 있던 아이템
+						oldParent.AddParent(Btn->GetChildUI().front());
+						Btn->GetChildUI().erase(Btn->GetChildUI().begin());
+					}
+				}
+				else
+				{
+					SetMPos({ 0.f, 0.f, 0.f });
+				}
+			}
+			else
+			{
+				SetMPos({ 0.f, 0.f, 0.f });
 			}
 		}
-		else
-		{
-			SetMPos({ 0.f, 0.f, 0.f });
-		}
+
+		//인터페이스 창 가져오기
+		DH_Interface* InterfaceUI = dynamic_cast<DH_Inventory*>(m_Inven)->GetInterface();
+		MouseDrag(InterfaceUI);
+
+	}
+	//부모가 인터페이스창일 때
+	else if (GetParent()->GetParent()->GetName() == L"Interface")
+	{
+		m_Inven = GetParent()->GetParent();
+		DH_Inventory* InvenUI = dynamic_cast<DH_Interface*>(m_Inven)->GetInventory();
+	
+		MouseDrag(m_Inven);
+		MouseDrag(InvenUI);
 	}
 }
 
@@ -215,6 +272,8 @@ void DH_Item::Initialize()
 	CTextureMgr::Get_Instance()->Insert_Texture(L"../Texture/Picked/Item/Weapon/Clicked/Weapon02.png", TEX_SINGLE, L"Weapon02_Clicked", nullptr, 0);
 
 #pragma endregion
+
+	CTextureMgr::Get_Instance()->Insert_Texture(L"../Texture/Picked/Interface/ItemINFO.png", TEX_SINGLE, L"ItemINFO", nullptr, 0);
 }
 
 void DH_Item::Render()
@@ -240,6 +299,7 @@ void DH_Item::Render()
 
 	Set_Ratio(&matWorld, g_Ratio, g_Ratio);
 	CDevice::Get_Instance()->Get_Sprite()->SetTransform(&matWorld);
+
 
 	if (m_bLDown)
 	{
@@ -312,11 +372,99 @@ void DH_Item::Render()
 		}
 	}
 
+	if(m_bMouseOn)
+		RenderItemInfo(L"ItemINFO");
+
 	RenderChild();
 }
 
 
 void DH_Item::Update()
 {
+	if (m_bDragOn)
+	{
+		//마우스가 올라간 상태에서 버튼이 눌리면 움직임
+		D3DXVECTOR3 vDiff = { 0.f, 0.f, 0.f };
+		vDiff.x = Get_Mouse().x - m_vDragStart.x;
+		vDiff.y = Get_Mouse().y - m_vDragStart.y;
+
+		D3DXVECTOR3 vCurPos = GetMPos();
+		vCurPos = vCurPos + vDiff;
+		SetMPos(vCurPos);
+
+		m_vDragStart = Get_Mouse();
+	}
+
 	DH_UI::Update();
+}
+
+void DH_Item::MouseDrag(DH_UI* _UI)
+{
+	//베이스 부모의 자식버튼을 순회한다.
+	for (auto& Btn : _UI->GetChildUI())
+	{
+		//버튼UI 위에 마우스가 있으면? 버튼이 포션이라면?
+		if (Btn->IsMouseOn() && dynamic_cast<DH_BtnUI*>(Btn)->GeteItemParts() == m_pITEMDATA->eItemPart)
+		{
+			//현재 부모의 자식배열에서 자신을 삭제
+			auto& oldParent = *GetParent();
+			auto& oldChildList = oldParent.GetChildUI();
+			oldChildList.erase(remove(oldChildList.begin(), oldChildList.end(), this), oldChildList.end());
+			//새로운 부모 연결
+			Btn->AddParent(this);
+			//포지션 셋팅
+			SetMPos({ 0.f, 0.f, 0.f });
+
+			//기존 자식을 삭제 후 스왑
+			if (Btn->GetChildUI().size() > 1)
+			{
+				//Btn->GetChildUI().begin = 원래 있던 아이템
+				oldParent.AddParent(Btn->GetChildUI().front());
+				Btn->GetChildUI().erase(Btn->GetChildUI().begin());
+			}
+		}
+		else
+		{
+			SetMPos({ 0.f, 0.f, 0.f });
+		}
+	}
+}
+
+void DH_Item::RenderItemInfo(TCHAR* _Key)
+{
+	//이미지 키 가져오기 밑 중심설정
+	const TEXINFO* pTexInfo = CTextureMgr::Get_Instance()->Get_Texture(_Key, nullptr);
+	float	fCenterX = (float)pTexInfo->tImgInfo.Width;
+	float	fCenterY = (float)pTexInfo->tImgInfo.Height;
+	D3DXVECTOR3	vTemp{ fCenterX + 2.f, +1.f, 0.f };
+	D3DXVECTOR3	vMouse = Get_Mouse();
+
+	//월드 행렬 곱해주기
+	D3DXMATRIX	matWorld, matScale, matTrans;
+	D3DXMatrixIdentity(&matWorld);
+	D3DXMatrixScaling(&matScale, 1.f, 1.f, 1.f);
+	D3DXMatrixTranslation(&matTrans, vMouse.x, vMouse.y, vMouse.z);
+	matWorld = matScale * matTrans;
+
+	Set_Ratio(&matWorld, g_Ratio, g_Ratio);
+
+	CDevice::Get_Instance()->Get_Sprite()->SetTransform(&matWorld);
+
+	CDevice::Get_Instance()->Get_Sprite()->Draw(
+		pTexInfo->pTexture,
+		nullptr,
+		&vTemp,
+		nullptr,
+		D3DCOLOR_ARGB(255, 255, 255, 255));
+
+
+	TCHAR	szBufName[MIN_STR] = L"";
+	swprintf_s(szBufName, L"%s", m_pITEMDATA->strExplan.GetString());
+	RECT	RectBufName{ 0,0,0,0 };
+	CDevice::Get_Instance()->Get_Font()->DrawTextW(CDevice::Get_Instance()->Get_Sprite(),
+		szBufName,
+		lstrlen(szBufName),
+		&RectBufName,
+		DT_RIGHT,
+		D3DCOLOR_ARGB(255, 255, 255, 255));
 }

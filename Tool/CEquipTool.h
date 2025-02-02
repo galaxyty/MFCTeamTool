@@ -7,6 +7,8 @@
 class DH_Inventory;
 class DH_Interface;
 class DH_SkillUI;
+class DH_MyState;
+class DH_Player;
 class DH_UI;
 
 
@@ -33,8 +35,9 @@ public:
 public:
 	DH_Interface*	Interface;
 	DH_Inventory*	Inventory;
+	DH_MyState*		MyState;
 	DH_SkillUI*		Skill;
-
+	DH_Player*		pPlayer;
 
 
 	afx_msg void OnInventory();
@@ -81,4 +84,5 @@ public:
 	afx_msg void OnSkillList();
 	afx_msg void OnAddSkill();
 	afx_msg void OnDeleteSkill();
+	afx_msg void OnMyState();
 };

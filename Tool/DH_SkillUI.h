@@ -1,5 +1,8 @@
 #pragma once
 #include "DH_PanelUI.h"
+class DH_Interface;
+
+
 class DH_SkillUI :  public DH_PanelUI
 {
 public:
@@ -21,7 +24,12 @@ public:
 	void	SetButten();
 
 public:
+	DH_Interface* GetInterface() const { return Interface; }
+	void SetInterface(DH_Interface* newInterface) { Interface = newInterface; }
+
+public:
 	D3DXVECTOR3	m_vDragStart;
+	DH_Interface* Interface;
 
 };
 
