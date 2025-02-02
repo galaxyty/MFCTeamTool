@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "CDH_FilePath.h"
+#include "CDevice.h"
 
 CString CDH_FilePath::Convert_RelativePath(CString strFullPath)
 {
@@ -21,3 +22,4 @@ CString CDH_FilePath::Convert_RelativePath(CString strFullPath)
 
     return CString(szRelativePath);
 }
+

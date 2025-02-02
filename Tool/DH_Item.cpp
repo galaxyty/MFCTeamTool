@@ -458,13 +458,29 @@ void DH_Item::RenderItemInfo(TCHAR* _Key)
 		D3DCOLOR_ARGB(255, 255, 255, 255));
 
 
+#pragma region 상세보기 정보출력
+
 	TCHAR	szBufName[MIN_STR] = L"";
-	swprintf_s(szBufName, L"%s", m_pITEMDATA->strExplan.GetString());
-	RECT	RectBufName{ 0,0,0,0 };
-	CDevice::Get_Instance()->Get_Font()->DrawTextW(CDevice::Get_Instance()->Get_Sprite(),
-		szBufName,
-		lstrlen(szBufName),
-		&RectBufName,
-		DT_RIGHT,
-		D3DCOLOR_ARGB(255, 255, 255, 255));
+	swprintf_s(szBufName, MIN_STR, L"%s", m_pITEMDATA->strExplan.GetString());
+
+	// 텍스트를 나누기 위한 사각형 설정
+	RECT	RectBufName{ -150,0,0,60 };
+	int lineHeight = 30; // 한 줄의 높이
+
+	// 텍스트 출력
+	const TCHAR* pText = szBufName;
+	RECT currentRect = RectBufName;
+
+	
+	int charsPrinted = CDevice::Get_Instance()->Get_Font2()->DrawTextW(
+		CDevice::Get_Instance()->Get_Sprite(),
+		pText,
+		-1, // 전체 길이 출력
+		&currentRect,
+		DT_WORDBREAK | DT_CENTER, // 자동 줄바꿈
+		D3DCOLOR_ARGB(255, 255, 255, 255)
+	);
+
+#pragma endregion
+
 }

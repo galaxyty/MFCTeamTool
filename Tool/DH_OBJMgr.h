@@ -16,7 +16,7 @@ private:
 public:
 	DH_CObject*			Get_Player() { return m_ObjList[OBJ_PLAYER].front(); }
 	DH_CObject*			Get_LastMonster() { return m_ObjList[OBJ_MONSTER].back(); }
-	list<DH_CObject*>	Get_UI() { return m_ObjList[OBJ_UI]; }
+	list<DH_CObject*>&	Get_UI() { return m_ObjList[OBJ_UI]; }
 
 public:
 	void		Add_Object(OBJID eID, DH_CObject* pObj);

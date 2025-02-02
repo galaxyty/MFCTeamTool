@@ -17,6 +17,12 @@ public:
 	LPD3DXSPRITE				GetpObjectView() { return m_pObjectView; }
 	LPD3DXSPRITE				GetpObject() { return m_pObject; }
 	LPD3DXFONT					Get_Font()	 { return m_pFont;  }
+	LPD3DXFONT					Get_Font2()	 { return m_pFont2;  }
+
+public:
+	HRESULT		SetFont01();
+	HRESULT		SetFont02();
+
 public:
 	HRESULT		Init_Device();
 
@@ -37,5 +43,6 @@ private:
 	LPD3DXSPRITE		m_pObjectView;		// 오브젝트 미리보기.
 	LPD3DXSPRITE		m_pObject;			// 오브젝트 배치.
 	LPD3DXFONT			m_pFont;
+	LPD3DXFONT			m_pFont2;
 };
 
