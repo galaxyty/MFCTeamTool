@@ -209,8 +209,8 @@ BOOL CMapTool::OnInitDialog()
 	m_RatioSlider.SetRange(20, 100);	
 	m_RatioSlider.SetPos(100);	
 
-	m_RoomComboBox.AddString(L"룸1");
-	m_RoomComboBox.SelectString(0, L"룸1");
+	m_RoomComboBox.AddString(L"룸 1");
+	m_RoomComboBox.SelectString(0, L"룸 1");
 	
 	UpdateRender();
 
@@ -404,8 +404,13 @@ void CMapTool::OnObjectDeleteClick()
 void CMapTool::OnRoomAdd()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	m_RoomComboBox.AddString(L"룸2");
 	CMapManager::Get_Instance()->CreateRoom();
+
+	CString szRoom;
+	szRoom.Format(L"룸 %d", CMapManager::Get_Instance()->m_RoomIndex + 1);
+
+	m_RoomComboBox.AddString(szRoom);
+	m_RoomComboBox.SelectString(CMapManager::Get_Instance()->m_RoomIndex, szRoom);
 }
 
 
