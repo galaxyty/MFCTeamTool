@@ -21,6 +21,7 @@ typedef	struct tagItemData
     ITEMPARTS   eItemPart;          // 부위
     ELEMENT     eElement;           // 속성
     CString     strName;            // 이름
+    CString     ItemName;            // 이름
     float       fCriticalRate;      // 치명타 확률
     float       fWeight;            // 무게
     int         iDurability;        // 내구도

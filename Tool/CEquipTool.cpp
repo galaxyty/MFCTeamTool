@@ -574,6 +574,7 @@ void CEquipTool::SetItemInfo(CString _CString, ITEMDATA* pItemData)
 	{
 		pItemData->strName = L"00.Band";
 		pItemData->strExplan = L"손가락에 착용 시 방어력을 약간 증가시키는 단순한 금속 밴드입니다.";
+		pItemData->ItemName = L"은은한 방어반";
 		pItemData->eItemPart = ITEMPARTS::BRACELET;
 		pItemData->eElement = ELEMENT::NORMAL;
 
@@ -606,6 +607,7 @@ void CEquipTool::SetItemInfo(CString _CString, ITEMDATA* pItemData)
 	{
 		pItemData->strName = L"00.Heart";
 		pItemData->strExplan = L"사용 시 랜덤한 효과를 발휘하는 신비로운 하트 형태의 아이템입니다.";
+		pItemData->ItemName = L"신비의 심장석";
 		pItemData->eItemPart = ITEMPARTS::JEWERLY;
 		pItemData->eElement = ELEMENT::NORMAL;
 
@@ -638,6 +640,7 @@ void CEquipTool::SetItemInfo(CString _CString, ITEMDATA* pItemData)
 	{
 		pItemData->strName = L"00.Neck";
 		pItemData->strExplan = L"착용 시 마법 방어력을 강화하는 신비로운 빛을 내뿜는 목걸이입니다.";
+		pItemData->ItemName = L"에테리얼 펜던트";
 		pItemData->eItemPart = ITEMPARTS::NECK;
 		pItemData->eElement = ELEMENT::NORMAL;
 		
@@ -671,6 +674,7 @@ void CEquipTool::SetItemInfo(CString _CString, ITEMDATA* pItemData)
 	{
 		pItemData->strName = L"00.Ring1";
 		pItemData->strExplan = L"마법의 힘을 담고 있어 착용자의 능력을 소폭 강화시키는 반지입니다.";
+		pItemData->ItemName = L"아르카나 링";
 		pItemData->eItemPart = ITEMPARTS::RING;
 		pItemData->eElement = ELEMENT::NORMAL;
 		
@@ -704,6 +708,7 @@ void CEquipTool::SetItemInfo(CString _CString, ITEMDATA* pItemData)
 	{
 		pItemData->strName = L"00.Ring2";
 		pItemData->strExplan = L"착용자에게 공격력을 증폭시키는 어둠의 기운이 깃든 반지입니다.";
+		pItemData->ItemName = L"데스브링어 링";
 		pItemData->eItemPart = ITEMPARTS::RING;
 		pItemData->eElement = ELEMENT::NORMAL;
 		
@@ -737,6 +742,7 @@ void CEquipTool::SetItemInfo(CString _CString, ITEMDATA* pItemData)
 	{
 		pItemData->strName = L"00.Ring3";
 		pItemData->strExplan = L"착용 시 마력을 증대시키며 푸른 에너지를 발산하는 신비로운 목걸이입니다.";
+		pItemData->ItemName = L"블루 플레어 펜던트";
 		pItemData->eItemPart = ITEMPARTS::NECK;
 		pItemData->eElement = ELEMENT::NORMAL;
 		
@@ -773,6 +779,7 @@ void CEquipTool::SetItemInfo(CString _CString, ITEMDATA* pItemData)
 	{
 		pItemData->strName = L"00.Muffler";
 		pItemData->strExplan = L"착용 시 따뜻함과 함께 방어력을 소폭 증가시키는 황금빛 머플러입니다.";
+		pItemData->ItemName = L"레디언트 웜스카프";
 		pItemData->eItemPart = ITEMPARTS::NECK;
 		pItemData->eElement = ELEMENT::NORMAL;
 		
@@ -806,6 +813,7 @@ void CEquipTool::SetItemInfo(CString _CString, ITEMDATA* pItemData)
 	{
 		pItemData->strName = L"01.Belt2";
 		pItemData->strExplan = L"공격 속도를 증가시키며 전투 능력을 향상시키는 강철 벨트입니다.";
+		pItemData->ItemName = L"템페스트 벨트";
 		pItemData->eItemPart = ITEMPARTS::BELT;
 		pItemData->eElement = ELEMENT::NORMAL;
 		
@@ -839,6 +847,7 @@ void CEquipTool::SetItemInfo(CString _CString, ITEMDATA* pItemData)
 	{
 		pItemData->strName = L"01.Belt3";
 		pItemData->strExplan = L"마법 에너지가 깃들어 착용자의 마력과 방어력을 증대시키는 신비로운 벨트입니다.";
+		pItemData->ItemName = L"미스틱 오브 벨트";
 		pItemData->eItemPart = ITEMPARTS::BELT;
 		pItemData->eElement = ELEMENT::NORMAL;
 		
@@ -873,6 +882,7 @@ void CEquipTool::SetItemInfo(CString _CString, ITEMDATA* pItemData)
 	{
 		pItemData->strName = L"02.Coat2";
 		pItemData->strExplan = L"불꽃의 힘을 품고 있어 방어력과 화염 저항을 강화하는 붉은 코트입니다.";
+		pItemData->ItemName = L"이그니스 코트";
 		pItemData->eItemPart = ITEMPARTS::TOP;
 		pItemData->eElement = ELEMENT::NORMAL;
 		
@@ -906,6 +916,7 @@ void CEquipTool::SetItemInfo(CString _CString, ITEMDATA* pItemData)
 	{
 		pItemData->strName = L"03.Coat3";
 		pItemData->strExplan = L"마법 보호막을 생성하여 방어력과 마법 저항을 크게 증가시키는 고급 코트입니다.";
+		pItemData->ItemName = L"인챈티드 워드 로브";
 		pItemData->eItemPart = ITEMPARTS::TOP;
 		pItemData->eElement = ELEMENT::NORMAL;
 		
@@ -939,6 +950,7 @@ void CEquipTool::SetItemInfo(CString _CString, ITEMDATA* pItemData)
 	{
 		pItemData->strName = L"04.Neck2";
 		pItemData->strExplan = L"고대의 힘이 깃들어 착용자의 체력과 방어력을 증가시키는 견갑입니다.";
+		pItemData->ItemName = L"타이탄의 견갑";
 		pItemData->eItemPart = ITEMPARTS::SHOULDER;
 		pItemData->eElement = ELEMENT::NORMAL;
 		
@@ -972,6 +984,7 @@ void CEquipTool::SetItemInfo(CString _CString, ITEMDATA* pItemData)
 	{
 		pItemData->strName = L"05.Neck3";
 		pItemData->strExplan = L"마력을 증폭시켜 강력한 마법 효과를 부여하는 신비로운 견갑입니다.";
+		pItemData->ItemName = L"엘드리치 숄더";
 		pItemData->eItemPart = ITEMPARTS::SHOULDER;
 		pItemData->eElement = ELEMENT::NORMAL;
 		
@@ -1005,6 +1018,7 @@ void CEquipTool::SetItemInfo(CString _CString, ITEMDATA* pItemData)
 	{
 		pItemData->strName = L"06.Pant2";
 		pItemData->strExplan = L"화염 속성의 보호 효과를 제공하며 방어력을 강화하는 붉은 하의입니다.";
+		pItemData->ItemName = L"인페르노 그리브";
 		pItemData->eItemPart = ITEMPARTS::BOTTOM;
 		pItemData->eElement = ELEMENT::NORMAL;
 		
@@ -1038,6 +1052,7 @@ void CEquipTool::SetItemInfo(CString _CString, ITEMDATA* pItemData)
 	{
 		pItemData->strName = L"07.Pant3";
 		pItemData->strExplan = L"착용자의 이동 속도와 방어력을 크게 향상시키는 마법이 깃든 하의입니다.";
+		pItemData->ItemName = L"스톰체이서 하의";
 		pItemData->eItemPart = ITEMPARTS::BOTTOM;
 		pItemData->eElement = ELEMENT::NORMAL;
 		
@@ -1071,6 +1086,7 @@ void CEquipTool::SetItemInfo(CString _CString, ITEMDATA* pItemData)
 	{
 		pItemData->strName = L"08.Shoes2";
 		pItemData->strExplan = L"불꽃의 힘이 담겨 착용자의 속도와 내구성을 증가시키는 붉은 신발입니다.";
+		pItemData->ItemName = L"이그니스 부츠";
 		pItemData->eItemPart = ITEMPARTS::SHOES;
 		pItemData->eElement = ELEMENT::NORMAL;
 		
@@ -1104,6 +1120,7 @@ void CEquipTool::SetItemInfo(CString _CString, ITEMDATA* pItemData)
 	{
 		pItemData->strName = L"09.Shoes3";
 		pItemData->strExplan = L"마법의 힘이 깃들어 이동 속도와 회피 능력을 크게 향상시키는 신비로운 신발입니다.";
+		pItemData->ItemName = L"제피로스 부츠";
 		pItemData->eItemPart = ITEMPARTS::SHOES;
 		pItemData->eElement = ELEMENT::NORMAL;
 
@@ -1139,6 +1156,7 @@ void CEquipTool::SetItemInfo(CString _CString, ITEMDATA* pItemData)
 	{
 		pItemData->strName = L"00.Berry";
 		pItemData->strExplan = L"뒷산에서 따온 신선한 산딸기이다.";
+		pItemData->ItemName = L"신선한 루비베리";
 		pItemData->eItemPart = ITEMPARTS::POTION;
 		pItemData->eElement = ELEMENT::NORMAL;
 		
@@ -1172,6 +1190,7 @@ void CEquipTool::SetItemInfo(CString _CString, ITEMDATA* pItemData)
 	{
 		pItemData->strName = L"01.Bread";
 		pItemData->strExplan = L"칸나가 만든 신선한 빵이다.";
+		pItemData->ItemName = L"칸나의 수제 빵";
 		pItemData->eItemPart = ITEMPARTS::POTION;
 		pItemData->eElement = ELEMENT::NORMAL;
 		
@@ -1205,6 +1224,7 @@ void CEquipTool::SetItemInfo(CString _CString, ITEMDATA* pItemData)
 	{
 		pItemData->strName = L"02.Potion";
 		pItemData->strExplan = L"잡화상점에서 구할 수 있는 흔한 포션이다.";
+		pItemData->ItemName = L"레드 포션";
 		pItemData->eItemPart = ITEMPARTS::POTION;
 		pItemData->eElement = ELEMENT::NORMAL;
 		
@@ -1238,6 +1258,7 @@ void CEquipTool::SetItemInfo(CString _CString, ITEMDATA* pItemData)
 	{
 		pItemData->strName = L"03.Meat";
 		pItemData->strExplan = L"던전에서 잡은 멧돼지의 뒷다리고기이다.";
+		pItemData->ItemName = L"멧크로우 고기";
 		pItemData->eItemPart = ITEMPARTS::POTION;
 		pItemData->eElement = ELEMENT::NORMAL;
 		
@@ -1271,6 +1292,7 @@ void CEquipTool::SetItemInfo(CString _CString, ITEMDATA* pItemData)
 	{
 		pItemData->strName = L"04.Flower";
 		pItemData->strExplan = L"마나의 기운을 담고있는 약초이다.";
+		pItemData->ItemName = L"에테르 리프";
 		pItemData->eItemPart = ITEMPARTS::POTION;
 		pItemData->eElement = ELEMENT::NORMAL;
 		
@@ -1305,7 +1327,8 @@ void CEquipTool::SetItemInfo(CString _CString, ITEMDATA* pItemData)
 	else if (_CString == L"Weapon01")
 	{
 		pItemData->strName = L"Weapon01";
-		pItemData->strExplan = L"불꽃의 기운이 깃든 강력한 검으로, 적에게 화염 피해를 입힙니다.";
+		pItemData->strExplan = L"불꽃의 기운이 깃든 강력한 리볼버로, 적에게 화염 피해를 입힙니다.";
+		pItemData->ItemName = L"화염의 서약";
 		pItemData->eItemPart = ITEMPARTS::WEAPON;
 		pItemData->eElement = ELEMENT::FIRE;
 		
@@ -1338,7 +1361,8 @@ void CEquipTool::SetItemInfo(CString _CString, ITEMDATA* pItemData)
 	else if (_CString == L"Weapon02")
 	{
 		pItemData->strName = L"Weapon02";
-		pItemData->strExplan = L"전기를 품은 총기로, 적에게 번개 피해를 가하는 강력한 무기입니다.";
+		pItemData->strExplan = L"전기를 품은 리볼버로, 적에게 번개 피해를 가하는 강력한 무기입니다.";
+		pItemData->ItemName = L"라이트닝 리볼버";
 		pItemData->eItemPart = ITEMPARTS::WEAPON;
 		pItemData->eElement = ELEMENT::LIGHT;
 		
@@ -1563,7 +1587,7 @@ void CEquipTool::OnEquipLoad()
 			SetItemInfo(pItemData->strName, pItemData);
 			m_IvenAdd.AddString(pItemData->strName);
 
-			for (auto Btn : Skill->GetChildUI())
+			for (auto Btn : Inventory->GetChildUI())
 			{
 				if (Btn->GetName() == pParentClass)
 					AddItem(pItemData->strName.GetString(), pItemData->strName, pItemData, Btn);

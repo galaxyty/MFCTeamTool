@@ -218,7 +218,7 @@ void DH_Skill::MouseDrag(DH_UI* _UI)
 				oldParent.AddParent(Btn->GetChildUI().front());
 				Btn->GetChildUI().erase(Btn->GetChildUI().begin());
 			}
-			DH_UIMgr::Get_Instance()->SetFocusedUI(_UI);
+			//DH_UIMgr::Get_Instance()->SetFocusedUI(_UI);
 		}
 		else
 		{

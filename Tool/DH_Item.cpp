@@ -488,7 +488,9 @@ void DH_Item::RenderItemInfo(TCHAR* _Key)
 	swprintf_s(szBufName, MIN_STR, L"%s", m_pITEMDATA->strExplan.GetString());
 
 	// 텍스트를 나누기 위한 사각형 설정
-	RECT	RectBufName{ -150,0,0,60 };
+	LONG posX = 0;
+	LONG posY = 135;
+	RECT	RectBufName{ -150, 0 + posY, 0, 60 + posY };
 	int lineHeight = 30; // 한 줄의 높이
 
 	// 텍스트 출력
@@ -504,6 +506,96 @@ void DH_Item::RenderItemInfo(TCHAR* _Key)
 		DT_WORDBREAK | DT_CENTER, // 자동 줄바꿈
 		D3DCOLOR_ARGB(255, 255, 255, 255)
 	);
+
+	TCHAR	szBufItemName[MIN_STR] = L"";
+	swprintf_s(szBufItemName, L"%s", m_pITEMDATA->ItemName);
+	posX = 0;
+	posY = 5;
+	RECT	RectBufItemName{ -150 + posX, 0 + posY, 0 + posX, 60 + posY };
+	CDevice::Get_Instance()->Get_Font3()->DrawTextW(CDevice::Get_Instance()->Get_Sprite(),
+		szBufItemName,
+		lstrlen(szBufItemName),
+		&RectBufItemName,
+		DT_CENTER,
+		D3DCOLOR_ARGB(255, 0, 191, 255));
+
+
+	TCHAR	szBufWeight[MIN_STR] = L"";
+	swprintf_s(szBufWeight, L"%f", m_pITEMDATA->fWeight);
+	posX = -10;
+	posY = 29;
+	RECT	RectBufWeight{ -150 + posX, 0 + posY, 0 + posX, 60 + posY };
+	CDevice::Get_Instance()->Get_Font3()->DrawTextW(CDevice::Get_Instance()->Get_Sprite(),
+		szBufWeight,
+		lstrlen(szBufWeight),
+		&RectBufWeight,
+		DT_RIGHT,
+		D3DCOLOR_ARGB(255, 255, 255, 255));
+
+
+	TCHAR	szBufAS[MIN_STR] = L"";
+	swprintf_s(szBufAS, L"%d", m_pITEMDATA->iAttackSpeed);
+	posX = -10;
+	posY = 48;
+	RECT	RectBufAS{ -150 + posX, 0 + posY, 0 + posX, 60 + posY };
+	CDevice::Get_Instance()->Get_Font3()->DrawTextW(CDevice::Get_Instance()->Get_Sprite(),
+		szBufAS,
+		lstrlen(szBufAS),
+		&RectBufAS,
+		DT_RIGHT,
+		D3DCOLOR_ARGB(255, 255, 255, 255));
+
+
+	TCHAR	szBufDur[MIN_STR] = L"";
+	swprintf_s(szBufDur, L"%d", m_pITEMDATA->iDurability);
+	posX = -10;
+	posY = 58;
+	RECT	RectBufDur{ -150 + posX, 0 + posY, 0 + posX, 60 + posY };
+	CDevice::Get_Instance()->Get_Font3()->DrawTextW(CDevice::Get_Instance()->Get_Sprite(),
+		szBufDur,
+		lstrlen(szBufDur),
+		&RectBufDur,
+		DT_RIGHT,
+		D3DCOLOR_ARGB(255, 255, 255, 255));
+
+
+	TCHAR	szBufLv[MIN_STR] = L"";
+	swprintf_s(szBufLv, L"%d", m_pITEMDATA->iRequiredLevel);
+	posX = -10;
+	posY = 72;
+	RECT	RectBufLv{ -150 + posX, 0 + posY, 0 + posX, 60 + posY };
+	CDevice::Get_Instance()->Get_Font3()->DrawTextW(CDevice::Get_Instance()->Get_Sprite(),
+		szBufLv,
+		lstrlen(szBufLv),
+		&RectBufLv,
+		DT_RIGHT,
+		D3DCOLOR_ARGB(255, 255, 255, 255));
+
+
+	TCHAR	szBufPh[MIN_STR] = L"";
+	swprintf_s(szBufPh, L"%d", m_pITEMDATA->iPhysicalAtk);
+	posX = -10;
+	posY = 91;
+	RECT	RectBufPh{ -150 + posX, 0 + posY, 0 + posX, 60 + posY };
+	CDevice::Get_Instance()->Get_Font3()->DrawTextW(CDevice::Get_Instance()->Get_Sprite(),
+		szBufPh,
+		lstrlen(szBufPh),
+		&RectBufPh,
+		DT_RIGHT,
+		D3DCOLOR_ARGB(255, 255, 255, 255));
+
+
+	TCHAR	szBufMA[MIN_STR] = L"";
+	swprintf_s(szBufMA, L"%d", m_pITEMDATA->iMagicAtk);
+	posX = -10;
+	posY = 101;
+	RECT	RectBufMA{ -150 + posX, 0 + posY, 0 + posX, 60 + posY };
+	CDevice::Get_Instance()->Get_Font3()->DrawTextW(CDevice::Get_Instance()->Get_Sprite(),
+		szBufMA,
+		lstrlen(szBufMA),
+		&RectBufMA,
+		DT_RIGHT,
+		D3DCOLOR_ARGB(255, 255, 255, 255));
 
 #pragma endregion
 
