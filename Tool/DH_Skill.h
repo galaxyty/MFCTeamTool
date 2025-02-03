@@ -21,10 +21,15 @@ public:
 	void	SetImageKey(CString _Key) { m_ImageKey = _Key; }
 	void	MouseDrag(DH_UI* _UI);
 
+public:
+	void		SetSkillData(SKILLDATA* _SKILLDATA) { m_pSkillDATA = _SKILLDATA; }
+	SKILLDATA*	GetSkillData() { return m_pSkillDATA; }
+
 private:
 	D3DXVECTOR3	m_vDragStart;
 	CString m_ImageKey;
 	DH_UI* m_Skill;
+	DH_UI* m_Interface;
 
 	SKILLDATA* m_pSkillDATA;
 

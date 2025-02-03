@@ -46,11 +46,17 @@ public:
 public:
 	void LoadPngFiles(const CString& folderPath, CListBox* _ListBox);
 	void OnLoadPngFiles(CString _Path, CListBox* _ListBox);
-	void AddItem(wstring _Item, CString _CString, ITEMDATA* pItemData);
+	void AddItem(wstring _Item, CString _CString, ITEMDATA* pItemData, DH_UI* pParrent = nullptr);
 	void DeleteItem(CString _CString);
-	void AddSkill(wstring _Item, CString _CString);
+	void AddSkill(wstring _Item, CString _CString, SKILLDATA* pItemData, DH_UI* pParrent = nullptr);
 	void DeleteSkill(CString _CString);
 	void SetItemInfo(CString _CString, ITEMDATA* pItemData);
+
+public:
+	void OnEquipSave();
+	void OnEquipLoad();
+	void OnSkillSave();
+	void OnSkillLoad();
 
 public:
 	void UIToggle(DH_UI* _UI);
@@ -85,4 +91,8 @@ public:
 	afx_msg void OnAddSkill();
 	afx_msg void OnDeleteSkill();
 	afx_msg void OnMyState();
+	afx_msg void OnItemSave();
+	afx_msg void OnItemLoad();
+	afx_msg void OnSkillSaveBtn();
+	afx_msg void OnSkillLoadBtn();
 };

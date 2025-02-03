@@ -5,6 +5,7 @@
 #include "DH_OBJMgr.h"
 #include "ToolView.h"
 #include "MainFrm.h"
+#include "DH_TimeMgr.h"
 
 IMPLEMENT_SINGLETON(DH_LoopMgr)
 
@@ -32,6 +33,7 @@ void DH_LoopMgr::Progress()
 
 void DH_LoopMgr::Update()
 {
+	DH_TimeMgr::Get_Instance()->Update();
 	DH_KeyMgr::Get_Instance()->Update();
 	DH_UIMgr::Get_Instance()->Update();
 	DH_OBJMgr::Get_Instance()->Update();

@@ -6,8 +6,10 @@
 #include "CDevice.h"
 #include "DH_Interface.h"
 #include "DH_SkillUI.h"
+#include "DH_UIMgr.h"
 
-DH_Skill::DH_Skill() : m_Skill(nullptr), m_ImageKey()
+DH_Skill::DH_Skill() : m_Skill(nullptr), m_ImageKey(), m_bDragOn(false), m_PreviousIndex(0), m_pSkillDATA(nullptr)
+,m_Interface(nullptr)
 {
 	ZeroMemory(m_vDragStart, sizeof(D3DXVECTOR3));
 }
@@ -69,10 +71,10 @@ void DH_Skill::MouseLUp()
 	//부모가 인터페이스창일 때
 	else if (GetParent()->GetParent()->GetName() == L"Interface")
 	{
-		m_Skill = GetParent()->GetParent();
-		DH_SkillUI* SkillUI = dynamic_cast<DH_Interface*>(m_Skill)->GetSkillUI();
+		m_Interface = GetParent()->GetParent();
+		DH_SkillUI* SkillUI = dynamic_cast<DH_Interface*>(m_Interface)->GetSkillUI();
 
-		MouseDrag(m_Skill);
+		MouseDrag(m_Interface);
 		MouseDrag(SkillUI);
 	}
 }
@@ -216,6 +218,7 @@ void DH_Skill::MouseDrag(DH_UI* _UI)
 				oldParent.AddParent(Btn->GetChildUI().front());
 				Btn->GetChildUI().erase(Btn->GetChildUI().begin());
 			}
+			DH_UIMgr::Get_Instance()->SetFocusedUI(_UI);
 		}
 		else
 		{

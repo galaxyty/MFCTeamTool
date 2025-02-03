@@ -137,7 +137,7 @@ void DH_SkillUI::SetButten()
 		{
 			DH_BtnUI* Btn = new DH_BtnUI;
 
-			wstring name = L"Btn_" + std::to_wstring(i);
+			wstring name = L"Btn_" + std::to_wstring(i) + L"_" + std::to_wstring(j);
 			Btn->SetName(name);
 
 			Btn->SetMPos(D3DXVECTOR3{ -94.f + (30 * j), -49.f + (30 * i), 0.f });

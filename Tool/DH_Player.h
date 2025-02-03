@@ -50,5 +50,7 @@ private:
 
 private:
 	bool			m_ItemUpdate;
+	float			m_fFrameCal;
+	int				m_iFrame;
 };
 

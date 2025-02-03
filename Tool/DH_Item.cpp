@@ -7,9 +7,11 @@
 #include "CDevice.h"
 #include "DH_Inventory.h"
 #include "DH_Interface.h"
+#include "DH_UIMgr.h"
 #include "DH_Player.h"
 
 DH_Item::DH_Item() : m_Inven(nullptr), m_ImageKey(), m_bDragOn(false), m_pITEMDATA(nullptr), m_PreviousIndex(0)
+, m_Interface(nullptr), m_eItem(ITEM::END)
 {
 	ZeroMemory(m_vDragStart, sizeof(D3DXVECTOR3));
 }
@@ -119,7 +121,6 @@ void DH_Item::MouseLUp()
 	//m_Inven 설정
 	m_Inven = dynamic_cast<DH_UI*>(GetParent()->GetParent());
 
-	//지금 부모가 스킬창일때
 	if (GetParent()->GetParent()->GetName() == L"Inventory")
 	{
 		//베이스 부모의 자식버튼을 순회한다.
@@ -189,8 +190,9 @@ void DH_Item::MouseLUp()
 	//부모가 인터페이스창일 때
 	else if (GetParent()->GetParent()->GetName() == L"Interface")
 	{
-		m_Inven = GetParent()->GetParent();
-		DH_Inventory* InvenUI = dynamic_cast<DH_Interface*>(m_Inven)->GetInventory();
+		//인터페이스 창
+		m_Interface = GetParent()->GetParent();
+		DH_Inventory* InvenUI = dynamic_cast<DH_Interface*>(m_Interface)->GetInventory();
 	
 		MouseDrag(m_Inven);
 		MouseDrag(InvenUI);
@@ -330,7 +332,7 @@ void DH_Item::Render()
 			nullptr,
 			D3DCOLOR_ARGB(255, 255, 255, 255));
 
-		if (m_sITEM == ITEM::WEAPON)
+		if (m_eItem == ITEM::WEAPON)
 		{
 			const TEXINFO* pUIInfo = CTextureMgr::Get_Instance()->Get_Texture(L"ItemSlot4", nullptr);
 			CDevice::Get_Instance()->Get_Sprite()->Draw(
@@ -340,7 +342,7 @@ void DH_Item::Render()
 				nullptr,
 				D3DCOLOR_ARGB(255, 255, 255, 255));
 		}
-		if (m_sITEM == ITEM::AMOR)
+		if (m_eItem == ITEM::AMOR)
 		{
 			const TEXINFO* pUIInfo = CTextureMgr::Get_Instance()->Get_Texture(L"ItemSlot3", nullptr);
 			CDevice::Get_Instance()->Get_Sprite()->Draw(
@@ -350,7 +352,7 @@ void DH_Item::Render()
 				nullptr,
 				D3DCOLOR_ARGB(255, 255, 255, 255));
 		}
-		if (m_sITEM == ITEM::POTION)
+		if (m_eItem == ITEM::POTION)
 		{
 			const TEXINFO* pUIInfo = CTextureMgr::Get_Instance()->Get_Texture(L"ItemSlot5", nullptr);
 			CDevice::Get_Instance()->Get_Sprite()->Draw(
@@ -360,7 +362,7 @@ void DH_Item::Render()
 				nullptr,
 				D3DCOLOR_ARGB(255, 255, 255, 255));
 		}
-		if (m_sITEM == ITEM::ACCE)
+		if (m_eItem == ITEM::ACCE)
 		{
 			const TEXINFO* pUIInfo = CTextureMgr::Get_Instance()->Get_Texture(L"ItemSlot6", nullptr);
 			CDevice::Get_Instance()->Get_Sprite()->Draw(
@@ -423,6 +425,28 @@ void DH_Item::MouseDrag(DH_UI* _UI)
 				Btn->GetChildUI().erase(Btn->GetChildUI().begin());
 			}
 		}
+		//버튼UI 위에 마우스가 있으면? 버튼이 ETC라면?
+		if (Btn->IsMouseOn() && dynamic_cast<DH_BtnUI*>(Btn)->GeteItemParts() == ITEMPARTS::ETC)
+		{
+			//현재 부모의 자식배열에서 자신을 삭제
+			auto& oldParent = *GetParent();
+			auto& oldChildList = oldParent.GetChildUI();
+			oldChildList.erase(remove(oldChildList.begin(), oldChildList.end(), this), oldChildList.end());
+			//새로운 부모 연결
+			Btn->AddParent(this);
+			//포지션 셋팅
+			DH_Player::Get_Instance()->SetItemUpdate(true);
+			SetMPos({ 0.f, 0.f, 0.f });
+
+			//기존 자식을 삭제 후 스왑
+			if (Btn->GetChildUI().size() > 1)
+			{
+				//Btn->GetChildUI().begin = 원래 있던 아이템
+				oldParent.AddParent(Btn->GetChildUI().front());
+				Btn->GetChildUI().erase(Btn->GetChildUI().begin());
+			}
+			DH_UIMgr::Get_Instance()->SetFocusedUI(_UI);
+		}
 		else
 		{
 			SetMPos({ 0.f, 0.f, 0.f });
@@ -458,13 +482,29 @@ void DH_Item::RenderItemInfo(TCHAR* _Key)
 		D3DCOLOR_ARGB(255, 255, 255, 255));
 
 
+#pragma region 상세보기 정보출력
+
 	TCHAR	szBufName[MIN_STR] = L"";
-	swprintf_s(szBufName, L"%s", m_pITEMDATA->strExplan.GetString());
-	RECT	RectBufName{ 0,0,0,0 };
-	CDevice::Get_Instance()->Get_Font()->DrawTextW(CDevice::Get_Instance()->Get_Sprite(),
-		szBufName,
-		lstrlen(szBufName),
-		&RectBufName,
-		DT_RIGHT,
-		D3DCOLOR_ARGB(255, 255, 255, 255));
+	swprintf_s(szBufName, MIN_STR, L"%s", m_pITEMDATA->strExplan.GetString());
+
+	// 텍스트를 나누기 위한 사각형 설정
+	RECT	RectBufName{ -150,0,0,60 };
+	int lineHeight = 30; // 한 줄의 높이
+
+	// 텍스트 출력
+	const TCHAR* pText = szBufName;
+	RECT currentRect = RectBufName;
+
+	
+	int charsPrinted = CDevice::Get_Instance()->Get_Font2()->DrawTextW(
+		CDevice::Get_Instance()->Get_Sprite(),
+		pText,
+		-1, // 전체 길이 출력
+		&currentRect,
+		DT_WORDBREAK | DT_CENTER, // 자동 줄바꿈
+		D3DCOLOR_ARGB(255, 255, 255, 255)
+	);
+
+#pragma endregion
+
 }

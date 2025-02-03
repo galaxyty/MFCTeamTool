@@ -13,6 +13,44 @@ CDevice::~CDevice()
 	Release();
 }
 
+HRESULT CDevice::SetFont01()
+{
+	D3DXFONT_DESCW		tFontInfo;
+	ZeroMemory(&tFontInfo, sizeof(D3DXFONT_DESCW));
+
+	tFontInfo.Height = 13;
+	tFontInfo.Width = 7;
+	tFontInfo.Weight = FW_NORMAL;
+	tFontInfo.CharSet = HANGEUL_CHARSET;
+	lstrcpy(tFontInfo.FaceName, L"굴림체");
+
+	if (FAILED(D3DXCreateFontIndirect(m_pDevice, &tFontInfo, &m_pFont)))
+	{
+		AfxMessageBox(L"D3DXCreateFontIndirect Failed");
+		return E_FAIL;
+	}
+	return S_OK;
+}
+
+HRESULT CDevice::SetFont02()
+{
+	D3DXFONT_DESCW		tFontInfo2;
+	ZeroMemory(&tFontInfo2, sizeof(D3DXFONT_DESCW));
+
+	tFontInfo2.Height = 10;
+	tFontInfo2.Width = 4;
+	tFontInfo2.Weight = FW_NORMAL;
+	tFontInfo2.CharSet = HANGEUL_CHARSET;
+	lstrcpy(tFontInfo2.FaceName, L"굴림체");
+
+	if (FAILED(D3DXCreateFontIndirect(m_pDevice, &tFontInfo2, &m_pFont2)))
+	{
+		AfxMessageBox(L"D3DXCreateFontIndirect Failed");
+		return E_FAIL;
+	}
+	return S_OK;
+}
+
 HRESULT CDevice::Init_Device()
 {
 	// 장치 초기화 과정
@@ -89,20 +127,10 @@ HRESULT CDevice::Init_Device()
 
 	//font
 
-	D3DXFONT_DESCW		tFontInfo;
-	ZeroMemory(&tFontInfo, sizeof(D3DXFONT_DESCW));
+	
 
-	tFontInfo.Height = 13;
-	tFontInfo.Width = 7;
-	tFontInfo.Weight = FW_NORMAL;
-	tFontInfo.CharSet = HANGEUL_CHARSET;
-	lstrcpy(tFontInfo.FaceName, L"굴림체");
-
-	if (FAILED(D3DXCreateFontIndirect(m_pDevice, &tFontInfo, &m_pFont)))
-	{
-		AfxMessageBox(L"D3DXCreateFontIndirect Failed");
-		return E_FAIL;
-	}
+	SetFont01();
+	SetFont02();
 
 
 

@@ -13,6 +13,7 @@
 #include "DH_UI.h"
 #include "DH_Inventory.h"
 #include "CDH_FilePath.h"
+#include "DH_BtnUI.h"
 #include "DH_Item.h"
 #include "DH_Skill.h"
 #include "DH_MyState.h"
@@ -70,6 +71,10 @@ BEGIN_MESSAGE_MAP(CEquipTool, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON4, &CEquipTool::OnAddSkill)
 	ON_BN_CLICKED(IDC_BUTTON6, &CEquipTool::OnDeleteSkill)
 	ON_BN_CLICKED(IDC_BUTTON7, &CEquipTool::OnMyState)
+	ON_BN_CLICKED(IDC_BUTTON8, &CEquipTool::OnItemSave)
+	ON_BN_CLICKED(IDC_BUTTON9, &CEquipTool::OnItemLoad)
+	ON_BN_CLICKED(IDC_BUTTON10, &CEquipTool::OnSkillSaveBtn)
+	ON_BN_CLICKED(IDC_BUTTON11, &CEquipTool::OnSkillLoadBtn)
 END_MESSAGE_MAP()
 
 
@@ -330,9 +335,10 @@ void CEquipTool::OnAddIven()
 	int	iIndex = m_ListIven.GetCurSel();
 	m_ListIven.GetText(iIndex, strFindName);
 
+
+	//실제 추가 로직
 	ITEMDATA* pItemData = new ITEMDATA;
 	SetItemInfo(strFindName, pItemData);
-	// AddString : 리스트 박스에 문자열을 삽입
 	m_IvenAdd.AddString(strFindName);
 	AddItem(strFindName.GetString(), strFindName, pItemData);
 
@@ -386,7 +392,7 @@ void CEquipTool::OnAddSkill()
 	PathRemoveExtension(szFileName);
 
 	m_SkillAdd.AddString(szFileName);
-	AddSkill(strFindName.GetString(), strFindName);
+	AddSkill(strFindName.GetString(), strFindName, pSkill);
 
 	UpdateData(FALSE);
 }
@@ -449,7 +455,7 @@ void CEquipTool::OnDestroy()
 
 
 //아이템 추가, 삭제 로직
-void CEquipTool::AddItem(wstring _Item, CString _CString, ITEMDATA* pItemData)
+void CEquipTool::AddItem(wstring _Item, CString _CString, ITEMDATA* pItemData, DH_UI* pParrent)
 {
 	DH_Item* Item = new DH_Item;
 	Item->SetName(_Item);
@@ -480,7 +486,12 @@ void CEquipTool::AddItem(wstring _Item, CString _CString, ITEMDATA* pItemData)
 			Item->SetpITEMDATA(pItemData);
 			Item->SetVisible(true);
 			Item->Initialize();
-			Inventory->GetChildUI()[i]->AddParent(Item);
+
+			if (!pParrent)
+				Inventory->GetChildUI()[i]->AddParent(Item);
+			else if (pParrent)
+				pParrent->AddParent(Item);
+
 			break;
 		}
 	}
@@ -505,7 +516,7 @@ void CEquipTool::DeleteItem(CString _CString)
 }
 
 //스킬 추가, 삭제 로직
-void CEquipTool::AddSkill(wstring _Item, CString _CString)
+void CEquipTool::AddSkill(wstring _Item, CString _CString, SKILLDATA* pItemData, DH_UI* pParrent)
 {
 	DH_Skill* SkillIcon = new DH_Skill;
 	SkillIcon->SetName(_Item);
@@ -523,8 +534,15 @@ void CEquipTool::AddSkill(wstring _Item, CString _CString)
 			SkillIcon->SetScale(D3DXVECTOR3{ 28.f,28.f,0.f });
 			SkillIcon->SetImageKey(_CString);
 			SkillIcon->SetVisible(true);
+			SkillIcon->SetSkillData(pItemData);
 			SkillIcon->Initialize();
-			Skill->GetChildUI()[i]->AddParent(SkillIcon);
+
+			if (!pParrent)
+				Skill->GetChildUI()[i]->AddParent(SkillIcon);
+			else if (pParrent)
+				pParrent->AddParent(SkillIcon);
+
+			
 			break;
 		}
 	}
@@ -548,6 +566,7 @@ void CEquipTool::DeleteSkill(CString _CString)
 	}
 }
 
+//아이템 인포
 void CEquipTool::SetItemInfo(CString _CString, ITEMDATA* pItemData)
 {
 	//악세서리
@@ -1356,3 +1375,442 @@ void CEquipTool::SetItemInfo(CString _CString, ITEMDATA* pItemData)
 
 
 
+//저장 불러오기
+void CEquipTool::OnEquipSave()
+{
+	CFileDialog		Dlg(FALSE,					// TRUE(불러오기), FALSE(다른 이름으로 저장) 모드 지정
+		L"dat",									// default 확장자명
+		L"*.dat",								// 대화 상자에 표시될 최초 파일명
+		OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,	// 읽기 전용 체크 박스 숨김 | 중복된 이름으로 파일 저장 시 경고 메세지 띄움
+		L"Data Files(*.dat) | *.dat ||",		// 대화 상자에 표시될 파일 형식
+		this);									// 부모 윈도우 주소
+
+
+#pragma region 기본경로 설정코드
+
+	TCHAR	szPath[MAX_PATH] = L"";
+	// 현재 프로젝트의 경로를 얻어오는 함수(절대 경로)
+	GetCurrentDirectory(MAX_PATH, szPath);
+
+	// PathRemoveFileSpec : 전체 경로에서 파일 이름만 잘라주는 함수
+	// 경로 상에 파일 이름이 없을 경우엔 마지막 폴더명을 잘라낸다.
+	PathRemoveFileSpec(szPath);
+	lstrcat(szPath, L"\\Data");
+	Dlg.m_ofn.lpstrInitialDir = szPath;
+
+#pragma endregion
+
+	if (IDOK == Dlg.DoModal())
+	{
+#pragma region 스트림 개방
+
+		// GetPathName : (다른이름으로 저장) 선택된 경로를 반환
+		CString	str = Dlg.GetPathName().GetString();
+		const TCHAR* pGetPath = str.GetString();
+
+		// 스트림 개방
+		HANDLE hFile = CreateFile(pGetPath, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
+		if (INVALID_HANDLE_VALUE == hFile)
+			return;
+
+#pragma endregion
+
+		//맵에 키랑 클래스만 저장하면 된다.
+		DWORD	dwByte(0), dwStrByte(0), dwClassStrByte(0);
+
+		auto& UI = Inventory->GetChildUI();
+		for (auto& BtnUI : UI)
+		{
+			if (BtnUI->GetChildUI().size() > 0)
+			{
+				auto& pItem = BtnUI->GetChildUI().front();
+				dwStrByte = sizeof(TCHAR) * (pItem->GetName().length() + 1);
+
+				WriteFile(hFile, &dwStrByte, sizeof(DWORD), &dwByte, nullptr);
+				WriteFile(hFile, pItem->GetName().c_str(), dwStrByte, &dwByte, nullptr);
+
+				// 2. 부모 클래스 정보 저장
+				wstring parentClass = dynamic_cast<DH_UI*>(pItem)->GetParent()->GetName();
+				DWORD dwClassStrByte = (parentClass.length() + 1) * sizeof(wchar_t);
+				WriteFile(hFile, &dwClassStrByte, sizeof(DWORD), &dwByte, nullptr);
+				WriteFile(hFile, parentClass.c_str(), dwClassStrByte * sizeof(TCHAR), &dwByte, nullptr);
+			}
+		}
+
+		auto& UI2 = Interface->GetChildUI();
+		for (auto& BtnUI : UI2)
+		{
+			if (BtnUI->GetChildUI().size() > 0 && dynamic_cast<DH_BtnUI*>(BtnUI)->GeteItemParts() == ITEMPARTS::POTION)
+			{
+				auto& pItem = BtnUI->GetChildUI().front();
+				dwStrByte = sizeof(TCHAR) * (pItem->GetName().length() + 1);
+
+				WriteFile(hFile, &dwStrByte, sizeof(DWORD), &dwByte, nullptr);
+				WriteFile(hFile, pItem->GetName().c_str(), dwStrByte, &dwByte, nullptr);
+
+				// 2. 부모 클래스 정보 저장
+				wstring parentClass = dynamic_cast<DH_UI*>(pItem)->GetParent()->GetName();
+				DWORD dwClassStrByte = (parentClass.length() + 1) * sizeof(wchar_t);
+				WriteFile(hFile, &dwClassStrByte, sizeof(DWORD), &dwByte, nullptr);
+				WriteFile(hFile, parentClass.c_str(), dwClassStrByte * sizeof(TCHAR), &dwByte, nullptr);
+			}
+		}
+
+		CloseHandle(hFile);
+	}
+
+
+}
+void CEquipTool::OnEquipLoad()
+{
+	CFileDialog		Dlg(TRUE,		// TRUE(불러오기), FALSE(다른 이름으로 저장) 모드 지정
+		L"dat",		// default 확장자명
+		L"*.dat",	// 대화 상자에 표시될 최초 파일명
+		OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,	// 읽기 전용 체크 박스 숨김 | 중복된 이름으로 파일 저장 시 경고 메세지 띄움
+		L"Data Files(*.dat) | *.dat ||", // 대화 상자에 표시될 파일 형식
+		this);	// 부모 윈도우 주소
+
+
+#pragma region 기본경로 설정코드
+
+	TCHAR	szPath[MAX_PATH] = L"";
+	// 현재 프로젝트의 경로를 얻어오는 함수(절대 경로)
+	GetCurrentDirectory(MAX_PATH, szPath);
+
+	// PathRemoveFileSpec : 전체 경로에서 파일 이름만 잘라주는 함수
+	// 경로 상에 파일 이름이 없을 경우엔 마지막 폴더명을 잘라낸다.
+	PathRemoveFileSpec(szPath);
+	lstrcat(szPath, L"\\Data");
+	Dlg.m_ofn.lpstrInitialDir = szPath;
+
+#pragma endregion
+
+	if (IDOK == Dlg.DoModal())
+	{
+#pragma region 스트림 개방
+
+
+		// GetPathName : (다른이름으로 저장) 선택된 경로를 반환
+		CString	str = Dlg.GetPathName().GetString();
+		const TCHAR* pGetPath = str.GetString();
+
+		// 스트림 개방
+		HANDLE hFile = CreateFile(pGetPath, GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+		if (INVALID_HANDLE_VALUE == hFile)
+			return;
+
+#pragma endregion
+
+#pragma region 아이템 초기화
+
+		//기존 정보 초기화
+		for (auto& MyPair : m_mapItemData)
+			delete MyPair.second;
+		auto& UI = Inventory->GetChildUI();
+		for (auto& BtnUI : UI)
+		{
+			if (BtnUI->GetChildUI().size() > 0)
+			{
+				delete BtnUI->GetChildUI().front();
+				BtnUI->GetChildUI().front() = nullptr;
+				BtnUI->GetChildUI().clear();
+			}
+		}
+		auto& UI2 = Interface->GetChildUI();
+		for (auto& BtnUI : UI2)
+		{
+			if (BtnUI->GetChildUI().size() > 0)
+			{
+				delete BtnUI->GetChildUI().front();
+				BtnUI->GetChildUI().front() = nullptr;
+				BtnUI->GetChildUI().clear();
+			}
+		}
+		m_mapItemData.clear();
+		m_IvenAdd.ResetContent();
+
+#pragma endregion		
+
+		// 파일 읽기
+		DWORD	dwByte(0), dwStrByte(0), dwClassStrByte(0);
+		while (true)
+		{
+			//문자 열 읽기
+			bool Read;
+			Read = ReadFile(hFile, &dwStrByte, sizeof(DWORD), &dwByte, nullptr);
+
+			TCHAR* pName = new TCHAR[dwStrByte];
+			Read = ReadFile(hFile, pName, dwStrByte, &dwByte, nullptr);
+
+			//끝까지 읽으면 리턴
+			if (0 == dwByte)
+			{
+				delete[] pName;
+				break;
+			}
+
+			//이름 추가
+			ITEMDATA* pItemData = new ITEMDATA;
+			pItemData->strName = pName;
+			delete[]pName;
+
+			//부모 읽기
+			bool Class;
+			Class = ReadFile(hFile, &dwClassStrByte, sizeof(DWORD), &dwByte, nullptr);
+			TCHAR* pParentClass = new TCHAR[dwClassStrByte];
+			Class = ReadFile(hFile, pParentClass, dwClassStrByte * sizeof(TCHAR), &dwByte, nullptr);
+
+			SetItemInfo(pItemData->strName, pItemData);
+			m_IvenAdd.AddString(pItemData->strName);
+
+			for (auto Btn : Skill->GetChildUI())
+			{
+				if (Btn->GetName() == pParentClass)
+					AddItem(pItemData->strName.GetString(), pItemData->strName, pItemData, Btn);
+			}
+			for (auto Btn : Interface->GetChildUI())
+			{
+				if (Btn->GetName() == pParentClass)
+					AddItem(pItemData->strName.GetString(), pItemData->strName, pItemData, Btn);
+			}
+
+			delete[] pParentClass;
+		}
+		CloseHandle(hFile);
+	}
+
+	DH_Player::Get_Instance()->SetItemUpdate(true);
+}
+void CEquipTool::OnSkillSave()
+{
+	CFileDialog		Dlg(FALSE,					// TRUE(불러오기), FALSE(다른 이름으로 저장) 모드 지정
+		L"dat",									// default 확장자명
+		L"*.dat",								// 대화 상자에 표시될 최초 파일명
+		OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,	// 읽기 전용 체크 박스 숨김 | 중복된 이름으로 파일 저장 시 경고 메세지 띄움
+		L"Data Files(*.dat) | *.dat ||",		// 대화 상자에 표시될 파일 형식
+		this);									// 부모 윈도우 주소
+
+
+#pragma region 기본경로 설정코드
+
+	TCHAR	szPath[MAX_PATH] = L"";
+	// 현재 프로젝트의 경로를 얻어오는 함수(절대 경로)
+	GetCurrentDirectory(MAX_PATH, szPath);
+
+	// PathRemoveFileSpec : 전체 경로에서 파일 이름만 잘라주는 함수
+	// 경로 상에 파일 이름이 없을 경우엔 마지막 폴더명을 잘라낸다.
+	PathRemoveFileSpec(szPath);
+	lstrcat(szPath, L"\\Data");
+	Dlg.m_ofn.lpstrInitialDir = szPath;
+
+#pragma endregion
+
+	if (IDOK == Dlg.DoModal())
+	{
+#pragma region 스트림 개방
+
+		// GetPathName : (다른이름으로 저장) 선택된 경로를 반환
+		CString	str = Dlg.GetPathName().GetString();
+		const TCHAR* pGetPath = str.GetString();
+
+		// 스트림 개방
+		HANDLE hFile = CreateFile(pGetPath, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
+		if (INVALID_HANDLE_VALUE == hFile)
+			return;
+
+#pragma endregion
+
+		//맵에 키랑 클래스만 저장하면 된다.
+		DWORD	dwByte(0), dwStrByte(0), dwClassStrByte(0);
+
+		auto& UI = Skill->GetChildUI();
+		for (auto& BtnUI : UI)
+		{
+			if (BtnUI->GetChildUI().size() > 0)
+			{
+				auto& pItem = BtnUI->GetChildUI().front();
+				dwStrByte = sizeof(TCHAR) * (pItem->GetName().length() + 1);
+
+				WriteFile(hFile, &dwStrByte, sizeof(DWORD), &dwByte, nullptr);
+				WriteFile(hFile, pItem->GetName().c_str(), dwStrByte, &dwByte, nullptr);
+
+				// 2. 부모 클래스 정보 저장
+				wstring parentClass = dynamic_cast<DH_UI*>(pItem)->GetParent()->GetName();
+				DWORD dwClassStrByte = (parentClass.length() + 1) * sizeof(wchar_t);
+				WriteFile(hFile, &dwClassStrByte, sizeof(DWORD), &dwByte, nullptr);
+				WriteFile(hFile, parentClass.c_str(), dwClassStrByte * sizeof(TCHAR), &dwByte, nullptr);
+			}
+		}
+
+		auto& UI2 = Interface->GetChildUI();
+		for (auto& BtnUI : UI2)
+		{
+			if (BtnUI->GetChildUI().size() > 0 && dynamic_cast<DH_BtnUI*>(BtnUI)->GeteItemParts() == ITEMPARTS::SKILL)
+			{
+				auto& pItem = BtnUI->GetChildUI().front();
+				dwStrByte = sizeof(TCHAR) * (pItem->GetName().length() + 1);
+
+				WriteFile(hFile, &dwStrByte, sizeof(DWORD), &dwByte, nullptr);
+				WriteFile(hFile, pItem->GetName().c_str(), dwStrByte, &dwByte, nullptr);
+
+				// 2. 부모 클래스 정보 저장
+				wstring parentClass = dynamic_cast<DH_UI*>(pItem)->GetParent()->GetName();
+				DWORD dwClassStrByte = (parentClass.length() + 1) * sizeof(wchar_t);
+				WriteFile(hFile, &dwClassStrByte, sizeof(DWORD), &dwByte, nullptr);
+				WriteFile(hFile, parentClass.c_str(), dwClassStrByte * sizeof(TCHAR), &dwByte, nullptr);
+			}
+		}
+
+		CloseHandle(hFile);
+	}
+
+
+}
+void CEquipTool::OnSkillLoad()
+{
+	CFileDialog		Dlg(TRUE,		// TRUE(불러오기), FALSE(다른 이름으로 저장) 모드 지정
+		L"dat",		// default 확장자명
+		L"*.dat",	// 대화 상자에 표시될 최초 파일명
+		OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,	// 읽기 전용 체크 박스 숨김 | 중복된 이름으로 파일 저장 시 경고 메세지 띄움
+		L"Data Files(*.dat) | *.dat ||", // 대화 상자에 표시될 파일 형식
+		this);	// 부모 윈도우 주소
+
+
+#pragma region 기본경로 설정코드
+
+	TCHAR	szPath[MAX_PATH] = L"";
+	// 현재 프로젝트의 경로를 얻어오는 함수(절대 경로)
+	GetCurrentDirectory(MAX_PATH, szPath);
+
+	// PathRemoveFileSpec : 전체 경로에서 파일 이름만 잘라주는 함수
+	// 경로 상에 파일 이름이 없을 경우엔 마지막 폴더명을 잘라낸다.
+	PathRemoveFileSpec(szPath);
+	lstrcat(szPath, L"\\Data");
+	Dlg.m_ofn.lpstrInitialDir = szPath;
+
+#pragma endregion
+
+	if (IDOK == Dlg.DoModal())
+	{
+#pragma region 스트림 개방
+
+
+		// GetPathName : (다른이름으로 저장) 선택된 경로를 반환
+		CString	str = Dlg.GetPathName().GetString();
+		const TCHAR* pGetPath = str.GetString();
+
+		// 스트림 개방
+		HANDLE hFile = CreateFile(pGetPath, GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+		if (INVALID_HANDLE_VALUE == hFile)
+			return;
+
+#pragma endregion
+
+#pragma region 아이템 초기화
+
+		//기존 정보 초기화
+		for (auto& MyPair : m_mapSkillData)
+			delete MyPair.second;
+		auto& UI = Skill->GetChildUI();
+		for (auto& BtnUI : UI)
+		{
+			if (BtnUI->GetChildUI().size() > 0)
+			{
+				delete BtnUI->GetChildUI().front();
+				BtnUI->GetChildUI().front() = nullptr;
+				BtnUI->GetChildUI().clear();
+			}
+		}
+		auto& UI2 = Interface->GetChildUI();
+		for (auto& BtnUI : UI2)
+		{
+			if (BtnUI->GetChildUI().size() > 0)
+			{
+				delete BtnUI->GetChildUI().front();
+				BtnUI->GetChildUI().front() = nullptr;
+				BtnUI->GetChildUI().clear();
+			}
+		}
+		m_mapSkillData.clear();
+		m_SkillAdd.ResetContent();
+
+#pragma endregion		
+
+		// 파일 읽기
+		DWORD	dwByte(0), dwStrByte(0), dwClassStrByte(0);
+		while (true)
+		{
+			//문자 열 읽기
+			bool Read;
+			Read = ReadFile(hFile, &dwStrByte, sizeof(DWORD), &dwByte, nullptr);
+
+			TCHAR* pName = new TCHAR[dwStrByte];
+			Read = ReadFile(hFile, pName, dwStrByte, &dwByte, nullptr);
+
+			//끝까지 읽으면 리턴
+			if (0 == dwByte)
+			{
+				delete[] pName;
+				break;
+			}
+
+			//이름 추가
+			SKILLDATA* pISkillData = new SKILLDATA;
+			TCHAR	szFileName[MAX_STR] = L"";
+			lstrcpy(szFileName, pName);
+			PathRemoveExtension(szFileName);
+			pISkillData->strName = szFileName;
+			delete[]pName;
+
+
+			//부모 읽기
+			bool Class;
+			Class = ReadFile(hFile, &dwClassStrByte, sizeof(DWORD), &dwByte, nullptr);
+			TCHAR* pParentClass = new TCHAR[dwClassStrByte];
+			Class = ReadFile(hFile, pParentClass, dwClassStrByte * sizeof(TCHAR), &dwByte, nullptr);
+
+			m_SkillAdd.AddString(pISkillData->strName);
+
+			for (auto Btn : Skill->GetChildUI())
+			{
+				if (Btn->GetName() == pParentClass)
+				{
+					AddSkill(pISkillData->strName.GetString(), pISkillData->strName, pISkillData, Btn);
+					m_mapSkillData.insert(make_pair(pISkillData->strName, pISkillData));
+				}
+
+			}
+			for (auto Btn : Interface->GetChildUI())
+			{
+				if (Btn->GetName() == pParentClass)
+				{
+					AddSkill(pISkillData->strName.GetString(), pISkillData->strName, pISkillData, Btn);
+					m_mapSkillData.insert(make_pair(pISkillData->strName, pISkillData));
+				}
+			}
+
+			delete[] pParentClass;
+		}
+		CloseHandle(hFile);
+	}
+
+	DH_Player::Get_Instance()->SetItemUpdate(true);
+}
+
+void CEquipTool::OnItemSave()
+{
+	OnEquipSave();
+}
+void CEquipTool::OnItemLoad()
+{
+	OnEquipLoad();
+}
+
+void CEquipTool::OnSkillSaveBtn()
+{
+	OnSkillSave();
+}
+void CEquipTool::OnSkillLoadBtn()
+{
+	OnSkillLoad();
+}

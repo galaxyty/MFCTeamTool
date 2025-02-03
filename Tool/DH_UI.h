@@ -63,12 +63,12 @@ public:
 	void SetVisible(bool visible) { m_bVisible = visible; }
 	bool IsVisible() const { return m_bVisible; }
 
+
 protected:
 	bool m_bMouseOn;
 	bool m_bLDown;
 	bool m_bRDown;
 	bool m_bVisible;
-
 
 	friend class DH_UIMgr;
 };

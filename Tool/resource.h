@@ -17,9 +17,13 @@
 #define IDC_MAP_BUTTON                  1002
 #define IDC_BUTTON7                     1002
 #define IDC_EQUIP_BUTTON                1003
+#define IDC_BUTTON8                     1003
 #define IDC_RATIO_SLIDER                1004
+#define IDC_BUTTON9                     1004
 #define IDC_RATIO_TEXT                  1005
+#define IDC_BUTTON10                    1005
 #define IDC_RATIO_TEXT2                 1006
+#define IDC_BUTTON11                    1006
 #define IDC_LIST_BOX_MAP                1007
 #define IDC_BACKGROUND_PICTURE          1008
 #define IDC_MAP_APPLY_BUTTON            1009

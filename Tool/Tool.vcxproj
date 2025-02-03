@@ -218,6 +218,7 @@
     <ClInclude Include="DH_Player.h" />
     <ClInclude Include="DH_Skill.h" />
     <ClInclude Include="DH_SkillUI.h" />
+    <ClInclude Include="DH_TimeMgr.h" />
     <ClInclude Include="DH_UI.h" />
     <ClInclude Include="DH_UIMgr.h" />
     <ClInclude Include="framework.h" />
@@ -257,6 +258,7 @@
     <ClCompile Include="DH_Player.cpp" />
     <ClCompile Include="DH_Skill.cpp" />
     <ClCompile Include="DH_SkillUI.cpp" />
+    <ClCompile Include="DH_TimeMgr.cpp" />
     <ClCompile Include="DH_UI.cpp" />
     <ClCompile Include="DH_UIMgr.cpp" />
     <ClCompile Include="MainFrm.cpp" />

@@ -19,10 +19,10 @@ public:
 
 public:
 	void	SetImageKey(CString _Key) { m_ImageKey = _Key; }
-	void	SetItem(const ITEM& item) { m_sITEM = item; }
+	void	SetItem(const ITEM& item) { m_eItem = item; }
 	void	SetpITEMDATA(ITEMDATA* _ITEMDATA) { m_pITEMDATA = _ITEMDATA; }
 	ITEMDATA* GetpITEMDATA() { return m_pITEMDATA; }
-	ITEM	GetItem() const {	return m_sITEM;	}
+	ITEM	GetItem() const {	return m_eItem;	}
 	
 public:
 	void MouseDrag(DH_UI* _UI);
@@ -32,12 +32,13 @@ private:
 	D3DXVECTOR3	m_vDragStart;
 	CString m_ImageKey;
 	DH_UI* m_Inven;
+	DH_UI* m_Interface;
 
 	ITEMDATA* m_pITEMDATA;
 
 	bool m_bDragOn;
 	int m_PreviousIndex;
-	ITEM m_sITEM;
+	ITEM m_eItem;
 
 };
 

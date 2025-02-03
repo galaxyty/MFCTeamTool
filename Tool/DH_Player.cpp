@@ -1,15 +1,32 @@
 #include "pch.h"
 #include "DH_Player.h"
+#include "Include.h"
 #include "DH_Interface.h"
 #include "DH_Inventory.h"
 #include "DH_MyState.h"
 #include "DH_BtnUI.h"
+#include "CTextureMgr.h"
 #include "DH_Item.h"
+#include "CDevice.h"
+#include "DH_TimeMgr.h"
 
 IMPLEMENT_SINGLETON(DH_Player);
 
-DH_Player::DH_Player() : m_ItemUpdate(false)
+DH_Player::DH_Player() : m_ItemUpdate(false), m_Interface(nullptr), m_Inventory(nullptr), m_MyState(nullptr),
+m_iFrame(0), m_fFrameCal(0.f)
 {
+    
+}
+
+DH_Player::~DH_Player()
+{
+
+}
+
+void DH_Player::Initialize()
+{
+#pragma region 기본 스텟
+
     // 기본 체력 및 마나
     m_RESETPLAYERDATA.iHP = 100;             // 기본 체력
     m_RESETPLAYERDATA.iMP = 50;              // 기본 마나
@@ -38,16 +55,21 @@ DH_Player::DH_Player() : m_ItemUpdate(false)
     m_RESETPLAYERDATA.iDarkResist = 5;       // 암저항
 
     m_PLAYERDATA = m_RESETPLAYERDATA;
-}
 
-DH_Player::~DH_Player()
-{
+#pragma endregion
 
+
+    CTextureMgr::Get_Instance()->Insert_Texture(
+        L"../Texture/Picked/Player/Cutsin/cutsin_%02d.png", TEX_MULTI, L"Player", L"Cutsin", 16);
+
+
+    SetMPos(D3DXVECTOR3{ 400.f, 300.f, 0.f });
+    SetScale(D3DXVECTOR3{ 800.f , 260.f, 0.f });
 }
 
 void DH_Player::Update()
 {
-    //스위치 켜질 시
+    //플레이어 스탯 업데이트
     if (m_ItemUpdate)
     {
         m_PLAYERDATA = m_RESETPLAYERDATA;
@@ -90,18 +112,64 @@ void DH_Player::Update()
 
         m_ItemUpdate = false;
     }
+
+    // 델타타임 가져오기
+    float deltaTime = DH_TimeMgr::Get_Instance()->Get_TimeDelta();
+
+    // 델타타임 기반으로 누적
+    m_fFrameCal += deltaTime * 20.f;
+
+    // 누적 값이 1 이상일 때 정수 프레임 증가
+    while (m_fFrameCal >= 1.0f)
+    {
+        m_iFrame += 1;
+        m_fFrameCal -= 1.0f; // 누적 값에서 1 제거
+    }
+    if (m_iFrame >= 16)
+        m_iFrame = 0;
 }
 
 void DH_Player::LateUpdate()
 {
 }
 
-void DH_Player::Initialize()
-{
-}
-
 void DH_Player::Render(CToolView* pMainView)
 {
+    D3DXMATRIX	matWorld, matScale, matTrans;
+
+
+    //이미지 키 가져오기 밑 중심설정
+    const TEXINFO* pTexInfo = CTextureMgr::Get_Instance()->Get_Texture(L"Player", L"Cutsin", m_iFrame);
+
+    float	fCenterX = pTexInfo->tImgInfo.Width / 2.f;
+    float	fCenterY = pTexInfo->tImgInfo.Height / 2.f;
+    D3DXVECTOR3	vTemp{ fCenterX, fCenterY, 0.f };
+
+
+    //월드 행렬 곱해주기
+    D3DXMatrixIdentity(&matWorld);
+    D3DXMatrixScaling(&matScale, 1.f, 1.f, 1.f);
+
+    //스크롤 값 제외
+    D3DXMatrixTranslation(&matTrans,
+        GetMPos().x,
+        GetMPos().y,
+        GetMPos().z);
+
+    matWorld = matScale * matTrans;
+
+    Set_Ratio(&matWorld, g_Ratio, g_Ratio);
+
+    CDevice::Get_Instance()->Get_Sprite()->SetTransform(&matWorld);
+
+
+
+
+    CDevice::Get_Instance()->Get_Sprite()->Draw(pTexInfo->pTexture,
+        nullptr,
+        &vTemp,
+        nullptr,
+        D3DCOLOR_ARGB(255, 255, 255, 255));
 }
 
 void DH_Player::Release()
