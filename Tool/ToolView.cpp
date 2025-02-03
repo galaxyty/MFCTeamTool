@@ -19,6 +19,7 @@
 #include "DH_OBJMgr.h"
 #include "DH_LoopMgr.h"
 #include "CMapManager.h"
+#include "DH_TimeMgr.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -59,6 +60,8 @@ CToolView::~CToolView()
 
 void CToolView::OnInitialUpdate()
 {
+	DH_TimeMgr::Get_Instance()->Initialize();
+
 	CScrollView::OnInitialUpdate();
 
 	SetScrollSizes(MM_TEXT, CSize(TILECX * TILEX, TILECY * TILEY / 2));
@@ -180,6 +183,7 @@ void CToolView::OnDestroy()
 
 	CTextureMgr::Destroy_Instance();
 	CMapManager::Destroy_Instance();
+	DH_TimeMgr::Destroy_Instance();
 	m_pDevice->Destroy_Instance();
 
 }

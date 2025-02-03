@@ -112,6 +112,9 @@
     <Filter Include="04. Etc\03. Dialog\04. EquipTool\02.Player">
       <UniqueIdentifier>{7066b36e-fc67-470c-8590-359ea090bdb4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="04. Etc\03. Dialog\04. EquipTool\03.TimeMgr">
+      <UniqueIdentifier>{b693b7f8-432b-4eea-8145-ad448e87c9f4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Tool.h">
@@ -222,6 +225,12 @@
     <ClInclude Include="DH_Player.h">
       <Filter>04. Etc\03. Dialog\04. EquipTool\02.Player</Filter>
     </ClInclude>
+    <ClInclude Include="CMapManager.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="DH_TimeMgr.h">
+      <Filter>04. Etc\03. Dialog\04. EquipTool\03.TimeMgr</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Tool.cpp">
@@ -322,6 +331,12 @@
     </ClCompile>
     <ClCompile Include="DH_Player.cpp">
       <Filter>04. Etc\03. Dialog\04. EquipTool\02.Player</Filter>
+    </ClCompile>
+    <ClCompile Include="CMapManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="DH_TimeMgr.cpp">
+      <Filter>04. Etc\03. Dialog\04. EquipTool\03.TimeMgr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
