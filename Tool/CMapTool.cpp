@@ -407,14 +407,14 @@ void CMapTool::OnRoomAdd()
 	CMapManager::Get_Instance()->CreateRoom();
 
 	CString szRoom;
-	CString szRoomBox;
 	szRoom.Format(L"룸 %d", CMapManager::Get_Instance()->m_RoomIndex + 1);
-	szRoomBox.Format(L"룸 %d번이 추가되었습니다", CMapManager::Get_Instance()->m_RoomIndex + 1);
 
 	m_RoomComboBox.AddString(szRoom);
 	m_RoomComboBox.SelectString(CMapManager::Get_Instance()->m_RoomIndex, szRoom);
 
-	MessageBox(szRoomBox, L"룸", MB_OK);
+	szRoom += L"번이 추가되었습니다";
+
+	MessageBox(szRoom, L"룸", MB_OK);
 }
 
 
