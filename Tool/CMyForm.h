@@ -2,6 +2,9 @@
 
 #include "CMapTool.h"
 #include "CEquipTool.h"
+#include "CPlayerTool.h"
+
+class pPlayer;
 
 class CMyForm : public CFormView
 {
@@ -24,9 +27,11 @@ public:
 
 private:
 	CFont		m_Font;
+	DH_Player*  pPlayer;
 public:
 	CMapTool	m_MapTool;
 	CEquipTool	m_EquipTool;
+	CPlayerTool m_PlayerTool;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
@@ -37,6 +42,9 @@ public:
 	afx_msg void OnUnitTool();
 	afx_msg void OnMapButton();
 	afx_msg void OnEquipButton();
+	afx_msg void OnPlayer();
+	afx_msg void OnPlay();
+	afx_msg void OnDestroy();
 };
 
 

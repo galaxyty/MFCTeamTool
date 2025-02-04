@@ -51,6 +51,25 @@ HRESULT CDevice::SetFont02()
 	return S_OK;
 }
 
+HRESULT CDevice::SetFont03()
+{
+	D3DXFONT_DESCW		tFontInfo3;
+	ZeroMemory(&tFontInfo3, sizeof(D3DXFONT_DESCW));
+
+	tFontInfo3.Height = 11;
+	tFontInfo3.Width = 5;
+	tFontInfo3.Weight = FW_NORMAL;
+	tFontInfo3.CharSet = HANGEUL_CHARSET;
+	lstrcpy(tFontInfo3.FaceName, L"굴림체");
+
+	if (FAILED(D3DXCreateFontIndirect(m_pDevice, &tFontInfo3, &m_pFont3)))
+	{
+		AfxMessageBox(L"D3DXCreateFontIndirect Failed");
+		return E_FAIL;
+	}
+	return S_OK;
+}
+
 HRESULT CDevice::Init_Device()
 {
 	// 장치 초기화 과정
@@ -131,7 +150,7 @@ HRESULT CDevice::Init_Device()
 
 	SetFont01();
 	SetFont02();
-
+	SetFont03();
 
 
 	return S_OK;

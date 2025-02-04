@@ -37,7 +37,8 @@ public:
 	void SetMyState(DH_MyState* myState){ m_MyState = myState; }
 	void SetInterface(DH_Interface* interfaceObj){	m_Interface = interfaceObj;	}
 	void SetItemUpdate(bool update) {m_ItemUpdate = update;	}
-
+	void SetEndFrame(wstring _state);
+	void KeyInput();
 
 private:
 	DH_Inventory*	m_Inventory;
@@ -51,6 +52,9 @@ private:
 private:
 	bool			m_ItemUpdate;
 	float			m_fFrameCal;
+	float			m_fReverse;
 	int				m_iFrame;
+
+	wstring			m_State;
 };
 

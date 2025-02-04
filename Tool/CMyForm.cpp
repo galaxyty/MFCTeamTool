@@ -4,6 +4,8 @@
 #include "pch.h"
 #include "Tool.h"
 #include "CMyForm.h"
+#include "DH_Player.h"
+#include "DH_OBJMgr.h"
 
 
 // CMyForm
@@ -11,7 +13,7 @@
 IMPLEMENT_DYNCREATE(CMyForm, CFormView)
 
 CMyForm::CMyForm()
-	: CFormView(IDD_CMyForm)
+	: CFormView(IDD_CMyForm), pPlayer(nullptr)
 {
 
 }
@@ -29,6 +31,9 @@ BEGIN_MESSAGE_MAP(CMyForm, CFormView)
 	ON_BN_CLICKED(IDC_BUTTON1, &CMyForm::OnUnitTool)
 	ON_BN_CLICKED(IDC_MAP_BUTTON, &CMyForm::OnMapButton)
 	ON_BN_CLICKED(IDC_EQUIP_BUTTON, &CMyForm::OnEquipButton)
+	ON_BN_CLICKED(IDC_EQUIP_BUTTON2, &CMyForm::OnPlayer)
+	ON_BN_CLICKED(IDC_EQUIP_BUTTON3, &CMyForm::OnPlay)
+	ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 
@@ -105,6 +110,8 @@ void CMyForm::OnMapButton()
 // 방어구 툴 버튼.
 void CMyForm::OnEquipButton()
 {
+	g_GamePlay = false;
+
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	
 	//GetSafeHwnd : 현재 다이얼로그 윈도우의 핸들을 반환
@@ -112,4 +119,39 @@ void CMyForm::OnEquipButton()
 		m_EquipTool.Create(IDD_CEquipTool);	// 해당 id에 맞는 다이얼로그 생성
 
 	m_EquipTool.ShowWindow(SW_SHOW);
+}
+
+
+void CMyForm::OnPlayer()
+{
+	g_GamePlay = false;
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+
+	//GetSafeHwnd : 현재 다이얼로그 윈도우의 핸들을 반환
+	if (nullptr == m_PlayerTool.GetSafeHwnd())
+		m_PlayerTool.Create(IDD_CPlayerTool);	// 해당 id에 맞는 다이얼로그 생성
+
+	m_PlayerTool.ShowWindow(SW_SHOW);
+}
+
+bool g_GamePlay = false;
+void CMyForm::OnPlay()
+{
+	g_GamePlay = true;
+
+	//플레이어 추가
+	if (DH_OBJMgr::Get_Instance()->Get_Player().size() == 0)
+	{
+		pPlayer = DH_Player::Get_Instance();
+		pPlayer->SetName(L"pPlayer");
+		pPlayer->Initialize();
+		DH_OBJMgr::Get_Instance()->Add_Object(OBJ_PLAYER, pPlayer);
+	}
+}
+
+
+void CMyForm::OnDestroy()
+{
+	CFormView::OnDestroy();
+	DH_Player::Destroy_Instance();
 }
