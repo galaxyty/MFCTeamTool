@@ -199,6 +199,7 @@
     <ClInclude Include="CMiniView.h" />
     <ClInclude Include="CMultiTexture.h" />
     <ClInclude Include="CMyForm.h" />
+    <ClInclude Include="CPlayerTool.h" />
     <ClInclude Include="CSingleTexture.h" />
     <ClInclude Include="CTerrain.h" />
     <ClInclude Include="CTexture.h" />
@@ -239,6 +240,7 @@
     <ClCompile Include="CMiniView.cpp" />
     <ClCompile Include="CMultiTexture.cpp" />
     <ClCompile Include="CMyForm.cpp" />
+    <ClCompile Include="CPlayerTool.cpp" />
     <ClCompile Include="CSingleTexture.cpp" />
     <ClCompile Include="CTerrain.cpp" />
     <ClCompile Include="CTexture.cpp" />
@@ -279,6 +281,9 @@
     <None Include="res\Tool.rc2" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\Data\FD.png" />
+    <Image Include="res\icon1.ico" />
+    <Image Include="res\icon_fol.ico" />
     <Image Include="res\Tool.ico" />
     <Image Include="res\Toolbar.bmp" />
     <Image Include="res\ToolDoc.ico" />

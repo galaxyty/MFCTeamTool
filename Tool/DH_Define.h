@@ -2,6 +2,7 @@
 #include "Include.h"
 
 extern float g_Ratio;
+extern bool g_GamePlay;
 
 //OBJ STATE
 enum class STATE { IDLE, WALK, FALLING, JUMP, JUMPATTACK, ATTACK, DASH, SKILL1, HIT, DEAD, END };

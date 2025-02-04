@@ -17,6 +17,7 @@
 #include "DH_Item.h"
 #include "DH_Skill.h"
 #include "DH_MyState.h"
+#include "CTextureMgr.h"
 #include "DH_UI.h"
 #include "DH_Player.h"
 
@@ -26,7 +27,8 @@
 IMPLEMENT_DYNAMIC(CEquipTool, CDialog)
 
 CEquipTool::CEquipTool(CWnd* pParent /*=nullptr*/)
-	: CDialog(IDD_CEquipTool, pParent)
+	: CDialog(IDD_CEquipTool, pParent), Interface(nullptr), Inventory(nullptr), MyState(nullptr), Skill(nullptr)
+	,pPlayer(nullptr)
 {
 
 }
@@ -86,6 +88,12 @@ BOOL CEquipTool::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
+	if (FAILED(CTextureMgr::Get_Instance()->Read_ImgPath(L"../Data/ImgPath.txt")))
+	{
+		ERR_MSG(L"못 불러온 이미지가 있습니다.");
+		return E_FAIL;
+	}
+
 	//인터페이스 추가
 	Interface = new DH_Interface;
 	Interface->SetName(L"Interface");
@@ -97,6 +105,7 @@ BOOL CEquipTool::OnInitDialog()
 	Inventory = new DH_Inventory;
 	Inventory->SetName(L"Inventory");
 	Inventory->SetInterface(Interface);
+	Inventory->SetVisible(true);
 	Inventory->Initialize();
 	DH_OBJMgr::Get_Instance()->Add_Object(OBJ_UI, Inventory);
 
@@ -116,15 +125,24 @@ BOOL CEquipTool::OnInitDialog()
 	Interface->SetInventory(Inventory);
 	Interface->SetSkillUI(Skill);
 
-	//플레이어 추가
-	pPlayer = DH_Player::Get_Instance();
-	pPlayer->SetName(L"pPlayer");
-	pPlayer->SetInventory(Inventory);
-	pPlayer->SetInterface(Interface);
-	pPlayer->SetMyState(MyState);
-	pPlayer->Initialize();
-	DH_OBJMgr::Get_Instance()->Add_Object(OBJ_PLAYER, pPlayer);
-
+	if (DH_OBJMgr::Get_Instance()->Get_Player().size() == 0)
+	{
+		//플레이어 추가
+		pPlayer = DH_Player::Get_Instance();
+		pPlayer->SetName(L"pPlayer");
+		pPlayer->SetInventory(Inventory);
+		pPlayer->SetInterface(Interface);
+		pPlayer->SetMyState(MyState);
+		pPlayer->Initialize();
+		DH_OBJMgr::Get_Instance()->Add_Object(OBJ_PLAYER, pPlayer);
+	}
+	else
+	{
+		pPlayer = dynamic_cast<DH_Player*>(DH_OBJMgr::Get_Instance()->Get_Player().front());
+		pPlayer->SetInventory(Inventory);
+		pPlayer->SetInterface(Interface);
+		pPlayer->SetMyState(MyState);
+	}
 	
 	wcscpy_s(m_szFileName, L"../Texture/Picked/Item/Amor");
 	OnLoadPngFiles(m_szFileName, &m_ListIven);
@@ -186,7 +204,6 @@ void CEquipTool::OnListInven()
 
 	//아이템 미리보기 만들자
 	TCHAR	szFilePath[MAX_PATH] = L"";
-	TCHAR	szFileName[MAX_STR] = L"";
 
 	//상대경로와 이미지 합치기
 	swprintf_s(szFilePath, MAX_PATH, L"%s/%s.png", m_szFileName, PickedName.GetString());

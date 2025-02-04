@@ -109,11 +109,14 @@
     <Filter Include="04. Etc\03. Dialog\04. EquipTool\00.UI\06.MyState">
       <UniqueIdentifier>{9882914a-4198-45d6-be68-a6b7a0bce8c2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="04. Etc\03. Dialog\04. EquipTool\02.Player">
-      <UniqueIdentifier>{7066b36e-fc67-470c-8590-359ea090bdb4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="04. Etc\03. Dialog\04. EquipTool\03.TimeMgr">
       <UniqueIdentifier>{b693b7f8-432b-4eea-8145-ad448e87c9f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Etc\03. Dialog\05. Player">
+      <UniqueIdentifier>{e4ce1d31-6a67-48d3-9563-38cd068d9b4d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Etc\03. Dialog\05. Player\00.Player">
+      <UniqueIdentifier>{7066b36e-fc67-470c-8590-359ea090bdb4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -223,13 +226,16 @@
       <Filter>04. Etc\03. Dialog\04. EquipTool\00.UI\06.MyState</Filter>
     </ClInclude>
     <ClInclude Include="DH_Player.h">
-      <Filter>04. Etc\03. Dialog\04. EquipTool\02.Player</Filter>
+      <Filter>04. Etc\03. Dialog\05. Player\00.Player</Filter>
     </ClInclude>
     <ClInclude Include="CMapManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="DH_TimeMgr.h">
       <Filter>04. Etc\03. Dialog\04. EquipTool\03.TimeMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="CPlayerTool.h">
+      <Filter>04. Etc\03. Dialog\05. Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -330,13 +336,16 @@
       <Filter>04. Etc\03. Dialog\04. EquipTool\00.UI\06.MyState</Filter>
     </ClCompile>
     <ClCompile Include="DH_Player.cpp">
-      <Filter>04. Etc\03. Dialog\04. EquipTool\02.Player</Filter>
+      <Filter>04. Etc\03. Dialog\05. Player\00.Player</Filter>
     </ClCompile>
     <ClCompile Include="CMapManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="DH_TimeMgr.cpp">
       <Filter>04. Etc\03. Dialog\04. EquipTool\03.TimeMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="CPlayerTool.cpp">
+      <Filter>04. Etc\03. Dialog\05. Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -357,6 +366,15 @@
       <Filter>리소스 파일</Filter>
     </Image>
     <Image Include="res\Toolbar.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\icon1.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\Data\FD.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\icon_fol.ico">
       <Filter>리소스 파일</Filter>
     </Image>
   </ItemGroup>

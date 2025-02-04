@@ -14,7 +14,7 @@ private:
 	~DH_OBJMgr();
 
 public:
-	DH_CObject*			Get_Player() { return m_ObjList[OBJ_PLAYER].front(); }
+	list<DH_CObject*>&  Get_Player() { return m_ObjList[OBJ_PLAYER]; }
 	DH_CObject*			Get_LastMonster() { return m_ObjList[OBJ_MONSTER].back(); }
 	list<DH_CObject*>&	Get_UI() { return m_ObjList[OBJ_UI]; }
 

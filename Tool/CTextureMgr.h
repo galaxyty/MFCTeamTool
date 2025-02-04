@@ -25,6 +25,7 @@ public:
 
 	void		Release();
 
+	HRESULT		Read_ImgPath(const wstring& wstrPath);
 
 private:
 	map<wstring, CTexture*>		m_mapTex;
