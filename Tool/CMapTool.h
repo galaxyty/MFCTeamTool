@@ -56,6 +56,7 @@ public:
 	afx_msg void OnRoomAdd();
 	afx_msg void OnRoomClick();
 	void OnDeleteObject();
+	void OnNameUpdateObject();
 
 	CListBox m_ListBoxObjectList;
 	int currentCurIndex;

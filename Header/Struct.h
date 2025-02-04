@@ -40,12 +40,19 @@ typedef struct tagObject
 			delete szName;
 			szName = nullptr;
 		}		
+
+		if (szShowName != nullptr)
+		{
+			delete szShowName;
+			szShowName = nullptr;
+		}
 	}
 
 	D3DXVECTOR3	vPos;				// 타일의 중점 좌표
 	D3DXVECTOR2 vSize;				// 타일의 가로, 세로 사이즈
 
 	CString* szName;			// 오브젝트명.
+	CString* szShowName;		// 표시 이름.
 
 }CustomOBJECT;
 

@@ -187,6 +187,7 @@ BEGIN_MESSAGE_MAP(CMapTool, CDialog)
 	ON_BN_CLICKED(IDC_ROOM_ADD_BUTTON, &CMapTool::OnRoomAdd)
 	ON_CBN_SELCHANGE(IDC_MAP_COMBO, &CMapTool::OnRoomClick)
 	ON_COMMAND(ID_DELETE, &CMapTool::OnDeleteObject)
+	ON_COMMAND(ID_UPDATE, &CMapTool::OnNameUpdateObject)
 	ON_WM_CONTEXTMENU()
 END_MESSAGE_MAP()
 
@@ -359,6 +360,7 @@ void CMapTool::OnContextMenu(CWnd* pWnd, CPoint point)
 		menu.CreatePopupMenu();
 
 		// 메뉴 항목 추가 (속성 항목)
+		menu.AppendMenu(MF_STRING, ID_UPDATE, L"이름 수정");
 		menu.AppendMenu(MF_STRING, ID_DELETE, L"삭제");
 
 		menu.TrackPopupMenu(TPM_LEFTBUTTON, point.x, point.y, this);
@@ -454,10 +456,11 @@ void CMapTool::OnRoomClick()
 
 	for (auto& obj : CMapManager::Get_Instance()->m_vecObject[roomIndex])
 	{
-		m_ListBoxObjectList.AddString(obj->szName->GetString());
+		m_ListBoxObjectList.AddString(obj->szShowName->GetString());
 	}
 }
 
+// 오브젝트 목록에서 해당 오브젝트 삭제.
 void CMapTool::OnDeleteObject()
 {
 	m_ListBoxObjectList.DeleteString(m_ListBoxObjectList.GetCurSel());
@@ -477,4 +480,23 @@ void CMapTool::OnDeleteObject()
 	}
 
 	currentCurIndex = -1;
+}
+
+void CMapTool::OnNameUpdateObject()
+{
+	int currentCell = m_ListBoxObjectList.GetCurSel();
+
+	CString* newName = new CString();
+
+	*newName = L"새 이름";
+
+	//CEdit* pEdit = (CEdit*)GetDlgItem(IDD_CEquipTool); // 새 이름을 입력할 Edit Control ID
+	//pEdit->GetWindowText(*newName);  // Edit Control에서 텍스트 가져오기
+
+	// 기존 항목 삭제 후 새 항목 삽입
+	m_ListBoxObjectList.DeleteString(currentCell);
+	m_ListBoxObjectList.InsertString(currentCell, *newName);
+
+	delete CMapManager::Get_Instance()->m_vecObject[CMapManager::Get_Instance()->m_RoomIndex][currentCell]->szShowName;
+	CMapManager::Get_Instance()->m_vecObject[CMapManager::Get_Instance()->m_RoomIndex][currentCell]->szShowName = newName;
 }

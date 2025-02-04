@@ -57,6 +57,7 @@
 #define IDC_LIST4                       1039
 #define IDC_BUTTON6                     1040
 #define ID_DELETE						9999
+#define ID_UPDATE						9998
 
 // Next default values for new objects
 // 

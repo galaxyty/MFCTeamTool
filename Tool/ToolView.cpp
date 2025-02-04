@@ -141,6 +141,7 @@ void CToolView::OnLButtonDown(UINT nFlags, CPoint point)
 		_object->vPos = {(float)screenPoint.x + GetScrollPos(0), (float)screenPoint.y + GetScrollPos(1), 0.f};
 		_object->vSize = {0.f, 0.f};
 		_object->szName = CMapManager::Get_Instance()->GetObjectKeyValue();
+		_object->szShowName = CMapManager::Get_Instance()->GetObjectKeyValue();
 
 		CMapManager::Get_Instance()->AddObject(_object);
 
