@@ -40,6 +40,8 @@
 #define IDC_RADIO3                      1014
 #define IDC_RADIO4                      1015
 #define IDC_PICTURE                     1016
+#define IDC_LIST_BOX_MAP2               1016
+#define IDC_LIST_BOX_OBJECT_LIST        1016
 #define IDC_LIST3                       1021
 #define IDC_BUTTON3                     1024
 #define IDC_MAP_COMBO                   1025

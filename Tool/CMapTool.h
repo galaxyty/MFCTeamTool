@@ -54,4 +54,6 @@ public:
 	CComboBox m_RoomComboBox;
 	afx_msg void OnRoomAdd();
 	afx_msg void OnRoomClick();
+
+	CListBox m_ListBoxObjectList;
 };

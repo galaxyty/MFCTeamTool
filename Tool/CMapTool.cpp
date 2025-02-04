@@ -35,6 +35,7 @@ void CMapTool::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_LIST_BOX_OBJECT, m_ListBoxObject);
 	DDX_Control(pDX, IDC_OBJECT_PICTURE, m_ObjectPicture);
 	DDX_Control(pDX, IDC_MAP_COMBO, m_RoomComboBox);
+	DDX_Control(pDX, IDC_LIST_BOX_OBJECT_LIST, m_ListBoxObjectList);
 }
 
 void CMapTool::OnDropFiles(HDROP hDropInfo)
@@ -415,11 +416,38 @@ void CMapTool::OnRoomAdd()
 	szRoom += L"번이 추가되었습니다";
 
 	MessageBox(szRoom, L"룸", MB_OK);
+
+	// 이전 룸에 배치 된 오브젝트 목록 비움.
+	int roomIndex = CMapManager::Get_Instance()->m_RoomIndex - 1;
+
+	for (auto& obj : CMapManager::Get_Instance()->m_vecObject[roomIndex])
+	{
+		m_ListBoxObjectList.DeleteString(0);
+	}
+
+	m_ListBoxObjectList.DeleteString(0);
 }
 
 
 void CMapTool::OnRoomClick()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	// 룸에 배치 된 오브젝트 목록 비움.
+	int roomIndex = CMapManager::Get_Instance()->m_RoomIndex;
+
+	for (auto& obj : CMapManager::Get_Instance()->m_vecObject[roomIndex])
+	{
+		m_ListBoxObjectList.DeleteString(0);
+	}
+
+	m_ListBoxObjectList.DeleteString(0);
+
 	CMapManager::Get_Instance()->m_RoomIndex = m_RoomComboBox.GetCurSel();
+
+	roomIndex = CMapManager::Get_Instance()->m_RoomIndex;
+
+	for (auto& obj : CMapManager::Get_Instance()->m_vecObject[roomIndex])
+	{
+		m_ListBoxObjectList.AddString(obj->szName->GetString());
+	}
 }

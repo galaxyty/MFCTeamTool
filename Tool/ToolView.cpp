@@ -143,6 +143,11 @@ void CToolView::OnLButtonDown(UINT nFlags, CPoint point)
 		_object->szName = CMapManager::Get_Instance()->GetObjectKeyValue();
 
 		CMapManager::Get_Instance()->AddObject(_object);
+
+		CMainFrame* pMainFrm = (CMainFrame*)AfxGetMainWnd();
+		CMyForm* pForm = dynamic_cast<CMyForm*>(pMainFrm->m_MainSplitter.GetPane(0, 0));
+
+		pForm->m_MapTool.m_ListBoxObjectList.AddString(_object->szName->GetString());
 	}
 
 	Invalidate(FALSE);
