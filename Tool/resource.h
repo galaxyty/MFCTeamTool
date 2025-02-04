@@ -63,6 +63,10 @@
 #define IDC_CHECK1                      1038
 #define IDC_LIST4                       1039
 #define IDC_BUTTON6                     1040
+#define IDC_LIST_BOX_OBJECT_LIST        1016
+#define IDC_OBJECT_NAME_EDIT            1027
+#define ID_UPDATE                       9998
+#define ID_DELETE                       9999
 
 // Next default values for new objects
 // 
