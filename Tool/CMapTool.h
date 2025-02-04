@@ -45,6 +45,7 @@ public:
 	afx_msg void OnListBGClick();
 	afx_msg void OnApplyClick();
 	afx_msg void OnDeleteClick();
+	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
 
 	CListBox m_ListBoxObject;
 	afx_msg void OnListObjectClick();
@@ -54,6 +55,8 @@ public:
 	CComboBox m_RoomComboBox;
 	afx_msg void OnRoomAdd();
 	afx_msg void OnRoomClick();
+	void OnDeleteObject();
 
 	CListBox m_ListBoxObjectList;
+	int currentCurIndex;
 };

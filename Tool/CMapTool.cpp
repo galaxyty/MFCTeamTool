@@ -186,6 +186,8 @@ BEGIN_MESSAGE_MAP(CMapTool, CDialog)
 	ON_BN_CLICKED(IDC_OBJECT_DELETE_BUTTON, &CMapTool::OnObjectDeleteClick)
 	ON_BN_CLICKED(IDC_ROOM_ADD_BUTTON, &CMapTool::OnRoomAdd)
 	ON_CBN_SELCHANGE(IDC_MAP_COMBO, &CMapTool::OnRoomClick)
+	ON_COMMAND(ID_DELETE, &CMapTool::OnDeleteObject)
+	ON_WM_CONTEXTMENU()
 END_MESSAGE_MAP()
 
 
@@ -346,6 +348,23 @@ void CMapTool::OnDeleteClick()
 	UpdateRender();
 }
 
+void CMapTool::OnContextMenu(CWnd* pWnd, CPoint point)
+{
+	if (pWnd == GetDlgItem(IDC_LIST_BOX_OBJECT_LIST) && m_ListBoxObjectList.GetCurSel() != -1)
+	{
+		currentCurIndex = m_ListBoxObjectList.GetCurSel();
+
+		// 컨텍스트 메뉴 생성
+		CMenu menu;
+		menu.CreatePopupMenu();
+
+		// 메뉴 항목 추가 (속성 항목)
+		menu.AppendMenu(MF_STRING, ID_DELETE, L"삭제");
+
+		menu.TrackPopupMenu(TPM_LEFTBUTTON, point.x, point.y, this);
+	}
+}
+
 // 오브젝트 리스트 박스 클릭.
 void CMapTool::OnListObjectClick()
 {
@@ -450,4 +469,25 @@ void CMapTool::OnRoomClick()
 	{
 		m_ListBoxObjectList.AddString(obj->szName->GetString());
 	}
+}
+
+void CMapTool::OnDeleteObject()
+{
+	m_ListBoxObjectList.DeleteString(m_ListBoxObjectList.GetCurSel());
+
+	auto it = CMapManager::Get_Instance()->m_vecObject[CMapManager::Get_Instance()->m_RoomIndex].begin();
+
+	for (int i = 0; i < CMapManager::Get_Instance()->m_vecObject[CMapManager::Get_Instance()->m_RoomIndex].size(); i++)
+	{
+		if (i == currentCurIndex)
+		{
+			Safe_Delete(*it);
+			CMapManager::Get_Instance()->m_vecObject[CMapManager::Get_Instance()->m_RoomIndex].erase(it);			
+			break;
+		}
+
+		it++;
+	}
+
+	currentCurIndex = -1;
 }
