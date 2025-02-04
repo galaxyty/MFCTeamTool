@@ -61,4 +61,7 @@ public:
 	CListBox m_ListBoxObjectList;
 	int currentCurIndex;
 	CEdit m_NameEdit;
+	afx_msg void OnNameChange();
+
+	void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 };

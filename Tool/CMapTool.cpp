@@ -190,6 +190,8 @@ BEGIN_MESSAGE_MAP(CMapTool, CDialog)
 	ON_COMMAND(ID_DELETE, &CMapTool::OnDeleteObject)
 	ON_COMMAND(ID_UPDATE, &CMapTool::OnNameUpdateObject)
 	ON_WM_CONTEXTMENU()
+	ON_EN_CHANGE(IDC_OBJECT_NAME_EDIT, &CMapTool::OnNameChange)
+	ON_WM_KEYDOWN()
 END_MESSAGE_MAP()
 
 
@@ -199,6 +201,8 @@ END_MESSAGE_MAP()
 BOOL CMapTool::OnInitDialog()
 {
 	CDialog::OnInitDialog();
+
+	m_NameEdit.ShowWindow(SW_HIDE);
 
 	if (m_mapKey == nullptr)
 	{
@@ -486,11 +490,7 @@ void CMapTool::OnDeleteObject()
 // 이름 수정.
 void CMapTool::OnNameUpdateObject()
 {
-	int currentCell = m_ListBoxObjectList.GetCurSel();
-
-	CString* newName = new CString();
-
-	*newName = L"새 이름";
+	int currentCell = m_ListBoxObjectList.GetCurSel();	
 
 	CRect rect;
 
@@ -502,6 +502,22 @@ void CMapTool::OnNameUpdateObject()
 
 	m_NameEdit.SetWindowPos(NULL, rect.left, rect.top + (10 * currentCell), rect.Width(), rect.Height() + (10 * currentCell), SWP_SHOWWINDOW);
 	m_NameEdit.SetFocus();	
+}
+
+
+void CMapTool::OnNameChange()
+{
+	// TODO:  RICHEDIT 컨트롤인 경우, 이 컨트롤은
+	// CDialog::OnInitDialog() 함수를 재지정 
+	//하고 마스크에 OR 연산하여 설정된 ENM_CHANGE 플래그를 지정하여 CRichEditCtrl().SetEventMask()를 호출하지 않으면
+	// 이 알림 메시지를 보내지 않습니다.
+
+	// TODO:  여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	int currentCell = m_ListBoxObjectList.GetCurSel();
+
+	CString* newName = new CString();
+
+	m_NameEdit.GetWindowText(*newName);
 
 	// 기존 항목 삭제 후 새 항목 삽입
 	m_ListBoxObjectList.DeleteString(currentCell);
@@ -509,4 +525,13 @@ void CMapTool::OnNameUpdateObject()
 
 	delete CMapManager::Get_Instance()->m_vecObject[CMapManager::Get_Instance()->m_RoomIndex][currentCell]->szShowName;
 	CMapManager::Get_Instance()->m_vecObject[CMapManager::Get_Instance()->m_RoomIndex][currentCell]->szShowName = newName;
+
+	m_NameEdit.ShowWindow(SW_HIDE);
+}
+
+void CMapTool::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
+{
+	if (nChar == VK_RETURN)
+	{
+	}
 }
