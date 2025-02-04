@@ -53,6 +53,7 @@ public:
 	CListBox			m_FrameList;
 	CStatic				m_Picture01;
 	CEdit				m_Delay;
+	CProgressCtrl		m_Gage;
 	int					m_iOffsetX;
 	int					m_iOffsetY;
 	int					m_CurrentSelection;

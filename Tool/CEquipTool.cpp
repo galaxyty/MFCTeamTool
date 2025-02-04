@@ -105,7 +105,6 @@ BOOL CEquipTool::OnInitDialog()
 	Inventory = new DH_Inventory;
 	Inventory->SetName(L"Inventory");
 	Inventory->SetInterface(Interface);
-	Inventory->SetVisible(true);
 	Inventory->Initialize();
 	DH_OBJMgr::Get_Instance()->Add_Object(OBJ_UI, Inventory);
 

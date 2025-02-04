@@ -31,6 +31,7 @@ void CPlayerTool::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_LIST5, m_FrameList);
 	DDX_Control(pDX, IDC_PICTURE, m_Picture01);
 	DDX_Control(pDX, IDC_EDIT1, m_Delay);
+	DDX_Control(pDX, IDC_PROGRESS1, m_Gage);
 }
 
 
@@ -61,6 +62,8 @@ BOOL CPlayerTool::OnInitDialog()
 
 	SetTimer(1, 120, NULL);
 
+	m_Gage.SetRange(0, 100); // 최소값: 0, 최대값: 100
+	m_Gage.SetPos(0);        // 초기값 설정
 
 	if (FAILED(CTextureMgr::Get_Instance()->Read_ImgPath(L"../Data/ImgPath.txt")))
 	{
@@ -442,6 +445,7 @@ void CPlayerTool::OnTimer(UINT_PTR nIDEvent)
 	{
 		// 리스트 박스 항목 개수 확인
 		int itemCount = m_FrameList.GetCount();
+		m_Gage.SetRange(0, itemCount - 3);
 		if (itemCount == 0) return; // 항목이 없으면 리턴
 
 		// 현재 선택된 항목 해제
@@ -450,6 +454,7 @@ void CPlayerTool::OnTimer(UINT_PTR nIDEvent)
 		// 다음 항목으로 선택 이동
 		m_CurrentSelection = (m_CurrentSelection + 1) % itemCount;
 		m_FrameList.SetCurSel(m_CurrentSelection);
+		m_Gage.SetPos(m_CurrentSelection);
 		OnFrameList();
 
 		// 선택된 텍스트를 가져와서 작업 수행 (필요 시)
