@@ -424,27 +424,21 @@ void CMapTool::OnObjectDeleteClick()
 void CMapTool::OnRoomAdd()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	int count = m_RoomComboBox.GetCount();
 	CMapManager::Get_Instance()->CreateRoom();
 
 	CString szRoom;
-	szRoom.Format(L"룸 %d", CMapManager::Get_Instance()->m_RoomIndex + 1);
+	szRoom.Format(L"룸 %d", count + 1);
 
 	m_RoomComboBox.AddString(szRoom);
-	m_RoomComboBox.SelectString(CMapManager::Get_Instance()->m_RoomIndex, szRoom);
+	m_RoomComboBox.SelectString(count + 1, szRoom);
 
 	szRoom += L"번이 추가되었습니다";
 
 	MessageBox(szRoom, L"룸", MB_OK);
 
 	// 이전 룸에 배치 된 오브젝트 목록 비움.
-	int roomIndex = CMapManager::Get_Instance()->m_RoomIndex - 1;
-
-	for (auto& obj : CMapManager::Get_Instance()->m_vecObject[roomIndex])
-	{
-		m_ListBoxObjectList.DeleteString(0);
-	}
-
-	m_ListBoxObjectList.DeleteString(0);
+	m_ListBoxObjectList.ResetContent();
 }
 
 
@@ -452,18 +446,11 @@ void CMapTool::OnRoomClick()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	// 룸에 배치 된 오브젝트 목록 비움.
-	int roomIndex = CMapManager::Get_Instance()->m_RoomIndex;
-
-	for (auto& obj : CMapManager::Get_Instance()->m_vecObject[roomIndex])
-	{
-		m_ListBoxObjectList.DeleteString(0);
-	}
-
-	m_ListBoxObjectList.DeleteString(0);
+	m_ListBoxObjectList.ResetContent();
 
 	CMapManager::Get_Instance()->m_RoomIndex = m_RoomComboBox.GetCurSel();
 
-	roomIndex = CMapManager::Get_Instance()->m_RoomIndex;
+	int roomIndex = CMapManager::Get_Instance()->m_RoomIndex;
 
 	for (auto& obj : CMapManager::Get_Instance()->m_vecObject[roomIndex])
 	{

@@ -66,7 +66,8 @@ void CMapManager::Release()
 
 void CMapManager::CreateRoom()
 {
-	m_RoomIndex++;
+	m_RoomIndex = m_vecBG.size();
+	//m_RoomIndex++;
 
 	// 타일 생성.
 	vector<TILE*> tileVec;
