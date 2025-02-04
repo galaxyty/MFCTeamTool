@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "afxdialogex.h"
-
+#include <afxwin.h>
 
 // CMapTool 대화 상자
 
@@ -60,4 +60,5 @@ public:
 
 	CListBox m_ListBoxObjectList;
 	int currentCurIndex;
+	CEdit m_NameEdit;
 };

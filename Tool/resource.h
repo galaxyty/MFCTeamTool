@@ -46,6 +46,7 @@
 #define IDC_BUTTON3                     1024
 #define IDC_MAP_COMBO                   1025
 #define IDC_ROOM_ADD_BUTTON             1026
+#define IDC_OBJECT_NAME_EDIT            1027
 #define IDC_BUTTON5                     1031
 #define IDC_RADIO5                      1032
 #define IDC_LIST2                       1033
@@ -56,8 +57,8 @@
 #define IDC_BUTTON4                     1038
 #define IDC_LIST4                       1039
 #define IDC_BUTTON6                     1040
-#define ID_DELETE						9999
-#define ID_UPDATE						9998
+#define ID_UPDATE                       9998
+#define ID_DELETE                       9999
 
 // Next default values for new objects
 // 
@@ -65,7 +66,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        316
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1027
+#define _APS_NEXT_CONTROL_VALUE         1028
 #define _APS_NEXT_SYMED_VALUE           318
 #endif
 #endif

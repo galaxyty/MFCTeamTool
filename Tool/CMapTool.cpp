@@ -36,6 +36,7 @@ void CMapTool::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_OBJECT_PICTURE, m_ObjectPicture);
 	DDX_Control(pDX, IDC_MAP_COMBO, m_RoomComboBox);
 	DDX_Control(pDX, IDC_LIST_BOX_OBJECT_LIST, m_ListBoxObjectList);
+	DDX_Control(pDX, IDC_OBJECT_NAME_EDIT, m_NameEdit);
 }
 
 void CMapTool::OnDropFiles(HDROP hDropInfo)
@@ -482,6 +483,7 @@ void CMapTool::OnDeleteObject()
 	currentCurIndex = -1;
 }
 
+// 이름 수정.
 void CMapTool::OnNameUpdateObject()
 {
 	int currentCell = m_ListBoxObjectList.GetCurSel();
@@ -490,8 +492,16 @@ void CMapTool::OnNameUpdateObject()
 
 	*newName = L"새 이름";
 
-	//CEdit* pEdit = (CEdit*)GetDlgItem(IDD_CEquipTool); // 새 이름을 입력할 Edit Control ID
-	//pEdit->GetWindowText(*newName);  // Edit Control에서 텍스트 가져오기
+	CRect rect;
+
+	// m_ListBoxObjectList 좌표를 윈도우 창 기준으로 가져온다.
+	m_ListBoxObjectList.GetWindowRect(&rect);
+
+	// 클라이언트 좌표로 변경.
+	ScreenToClient(&rect);
+
+	m_NameEdit.SetWindowPos(NULL, rect.left, rect.top + (10 * currentCell), rect.Width(), rect.Height() + (10 * currentCell), SWP_SHOWWINDOW);
+	m_NameEdit.SetFocus();	
 
 	// 기존 항목 삭제 후 새 항목 삽입
 	m_ListBoxObjectList.DeleteString(currentCell);
