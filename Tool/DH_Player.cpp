@@ -18,7 +18,7 @@ DH_Player::DH_Player() : m_ItemUpdate(false), m_Interface(nullptr), m_Inventory(
 m_iFrame(0), m_fFrameCal(0.f), m_fReverse(1.f)
 {
     m_State = L"IDLE";
-    SetfSpeed(15.f);
+    SetfSpeed(250.f);
 }
 
 DH_Player::~DH_Player()

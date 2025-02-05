@@ -62,10 +62,10 @@ public:
 
 public:
 	//더하기 함수들
-	void		AddPos(D3DXVECTOR3 _Set) { m_tObjInfo.tPos + _Set; }
-	void		AddMPos(D3DXVECTOR3 _Set) { m_tObjTrans.tPos + _Set; }
-	void		AddScale(D3DXVECTOR3 _Set) { m_tObjInfo.tScale + _Set; }
-	void		AddMScale(D3DXVECTOR3 _Set) { m_tObjTrans.tScale + _Set; }
+	void		AddPos(D3DXVECTOR3 _Set) { m_tObjInfo.tPos += _Set; }
+	void		AddMPos(D3DXVECTOR3 _Set) { m_tObjTrans.tPos += _Set; }
+	void		AddScale(D3DXVECTOR3 _Set) { m_tObjInfo.tScale += _Set; }
+	void		AddMScale(D3DXVECTOR3 _Set) { m_tObjTrans.tScale += _Set; }
 	void		AddfGravity(float _fVel) { m_fGravity += _fVel; }
 	void		AddfJumpSpeed(float _fJump) { m_fJumpSpeed += _fJump; }
 	void		AddfTime(float _fTime) { m_fTime += _fTime; }
