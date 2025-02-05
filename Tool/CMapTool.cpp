@@ -331,6 +331,7 @@ void CMapTool::OnApplyClick()
 
 	_tcscpy_s(bg, MAX_PATH, strItem);
 
+	delete CMapManager::Get_Instance()->m_vecBG[CMapManager::Get_Instance()->m_RoomIndex]->szBGKey;
 	CMapManager::Get_Instance()->m_vecBG[CMapManager::Get_Instance()->m_RoomIndex]->szBGKey = bg;
 
 	UpdateRender();

@@ -94,7 +94,9 @@ void CMapManager::CreateRoom()
 
 	// 백그라운드 생성.
 	// 기본 맵 키는 주점.
-	TCHAR* mapKey = L"Pub";
+	TCHAR* mapKey = new TCHAR[MAX_PATH];
+
+	_tcscpy_s(mapKey, MAX_PATH, L"Pub");
 
 	CustomBACKGROUND* bg = new CustomBACKGROUND;
 	bg->vPos = { 0.f, 0.f, 0.f };
