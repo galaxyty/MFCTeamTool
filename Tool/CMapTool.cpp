@@ -17,7 +17,7 @@
 IMPLEMENT_DYNAMIC(CMapTool, CDialog)
 
 CMapTool::CMapTool(CWnd* pParent /*=nullptr*/)
-	: CDialog(IDD_CMapTool, pParent), m_mapKey(nullptr), m_objectKey(nullptr)
+	: CDialog(IDD_CMapTool, pParent), m_objectKey(nullptr)
 {	
 }
 
@@ -202,12 +202,7 @@ BOOL CMapTool::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
-	m_NameEdit.ShowWindow(SW_HIDE);
-
-	if (m_mapKey == nullptr)
-	{
-		m_mapKey = new TCHAR[MAX_PATH];
-	}
+	m_NameEdit.ShowWindow(SW_HIDE);	
 
 	if (m_objectKey == nullptr)
 	{
@@ -294,7 +289,6 @@ void CMapTool::OnDestroy()
 
 	m_objectBackground.clear();
 
-	Safe_Delete(m_mapKey);
 	Safe_Delete(m_objectKey);	
 }
 
@@ -317,7 +311,7 @@ void CMapTool::OnListBGClick()
 		return;
 
 	CDC* dc = m_BGPicture.GetDC();		
-	//m_BGPicture.SetBitmap(*(iter->second));
+
 	iter->second->StretchBlt(*dc, 0, 0, 426, 220, SRCCOPY);
 
 	m_BGPicture.ReleaseDC(dc);
@@ -333,9 +327,11 @@ void CMapTool::OnApplyClick()
 	m_ListBoxMap.GetText(m_ListBoxMap.GetCurSel(), strItem);
 
 	// CString에서 TCHAR 배열로 복사
-	_tcscpy_s(m_mapKey, MAX_PATH, strItem);
+	TCHAR* bg = new TCHAR[MAX_PATH];
 
-	CMapManager::Get_Instance()->m_vecBG[CMapManager::Get_Instance()->m_RoomIndex]->szBGKey = m_mapKey;
+	_tcscpy_s(bg, MAX_PATH, strItem);
+
+	CMapManager::Get_Instance()->m_vecBG[CMapManager::Get_Instance()->m_RoomIndex]->szBGKey = bg;
 
 	UpdateRender();
 }

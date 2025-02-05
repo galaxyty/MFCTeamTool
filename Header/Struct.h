@@ -58,14 +58,14 @@ typedef struct tagObject
 
 typedef struct tagBackground
 {
-	/*~tagBackground()
+	~tagBackground()
 	{
 		if (szBGKey != nullptr)
 		{
 			delete szBGKey;
 			szBGKey = nullptr;
 		}		
-	}*/
+	}
 
 	D3DXVECTOR3	vPos;				// 타일의 중점 좌표
 	D3DXVECTOR2 vSize;				// 타일의 가로, 세로 사이즈
