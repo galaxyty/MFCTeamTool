@@ -493,14 +493,19 @@ void CMapTool::OnNameUpdateObject()
 	int currentCell = m_ListBoxObjectList.GetCurSel();	
 
 	CRect rect;
+	CRect brect;
 
 	// m_ListBoxObjectList 좌표를 윈도우 창 기준으로 가져온다.
 	m_ListBoxObjectList.GetWindowRect(&rect);
+	m_NameEdit.GetWindowRect(&brect);
 
 	// 클라이언트 좌표로 변경.
 	ScreenToClient(&rect);
+	ScreenToClient(&brect);
 
-	m_NameEdit.SetWindowPos(NULL, rect.left, rect.top + (10 * currentCell), rect.Width(), rect.Height() + (10 * currentCell), SWP_SHOWWINDOW);
+	CString* name = CMapManager::Get_Instance()->m_vecObject[CMapManager::Get_Instance()->m_RoomIndex][currentCell]->szShowName;
+	m_NameEdit.SetWindowText(*name);
+	m_NameEdit.SetWindowPos(NULL, rect.left, rect.top + (13 * currentCell), rect.Width(), brect.Height(), SWP_SHOWWINDOW);
 	m_NameEdit.SetFocus();	
 }
 
@@ -527,11 +532,4 @@ void CMapTool::OnNameChange()
 	CMapManager::Get_Instance()->m_vecObject[CMapManager::Get_Instance()->m_RoomIndex][currentCell]->szShowName = newName;
 
 	m_NameEdit.ShowWindow(SW_HIDE);
-}
-
-void CMapTool::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
-{
-	if (nChar == VK_RETURN)
-	{
-	}
 }
