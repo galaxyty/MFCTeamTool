@@ -103,7 +103,7 @@ BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 	m_MainSplitter.CreateView(0, 1, RUNTIME_CLASS(CToolView), CSize(WINCX, WINCY), pContext);
 
 	//SetColumnInfo(열 번호, 열의 크기 지정, 허용 가능한 최소크기)
-	m_MainSplitter.SetColumnInfo(0, 200, 10);
+	m_MainSplitter.SetColumnInfo(0, 150, 10);
 
 	//IdFromRowCol(행, 열) : 지정한 행과 열에 해당하는 창의 id 값을 반환
 

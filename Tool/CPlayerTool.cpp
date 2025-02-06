@@ -8,14 +8,16 @@
 #include "CPlayerTool.h"
 #include "CDH_FilePath.h"
 #include "CTextureMgr.h"
+#include "DH_HitBox.h"
+
 
 // CPlayerTool 대화 상자
 
 IMPLEMENT_DYNAMIC(CPlayerTool, CDialog)
 
 CPlayerTool::CPlayerTool(CWnd* pParent /*=nullptr*/)
-	: CDialog(IDD_CPlayerTool, pParent), m_iOffsetX(-40), m_iOffsetY(-20), m_PlayerState(), m_CurrentSelection(-1)
-	, m_Play(true)
+	: CDialog(IDD_CPlayerTool, pParent), m_iOffsetX(0), m_iOffsetY(0), m_PlayerState(), m_CurrentSelection(-1)
+	, m_Play(true), m_HitBox(nullptr)
 {
 }
 
@@ -32,6 +34,7 @@ void CPlayerTool::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_PICTURE, m_Picture01);
 	DDX_Control(pDX, IDC_EDIT1, m_Delay);
 	DDX_Control(pDX, IDC_PROGRESS1, m_Gage);
+	DDX_Control(pDX, IDC_CHECK1, m_CheckHit);
 }
 
 
@@ -50,6 +53,12 @@ BEGIN_MESSAGE_MAP(CPlayerTool, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON1, &CPlayerTool::OnPlayAnimation)
 	ON_WM_TIMER()
 	ON_BN_CLICKED(IDC_BUTTON8, &CPlayerTool::OnStopAnimation)
+	ON_WM_LBUTTONDOWN()
+	ON_WM_LBUTTONUP()
+	ON_WM_MOUSEMOVE()
+	ON_WM_PAINT()
+	ON_BN_CLICKED(IDC_CHECK1, &CPlayerTool::OnCheckHit)
+	ON_BN_CLICKED(IDC_BUTTON3, &CPlayerTool::OnSaveBtn)
 END_MESSAGE_MAP()
 
 BOOL CPlayerTool::OnInitDialog()
@@ -299,11 +308,35 @@ void CPlayerTool::OnDestroy()
 		});
 
 	m_mapPlayerImage.clear();
+
+
+	for_each(m_SaveHitMap.begin(), m_SaveHitMap.end(), [](auto& MyPair)
+		{
+			delete MyPair.first;
+		});
+
+	m_SaveHitMap.clear();
+
 }
 
 //애니메이션 인포 클릭
 void CPlayerTool::OnClickAnimation(NMHDR* pNMHDR, LRESULT* pResult)
 {
+	m_bCheckHit = false;
+	m_CheckHit.SetCheck(false);
+	m_Play = true;
+	m_HitRect = { 0,0,0,0 };
+
+	CWnd* pPicture = GetDlgItem(IDC_PICTURE);
+	if (pPicture)
+	{
+		CDC* pDC = pPicture->GetDC();
+		RECT Base = { 0 , 0 , 287, 267 };
+		pDC->FillSolidRect(&Base, GetSysColor(COLOR_BTNFACE));
+	}
+
+	///////////////////////////////////////////////////////////////
+
 	LPNMLISTVIEW pNMLV = reinterpret_cast<LPNMLISTVIEW>(pNMHDR);
 	
 	if (pNMLV->uChanged & LVIF_STATE) // 상태가 변경되었는지 확인
@@ -314,8 +347,8 @@ void CPlayerTool::OnClickAnimation(NMHDR* pNMHDR, LRESULT* pResult)
 			int index = pNMLV->iItem;
 
 			// 선택된 항목의 첫 번째 컬럼 텍스트 가져오기
-			wstring itemText = m_ImageInfo.GetItemText(index, 0);
-			m_AnimationPath = m_PlayerPath + L"\\" + itemText;
+			m_SkillKey = m_ImageInfo.GetItemText(index, 0);
+			m_AnimationPath = m_PlayerPath + L"\\" + m_SkillKey;
 
 			FrameListUpdate();
 		}
@@ -331,6 +364,7 @@ void CPlayerTool::OnFrameList()
 
 	//클릭한 아이템
 	int	iIndex = m_FrameList.GetCurSel();
+
 	CString PickedName;
 	m_FrameList.GetText(iIndex, PickedName);
 
@@ -351,7 +385,16 @@ void CPlayerTool::OnFrameList()
 	{
 		folderName = path.substr(lastSlash + 1); // 마지막 슬래시 다음부터 끝까지 추출
 	}
+ 
+	if (m_iPrev != iIndex)
+	{
+		HITBOX* pHitBox = new HITBOX;
+		pHitBox->HitKey = folderName;
+		pHitBox->HitFrame = m_FrameList.GetCurSel();
+		LoadHitBox(*pHitBox);
 
+		delete pHitBox;
+	}
 	wprintf(L"마지막 폴더명: %s\n", folderName.c_str());
 
 	//못찾을 시
@@ -385,6 +428,8 @@ void CPlayerTool::OnFrameList()
 		m_Picture01.SetBitmap(*(iter->second));
 	}
 
+
+	m_iPrev = iIndex;
 	UpdateData(FALSE);
 }
 
@@ -430,6 +475,17 @@ void CPlayerTool::OnMoveDonw()
 void CPlayerTool::OnPlayAnimation()
 {
 	m_Play = true;
+	m_bCheckHit = false;
+	m_CheckHit.SetCheck(false);
+	m_HitRect = { 0,0,0,0 };
+	
+	CWnd* pPicture = GetDlgItem(IDC_PICTURE);
+	if (pPicture)
+	{
+		CDC* pDC = pPicture->GetDC();
+		RECT Base = { 0 , 0 , 287, 267 };
+		pDC->FillSolidRect(&Base, GetSysColor(COLOR_BTNFACE));
+	}
 }
 void CPlayerTool::OnStopAnimation()
 {
@@ -441,13 +497,23 @@ void CPlayerTool::OnTimer(UINT_PTR nIDEvent)
 {
 	UpdateTimerSpeed();
 	UpdateData(TRUE);
-	if (nIDEvent == 1 && m_Play) // 타이머 ID 확인
+	
+	//플레이 중이 아닐 때, 체크박스가 켜져있을 때
+	if (nIDEvent == 1 && !m_Play && m_bCheckHit)
 	{
-		// 리스트 박스 항목 개수 확인
+		DrawOnPictureControl();
+	}
+	// 플레이 중일 때
+	else if (nIDEvent == 1 && m_Play) // 타이머 ID 확인
+	{
 		int itemCount = m_FrameList.GetCount();
 		m_Gage.SetRange(0, itemCount - 3);
-		if (itemCount == 0) return; // 항목이 없으면 리턴
-
+		//재생중인데 아무것도 선택안했을 때
+		if (itemCount == 0)
+		{		
+			Invalidate(FALSE);
+			return;
+		}
 		// 현재 선택된 항목 해제
 		m_FrameList.SetCurSel(-1);
 
@@ -460,9 +526,9 @@ void CPlayerTool::OnTimer(UINT_PTR nIDEvent)
 		// 선택된 텍스트를 가져와서 작업 수행 (필요 시)
 		CString selectedText;
 		m_FrameList.GetText(m_CurrentSelection, selectedText);
-		// AfxMessageBox(selectedText); // 디버깅용 (선택된 항목 확인)
-	}
 
+		Invalidate(FALSE);
+	}
 	CDialog::OnTimer(nIDEvent);
 	UpdateData(FALSE);
 }
@@ -489,3 +555,178 @@ void CPlayerTool::UpdateTimerSpeed()
 	// 새로운 속도로 타이머 재설정
 	SetTimer(1, delayValue, NULL);
 }
+
+//히트박스 로드
+void CPlayerTool::LoadHitBox(HITBOX _HITBOX)
+{
+	for (auto& Pair : m_SaveHitMap)
+	{
+		//순회하고 맵에 이미 있는 프레임이면?
+		if (Pair.first->HitKey == _HITBOX.HitKey && Pair.first->HitFrame == _HITBOX.HitFrame)
+		{
+			m_HitRect = Pair.second;
+			break;
+		}
+		else
+		{
+			//히트 재생시 저장된 박스 외 제거
+			m_HitRect = { 0,0,0,0 };
+		}
+	}
+}
+
+//마우스 함수
+void CPlayerTool::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	if (m_bCheckHit)
+	{
+		m_bDragging = true;      // 드래그 시작
+		m_StartPoint = point;    // 시작 좌표 저장
+		m_EndPoint = point;      // 초기화
+		SetCapture();            // 마우스 캡처
+	}
+
+	CDialog::OnLButtonDown(nFlags, point);
+}
+void CPlayerTool::OnLButtonUp(UINT nFlags, CPoint point)
+{
+	if (m_bDragging)
+	{
+		m_EndPoint = point;   // 최종 좌표 설정
+		m_bDragging = false; // 드래그 종료
+		ReleaseCapture();    // 마우스 캡처 해제
+	}
+
+	CDialog::OnLButtonUp(nFlags, point);
+}
+void CPlayerTool::OnMouseMove(UINT nFlags, CPoint point)
+{
+	if (m_bDragging)
+	{
+		if (point.x <= 358)
+			point.x = 359;
+		else if (point.x >= 645)
+			point.x = 644;
+		if (point.y <= 55)
+			point.y = 56;
+		else if (point.y >= 322)
+			point.y = 321;
+
+		m_EndPoint = point;  // 마우스 끝 좌표 갱신
+		m_HitRect.SetRect(m_StartPoint, m_EndPoint);  // 드래그 영역 설정
+		DrawOnPictureControl();
+	}
+
+	CDialog::OnMouseMove(nFlags, point);
+}
+
+//히트박스 드래그 함수
+void CPlayerTool::OnPaint()
+{
+	CPaintDC dc(this);
+	
+}
+void CPlayerTool::DrawOnPictureControl()
+{
+	// Picture Control 가져오기
+	CWnd* pPicture = GetDlgItem(IDC_PICTURE); // Picture Control의 ID
+	if (pPicture)
+	{
+		// Picture Control의 클라이언트 영역 가져오기
+		CRect pictureRect;
+		pPicture->GetClientRect(&pictureRect);       // Picture Control의 클라이언트 영역
+		pPicture->ClientToScreen(&pictureRect);      // Picture Control의 화면 좌표
+		ScreenToClient(&pictureRect);                // 다이얼로그 기준 좌표로 변환
+
+		// 클릭 좌표를 Picture Control 기준 좌표로 변환
+		CRect localRect = m_HitRect;
+		localRect.OffsetRect(-pictureRect.left, -pictureRect.top);
+
+		// Picture Control의 DC 가져오기
+		CDC* pDC = pPicture->GetDC();
+		CBrush brush(RGB(255, 0, 0));
+
+		// 클릭한 위치에 렉트 그리기
+		RECT Base = { 0 , 0 , 287, 267 };
+		pDC->FillSolidRect(&Base, GetSysColor(COLOR_BTNFACE));
+		OnFrameList();
+		pDC->FrameRect(&localRect, &brush);
+
+		// DC 해제
+		pPicture->ReleaseDC(pDC);
+	}
+}
+
+//히트 체크박스
+void CPlayerTool::OnCheckHit()
+{
+	UpdateData(TRUE);
+
+	if (m_CheckHit.GetCheck())
+	{
+		if (m_Play) // m_Play가 활성화된 상태일 경우
+		{
+			AfxMessageBox(L"현재 재생 중입니다. 체크를 해제합니다.");
+
+			// 체크 해제
+			m_CheckHit.SetCheck(BST_UNCHECKED);
+
+			// 동기화
+			m_bCheckHit = false;
+			UpdateData(FALSE);
+		}
+		else if (m_FrameList.GetCurSel() == -1)
+		{
+			AfxMessageBox(L"선택된 애니메이션이 없습니다.");
+
+			// 체크 해제
+			m_CheckHit.SetCheck(BST_UNCHECKED);
+
+			// 동기화
+			m_bCheckHit = false;
+			UpdateData(FALSE);
+		}
+		else
+		{
+			m_bCheckHit = true; // 체크 활성화
+		}
+	}
+	else
+	{
+		m_bCheckHit = false;
+	}
+
+	UpdateData(FALSE);
+}
+
+//애니메이션 저장
+void CPlayerTool::OnSaveBtn()
+{
+	bool found = false;
+	for (auto& Pair : m_SaveHitMap)
+	{
+		if (Pair.first->HitKey == m_SkillKey &&
+			Pair.first->HitFrame == m_FrameList.GetCurSel())
+		{
+			// 이미 존재하는 키 -> 값 덮어쓰기
+			Pair.second = m_HitRect;
+			found = true;
+			break; 
+		}
+	}
+
+	if (!found)
+	{
+		// 키가 존재하지 않는 경우 새로 추가
+		HITBOX* pHitBox = new HITBOX;
+		pHitBox->HitKey = m_SkillKey;
+		pHitBox->HitFrame = m_FrameList.GetCurSel();
+		m_SaveHitMap.insert(make_pair(pHitBox, m_HitRect));
+
+		char message[256];
+		sprintf_s(message, "%ls 키의 %d 프레임에 히트박스를 저장하였습니다!",
+			pHitBox->HitKey.c_str(), pHitBox->HitFrame);
+		AfxMessageBox(CString(message));
+	}
+}
+

@@ -75,7 +75,7 @@ void CMapTool::OnDropFiles(HDROP hDropInfo)
 	m_ListBoxObject.GetWindowRect(objectRect);
 	ScreenToClient(objectRect);
 
-	for (int i = 0; i < dragCount; i++)
+	for (size_t i = 0; i < dragCount; i++)
 	{		
 		// 드래그 정보에서 파일 절대 경로 추출.
 		DragQueryFile(hDropInfo, i, szFilePath, MAX_PATH);
@@ -469,7 +469,7 @@ void CMapTool::OnDeleteObject()
 
 	auto it = CMapManager::Get_Instance()->m_vecObject[CMapManager::Get_Instance()->m_RoomIndex].begin();
 
-	for (int i = 0; i < CMapManager::Get_Instance()->m_vecObject[CMapManager::Get_Instance()->m_RoomIndex].size(); i++)
+	for (size_t i = 0; i < CMapManager::Get_Instance()->m_vecObject[CMapManager::Get_Instance()->m_RoomIndex].size(); i++)
 	{
 		if (i == currentCurIndex)
 		{

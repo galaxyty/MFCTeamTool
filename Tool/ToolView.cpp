@@ -133,8 +133,8 @@ void CToolView::OnLButtonDown(UINT nFlags, CPoint point)
 		::ScreenToClient(m_pTerrain->m_pMainView->m_hWnd, &screenPoint);		
 
 		// 비율에 맞게 포인트 좌표 갱신.
-		screenPoint.x *= 1.f / g_Ratio;
-		screenPoint.y *= 1.f / g_Ratio;
+		screenPoint.x *= long(1.f / g_Ratio);
+		screenPoint.y *= long(1.f / g_Ratio);
 
 		CustomOBJECT* _object = new CustomOBJECT();
 

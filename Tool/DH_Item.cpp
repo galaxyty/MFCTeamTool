@@ -508,7 +508,7 @@ void DH_Item::RenderItemInfo(TCHAR* _Key)
 	);
 
 	TCHAR	szBufItemName[MIN_STR] = L"";
-	swprintf_s(szBufItemName, L"%s", m_pITEMDATA->ItemName);
+	swprintf_s(szBufItemName, L"%s", m_pITEMDATA->ItemName.GetString());
 	posX = 0;
 	posY = 5;
 	RECT	RectBufItemName{ -150 + posX, 0 + posY, 0 + posX, 60 + posY };

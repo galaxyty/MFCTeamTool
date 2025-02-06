@@ -16,6 +16,15 @@ enum class ELEMENT { FIRE, ICE, DARK, LIGHT, POSION, NORMAL, END  };
 // 벡터 2개 구조체
 struct tObjInfo { D3DXVECTOR3 tPos; D3DXVECTOR3 tScale; };
 
+typedef struct tHitBoxInfo
+{
+    wstring HitKey;
+    int     HitFrame;
+
+}HITBOX;
+
+
+
 typedef	struct tagItemData
 {
     CString     strExplan;          // 설명
@@ -92,6 +101,13 @@ typedef	struct tagPlayerData
         iFireResist(0), iLightResist(0), iDarkResist(0), iAgility(0), iAttackSpeed(0),
         iPhysicalDef(0), iMagicDef(0), iWaterResist(0), iManaResist(0){}
 }PLAYERDATA;
+
+struct CUSTOMVERTEX
+{
+    float x, y, z, rhw; // 좌표
+    D3DCOLOR color;     // 색상
+};
+#define D3DFVF_CUSTOMVERTEX (D3DFVF_XYZRHW | D3DFVF_DIFFUSE)
 
 
 

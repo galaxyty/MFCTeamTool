@@ -2,9 +2,11 @@
 #include "afxdialogex.h"
 
 #include "Include.h"
+#include "DH_Define.h"
 
 
 // CPlayerTool 대화 상자
+class DH_HitBox;
 
 class CPlayerTool : public CDialog
 {
@@ -33,6 +35,7 @@ public:
 	void DisplayFolder(wstring FilePath);
 	void FrameListUpdate();
 	void UpdateTimerSpeed();
+	void LoadHitBox(HITBOX _HITBOX);
 
 public:
 	afx_msg void OnDestroy();
@@ -54,14 +57,34 @@ public:
 	CStatic				m_Picture01;
 	CEdit				m_Delay;
 	CProgressCtrl		m_Gage;
+	int					m_iPrev = -1;
 	int					m_iOffsetX;
 	int					m_iOffsetY;
 	int					m_CurrentSelection;
 	bool				m_Play;
+	bool				m_bDragging = false;   // 드래그 상태 확인
+	bool				m_bCheckHit = false;
+	CPoint				m_StartPoint;        // 마우스 시작 좌표
+	CPoint				m_EndPoint;          // 현재 마우스 좌표
+	CRect				m_HitRect;               // 드래그 박스 영역
+	DH_HitBox*			m_HitBox;
+	wstring				m_SkillKey;
+	map<HITBOX*, RECT>	m_SaveHitMap;
+
 	afx_msg void OnMoveLeft();
 	afx_msg void OnMoveUp();
 	afx_msg void OnMoveDonw();
 	afx_msg void OnPlayAnimation();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg void OnStopAnimation();
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
+	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
+	afx_msg void OnPaint();
+
+	void DrawOnPictureControl();
+
+	afx_msg void OnCheckHit();
+	CButton m_CheckHit;
+	afx_msg void OnSaveBtn();
 };

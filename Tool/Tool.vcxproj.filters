@@ -118,6 +118,9 @@
     <Filter Include="04. Etc\03. Dialog\05. Player\00.Player">
       <UniqueIdentifier>{7066b36e-fc67-470c-8590-359ea090bdb4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="04. Etc\03. Dialog\06. HitBox">
+      <UniqueIdentifier>{987e644d-6058-4b5d-b665-2818acecd60e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Tool.h">
@@ -237,6 +240,9 @@
     <ClInclude Include="CPlayerTool.h">
       <Filter>04. Etc\03. Dialog\05. Player</Filter>
     </ClInclude>
+    <ClInclude Include="DH_HitBox.h">
+      <Filter>04. Etc\03. Dialog\06. HitBox</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Tool.cpp">
@@ -346,6 +352,9 @@
     </ClCompile>
     <ClCompile Include="CPlayerTool.cpp">
       <Filter>04. Etc\03. Dialog\05. Player</Filter>
+    </ClCompile>
+    <ClCompile Include="DH_HitBox.cpp">
+      <Filter>04. Etc\03. Dialog\06. HitBox</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -45,12 +45,15 @@
 #define IDC_RADIO3                      1014
 #define IDC_RADIO4                      1015
 #define IDC_PICTURE                     1016
+#define IDC_LIST_BOX_OBJECT_LIST        1016
 #define IDC_LIST3                       1021
 #define IDC_BUTTON3                     1024
 #define IDC_MAP_COMBO                   1025
 #define IDC_BUTTON12                    1025
 #define IDC_ROOM_ADD_BUTTON             1026
+#define IDC_BUTTON15                    1026
 #define IDC_BUTTON13                    1027
+#define IDC_OBJECT_NAME_EDIT            1027
 #define IDC_PROGRESS1                   1028
 #define IDC_BUTTON5                     1031
 #define IDC_RADIO5                      1032
@@ -63,8 +66,7 @@
 #define IDC_CHECK1                      1038
 #define IDC_LIST4                       1039
 #define IDC_BUTTON6                     1040
-#define IDC_LIST_BOX_OBJECT_LIST        1016
-#define IDC_OBJECT_NAME_EDIT            1027
+#define IDC_DATETIMEPICKER1             1045
 #define ID_UPDATE                       9998
 #define ID_DELETE                       9999
 
@@ -74,7 +76,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        317
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1039
+#define _APS_NEXT_CONTROL_VALUE         1049
 #define _APS_NEXT_SYMED_VALUE           319
 #endif
 #endif

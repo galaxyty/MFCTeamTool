@@ -3,6 +3,7 @@
 #include "CTextureMgr.h"
 #include "CDevice.h"
 #include "CMapManager.h"
+#include "DH_Define.h"
 
 float g_Ratio = 1.f;
 
@@ -67,8 +68,8 @@ void CTerrain::Render()
 	ScreenToClient(m_pMainView->m_hWnd, &screenPoint);
 
 	// 비율에 맞게 포인트 좌표 갱신.
-	screenPoint.x *= 1.f / g_Ratio;
-	screenPoint.y *= 1.f / g_Ratio;
+	screenPoint.x *= long(1.f / g_Ratio);
+	screenPoint.y *= long(1.f / g_Ratio);
 
 	// 백그라운드.
 	D3DXMATRIX	matWorld, matScale, matTrans;
@@ -120,8 +121,8 @@ void CTerrain::Render()
 		D3DXMatrixIdentity(&matWorld);
 		D3DXMatrixScaling(&matScale, 1.f, 1.f, 1.f);
 		D3DXMatrixTranslation(&matTrans,
-			screenPoint.x,
-			screenPoint.y,
+			(float)screenPoint.x,
+			(float)screenPoint.y,
 			0);
 
 		matWorld = matScale * matTrans;
@@ -170,6 +171,10 @@ void CTerrain::Render()
 
 	// 오브젝트 배치 중이면 타일 표시 안함.
 	if (CMapManager::Get_Instance()->m_IsObjectSetting == true)
+	{
+		return;
+	}
+	if (g_GamePlay == true)
 	{
 		return;
 	}

@@ -1836,7 +1836,6 @@ void CEquipTool::OnSkillLoad()
 
 	DH_Player::Get_Instance()->SetItemUpdate(true);
 }
-
 void CEquipTool::OnItemSave()
 {
 	OnEquipSave();

@@ -105,6 +105,7 @@ void DH_Skill::Initialize()
 	CTextureMgr::Get_Instance()->Insert_Texture(L"../Texture/Picked/Skill/Off/Moving_Shoot_Off.png", TEX_SINGLE, L"Moving_Shoot_Off", nullptr, 0);
 	CTextureMgr::Get_Instance()->Insert_Texture(L"../Texture/Picked/Skill/Off/Random_Shoot_Off.png", TEX_SINGLE, L"Random_Shoot_Off", nullptr, 0);
 	CTextureMgr::Get_Instance()->Insert_Texture(L"../Texture/Picked/Skill/Off/Seven'sFlow_Off.png", TEX_SINGLE, L"Seven'sFlow_Off", nullptr, 0);
+	CTextureMgr::Get_Instance()->Insert_Texture(L"../Texture/Picked/Skill/Off/WindMill_Off.png", TEX_SINGLE, L"WindMill_Off", nullptr, 0);
 
 #pragma endregion
 }

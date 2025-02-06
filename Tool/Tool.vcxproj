@@ -208,6 +208,7 @@
     <ClInclude Include="DH_BtnUI.h" />
     <ClInclude Include="DH_CObject.h" />
     <ClInclude Include="DH_Define.h" />
+    <ClInclude Include="DH_HitBox.h" />
     <ClInclude Include="DH_Interface.h" />
     <ClInclude Include="DH_Inventory.h" />
     <ClInclude Include="DH_Item.h" />
@@ -249,6 +250,7 @@
     <ClCompile Include="DH_BtnUI.cpp" />
     <ClCompile Include="DH_CObject.cpp" />
     <ClCompile Include="DH_Define.cpp" />
+    <ClCompile Include="DH_HitBox.cpp" />
     <ClCompile Include="DH_Interface.cpp" />
     <ClCompile Include="DH_Inventory.cpp" />
     <ClCompile Include="DH_Item.cpp" />

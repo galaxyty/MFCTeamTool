@@ -78,11 +78,13 @@ void CMyForm::OnInitialUpdate()
 		CLIP_DEFAULT_PRECIS,// 클리핑 정밀도
 		DEFAULT_QUALITY,    // 출력 품질
 		DEFAULT_PITCH | FF_SWISS, // 글꼴 피치 및 패밀리
-		L"굴림체"           // 글꼴 이름
+		L"고딕"           // 글꼴 이름
 	);
 
 	GetDlgItem(IDC_MAP_BUTTON)->SetFont(&m_Font);
 	GetDlgItem(IDC_EQUIP_BUTTON)->SetFont(&m_Font);
+	GetDlgItem(IDC_EQUIP_BUTTON2)->SetFont(&m_Font);
+	GetDlgItem(IDC_EQUIP_BUTTON3)->SetFont(&m_Font);
 }
 
 
@@ -96,6 +98,7 @@ void CMyForm::OnUnitTool()
 }
 
 // 맵 툴 버튼.
+bool g_GamePlay = false;
 void CMyForm::OnMapButton()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
@@ -110,7 +113,7 @@ void CMyForm::OnMapButton()
 // 방어구 툴 버튼.
 void CMyForm::OnEquipButton()
 {
-	g_GamePlay = false;
+	g_GamePlay = true;
 
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	
@@ -124,7 +127,7 @@ void CMyForm::OnEquipButton()
 
 void CMyForm::OnPlayer()
 {
-	g_GamePlay = false;
+	g_GamePlay = true;
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 
 	//GetSafeHwnd : 현재 다이얼로그 윈도우의 핸들을 반환
@@ -134,7 +137,6 @@ void CMyForm::OnPlayer()
 	m_PlayerTool.ShowWindow(SW_SHOW);
 }
 
-bool g_GamePlay = false;
 void CMyForm::OnPlay()
 {
 	g_GamePlay = true;
@@ -144,6 +146,7 @@ void CMyForm::OnPlay()
 	{
 		pPlayer = DH_Player::Get_Instance();
 		pPlayer->SetName(L"pPlayer");
+		pPlayer->SetPlayerTool(&m_PlayerTool);
 		pPlayer->Initialize();
 		DH_OBJMgr::Get_Instance()->Add_Object(OBJ_PLAYER, pPlayer);
 	}
